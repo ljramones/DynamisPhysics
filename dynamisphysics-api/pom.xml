@@ -16,6 +16,18 @@
   <!-- Zero runtime dependencies -->
   <dependencies>
     <dependency>
+      <groupId>org.vectrix</groupId>
+      <artifactId>vectrix</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.animis</groupId>
+      <artifactId>animis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dynamiscollision</groupId>
+      <artifactId>collision_detection</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>

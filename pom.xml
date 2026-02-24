@@ -26,10 +26,15 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Ecosystem -->
-    <vectrix.version>1.10.10</vectrix.version>
+    <vectrix.version>1.10.12</vectrix.version>
 
-    <!-- ODE4J — adjust to your local artifact coordinates -->
-    <ode4j.version>0.5.2</ode4j.version>
+    <animis.version>1.0.0</animis.version>
+    <collision.version>1.1.0</collision.version>
+    <meshforge.version>1.1.0</meshforge.version>
+    <dynamis.gpu.api.version>1.0.1</dynamis.gpu.api.version>
+
+    <!-- ODE4J -->
+    <ode4j.version>0.5.3</ode4j.version>
 
     <!-- Jolt JNI — adjust to your local artifact coordinates -->
     <jolt.version>0.1.0</jolt.version>
@@ -71,6 +76,26 @@
         <groupId>org.vectrix</groupId>
         <artifactId>vectrix</artifactId>
         <version>${vectrix.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.animis</groupId>
+        <artifactId>animis</artifactId>
+        <version>${animis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dynamiscollision</groupId>
+        <artifactId>collision_detection</artifactId>
+        <version>${collision.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.meshforge</groupId>
+        <artifactId>meshforge</artifactId>
+        <version>${meshforge.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dynamisgpu</groupId>
+        <artifactId>dynamis-gpu-api</artifactId>
+        <version>${dynamis.gpu.api.version}</version>
       </dependency>
 
       <!-- ODE4J — replace groupId/artifactId with your coordinates -->

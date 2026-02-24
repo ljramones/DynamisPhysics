@@ -23,6 +23,22 @@
       <artifactId>vectrix</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.animis</groupId>
+      <artifactId>animis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dynamiscollision</groupId>
+      <artifactId>collision_detection</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.meshforge</groupId>
+      <artifactId>meshforge</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dynamisgpu</groupId>
+      <artifactId>dynamis-gpu-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.ode4j</groupId>
       <artifactId>core</artifactId>
     </dependency>

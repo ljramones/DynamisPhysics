@@ -1,4 +1,8 @@
 module org.dynamisphysics.api {
+    requires collision.detection;
+    requires org.animis;
+    requires org.vectrix;
+
     exports org.dynamisphysics.api;
     exports org.dynamisphysics.api.world;
     exports org.dynamisphysics.api.body;
