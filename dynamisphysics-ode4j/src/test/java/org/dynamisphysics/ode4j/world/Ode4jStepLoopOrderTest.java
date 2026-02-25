@@ -7,6 +7,7 @@ import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
 import org.dynamisphysics.ode4j.query.Ode4jRaycastExecutor;
+import org.dynamisphysics.ode4j.ragdoll.Ode4jRagdollSystem;
 import org.dynamisphysics.ode4j.vehicle.Ode4jVehicleSystem;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +53,7 @@ class Ode4jStepLoopOrderTest {
         Ode4jRaycastExecutor raycastExecutor = new Ode4jRaycastExecutor(space);
         Ode4jVehicleSystem vehicleSystem = new Ode4jVehicleSystem(bodyRegistry, eventBuffer, raycastExecutor);
         Ode4jCharacterController characterController = new Ode4jCharacterController(bodyRegistry, raycastExecutor, eventBuffer);
+        Ode4jRagdollSystem ragdollSystem = new Ode4jRagdollSystem(bodyRegistry, constraintRegistry);
         Ode4jContactDispatcher dispatcher = new Ode4jContactDispatcher(world, contactGroup, eventBuffer);
 
         List<String> phases = new ArrayList<>();
@@ -64,6 +66,7 @@ class Ode4jStepLoopOrderTest {
             constraintRegistry,
             vehicleSystem,
             characterController,
+            ragdollSystem,
             phases::add
         );
 
@@ -76,7 +79,8 @@ class Ode4jStepLoopOrderTest {
             "spaceCollide",
             "quickStep",
             "constraintRegistry.checkBreakForces",
-            "contactGroup.empty"
+            "contactGroup.empty",
+            "ragdollSystem.stepAll"
         ), phases);
     }
 }

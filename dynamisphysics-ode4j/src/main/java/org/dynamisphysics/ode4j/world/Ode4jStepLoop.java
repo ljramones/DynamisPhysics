@@ -4,6 +4,7 @@ import org.dynamisphysics.ode4j.body.Ode4jForceAccumulator;
 import org.dynamisphysics.ode4j.character.Ode4jCharacterController;
 import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
+import org.dynamisphysics.ode4j.ragdoll.Ode4jRagdollSystem;
 import org.dynamisphysics.ode4j.vehicle.Ode4jVehicleSystem;
 import org.ode4j.ode.DHashSpace;
 import org.ode4j.ode.DJointGroup;
@@ -25,6 +26,7 @@ public final class Ode4jStepLoop {
     private final Ode4jConstraintRegistry constraintRegistry;
     private final Ode4jVehicleSystem vehicleSystem;
     private final Ode4jCharacterController characterController;
+    private final Ode4jRagdollSystem ragdollSystem;
     private final StepOrderObserver stepOrderObserver;
 
     private int stepCount = 0;
@@ -38,7 +40,8 @@ public final class Ode4jStepLoop {
         Ode4jContactDispatcher dispatcher,
         Ode4jConstraintRegistry constraintRegistry,
         Ode4jVehicleSystem vehicleSystem,
-        Ode4jCharacterController characterController
+        Ode4jCharacterController characterController,
+        Ode4jRagdollSystem ragdollSystem
     ) {
         this(
             world,
@@ -49,6 +52,7 @@ public final class Ode4jStepLoop {
             constraintRegistry,
             vehicleSystem,
             characterController,
+            ragdollSystem,
             phase -> {}
         );
     }
@@ -62,6 +66,7 @@ public final class Ode4jStepLoop {
         Ode4jConstraintRegistry constraintRegistry,
         Ode4jVehicleSystem vehicleSystem,
         Ode4jCharacterController characterController,
+        Ode4jRagdollSystem ragdollSystem,
         StepOrderObserver stepOrderObserver
     ) {
         this.world = world;
@@ -72,6 +77,7 @@ public final class Ode4jStepLoop {
         this.constraintRegistry = constraintRegistry;
         this.vehicleSystem = vehicleSystem;
         this.characterController = characterController;
+        this.ragdollSystem = ragdollSystem;
         this.stepOrderObserver = stepOrderObserver;
     }
 
@@ -110,6 +116,8 @@ public final class Ode4jStepLoop {
             constraintRegistry.checkBreakForces();
             stepOrderObserver.onPhase("contactGroup.empty");
             contactGroup.empty();
+            stepOrderObserver.onPhase("ragdollSystem.stepAll");
+            ragdollSystem.stepAll(dt);
         }
 
         lastStepMs = (System.nanoTime() - start) / 1_000_000f;

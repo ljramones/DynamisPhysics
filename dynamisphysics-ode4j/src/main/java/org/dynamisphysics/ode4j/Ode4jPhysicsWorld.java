@@ -31,6 +31,7 @@ import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
 import org.dynamisphysics.ode4j.query.Ode4jRaycastExecutor;
+import org.dynamisphysics.ode4j.ragdoll.Ode4jRagdollSystem;
 import org.dynamisphysics.ode4j.vehicle.Ode4jVehicleSystem;
 import org.dynamisphysics.ode4j.world.Ode4jStepLoop;
 import org.ode4j.ode.DHashSpace;
@@ -58,6 +59,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     private final Ode4jRaycastExecutor raycastExecutor;
     private final Ode4jVehicleSystem vehicleSystem;
     private final Ode4jCharacterController characterController;
+    private final Ode4jRagdollSystem ragdollSystem;
     private final List<ContactListener> contactListeners = new ArrayList<>();
 
     private boolean paused = false;
@@ -76,7 +78,8 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         Ode4jStepLoop stepLoop,
         Ode4jRaycastExecutor raycastExecutor,
         Ode4jVehicleSystem vehicleSystem,
-        Ode4jCharacterController characterController
+        Ode4jCharacterController characterController,
+        Ode4jRagdollSystem ragdollSystem
     ) {
         this.config = config;
         this.world = world;
@@ -91,6 +94,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         this.raycastExecutor = raycastExecutor;
         this.vehicleSystem = vehicleSystem;
         this.characterController = characterController;
+        this.ragdollSystem = ragdollSystem;
     }
 
     public static Ode4jPhysicsWorld create(PhysicsWorldConfig config) {
@@ -116,6 +120,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         var raycastExecutor = new Ode4jRaycastExecutor(space);
         var vehicleSystem = new Ode4jVehicleSystem(bodyRegistry, eventBuffer, raycastExecutor);
         var characterController = new Ode4jCharacterController(bodyRegistry, raycastExecutor, eventBuffer);
+        var ragdollSystem = new Ode4jRagdollSystem(bodyRegistry, constraintRegistry);
         var stepLoop = new Ode4jStepLoop(
             world,
             space,
@@ -124,12 +129,13 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
             dispatcher,
             constraintRegistry,
             vehicleSystem,
-            characterController
+            characterController,
+            ragdollSystem
         );
 
         return new Ode4jPhysicsWorld(config, world, space, contactGroup, bodyRegistry, forceAccumulator,
             constraintRegistry,
-            eventBuffer, dispatcher, stepLoop, raycastExecutor, vehicleSystem, characterController);
+            eventBuffer, dispatcher, stepLoop, raycastExecutor, vehicleSystem, characterController, ragdollSystem);
     }
 
     @Override public void step(float dt) { step(dt, config.maxSubSteps()); }
@@ -198,11 +204,11 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     @Override public void jumpCharacter(CharacterHandle h, float i) { characterController.jump(h, i); }
     @Override public CharacterState getCharacterState(CharacterHandle h) { return characterController.getState(h); }
 
-    @Override public RagdollHandle spawnRagdoll(RagdollDescriptor d, AnimisPose p) { throw new UnsupportedOperationException("Step 8"); }
-    @Override public void destroyRagdoll(RagdollHandle h) {}
-    @Override public void activateRagdoll(RagdollHandle h, float s) {}
-    @Override public void deactivateRagdoll(RagdollHandle h) {}
-    @Override public void setRagdollBlendTarget(RagdollHandle h, AnimisPose p, float a) {}
+    @Override public RagdollHandle spawnRagdoll(RagdollDescriptor d, AnimisPose p) { return ragdollSystem.spawn(d, p); }
+    @Override public void destroyRagdoll(RagdollHandle h) { ragdollSystem.destroy(h); }
+    @Override public void activateRagdoll(RagdollHandle h, float s) { ragdollSystem.activate(h, s); }
+    @Override public void deactivateRagdoll(RagdollHandle h) { ragdollSystem.deactivate(h); }
+    @Override public void setRagdollBlendTarget(RagdollHandle h, AnimisPose p, float a) { ragdollSystem.setBlendTarget(h, p, a); }
 
     @Override
     public Optional<RaycastResult> raycastClosest(Vector3f origin, Vector3f dir, float maxDist, int layerMask) {
