@@ -50,6 +50,24 @@ mvn -pl dynamisphysics-jolt -am test -Pjolt-tests -Djolt.threads=8 \
   -Dtest=JoltParallelStabilityTest -Dsurefire.failIfNoSpecifiedTests=false
 ```
 
+### Long determinism soak (manual/nightly)
+
+```bash
+./scripts/gate-long-determinism.sh
+```
+
+Optional full-scene probe (includes vehicle/ragdoll and ODE4J-only chain constraints):
+
+```bash
+mvn -pl dynamisphysics-jolt -am test -Pjolt-tests \
+  -Dphysics.long.determinism=true \
+  -Dphysics.long.determinism.full=true \
+  -Dtest=LongDeterminismSoakTest \
+  -Dsurefire.failIfNoSpecifiedTests=false
+```
+
+Note: full-scene mode is currently disabled due to a known ODE4J mismatch; use the default soak gate for Block 1 protection.
+
 Convenience scripts:
 
 - `./scripts/gate-ode4j.sh`
