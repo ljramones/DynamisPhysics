@@ -10,7 +10,6 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSpace;
-import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
 import org.vectrix.core.Matrix4f;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.dynamisphysics.ode4j.world.Ode4jConversions.toOde;
-import static org.dynamisphysics.ode4j.world.Ode4jConversions.toVec3f;
 
 public final class Ode4jBodyRegistry {
     private final DWorld world;

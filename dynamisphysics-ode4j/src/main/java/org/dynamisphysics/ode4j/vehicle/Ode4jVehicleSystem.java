@@ -99,6 +99,13 @@ public final class Ode4jVehicleSystem {
         return vehicles.size();
     }
 
+    public void clearAll() {
+        var snapshot = List.copyOf(vehicles.keySet());
+        for (VehicleHandle h : snapshot) {
+            destroy(h);
+        }
+    }
+
     public void stepAll(float dt) {
         for (Ode4jVehicleHandle vehicle : vehicles.values()) {
             stepVehicle(vehicle, dt);

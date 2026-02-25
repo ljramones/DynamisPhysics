@@ -18,16 +18,19 @@ import org.ode4j.ode.OdeHelper;
 import org.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.dynamisphysics.ode4j.world.Ode4jConversions.toVec3f;
 
 public final class Ode4jContactDispatcher {
     private static final int MAX_CONTACTS = 8;
+    private record PendingPair(DGeom o1, DGeom o2, int bodyIdA, int bodyIdB, int geomIdA, int geomIdB) {}
 
     private final DWorld world;
     private final DJointGroup contactGroup;
     private final Ode4jEventBuffer eventBuffer;
+    private final List<PendingPair> pendingPairs = new ArrayList<>(256);
     private final DContactBuffer contactBuffer = new DContactBuffer(MAX_CONTACTS);
 
     public final DGeom.DNearCallback callback;
@@ -54,18 +57,44 @@ public final class Ode4jContactDispatcher {
             h1 = h2;
             h2 = htmp;
         }
-
-        int n = OdeHelper.collide(o1, o2, MAX_CONTACTS, contactBuffer.getGeomBuffer());
-        if (n == 0) {
-            return;
-        }
-
         DBody bodyA = o1.getBody();
         DBody bodyB = o2.getBody();
         if (bodyA == null && bodyB == null) {
             return;
         }
+        pendingPairs.add(new PendingPair(o1, o2, bodyId1, bodyId2, geomId1, geomId2));
+    }
 
+    public void resolveQueuedContacts() {
+        pendingPairs.sort(Comparator
+            .comparingInt(PendingPair::bodyIdA)
+            .thenComparingInt(PendingPair::bodyIdB)
+            .thenComparingInt(PendingPair::geomIdA)
+            .thenComparingInt(PendingPair::geomIdB));
+
+        for (PendingPair pair : pendingPairs) {
+            DGeom o1 = pair.o1();
+            DGeom o2 = pair.o2();
+            int n = OdeHelper.collide(o1, o2, MAX_CONTACTS, contactBuffer.getGeomBuffer());
+            if (n == 0) {
+                continue;
+            }
+            DBody bodyA = o1.getBody();
+            DBody bodyB = o2.getBody();
+            if (bodyA == null && bodyB == null) {
+                continue;
+            }
+
+            emitContacts(o1, o2, bodyA, bodyB, n);
+        }
+        pendingPairs.clear();
+    }
+
+    public void clearQueuedContacts() {
+        pendingPairs.clear();
+    }
+
+    private void emitContacts(DGeom o1, DGeom o2, DBody bodyA, DBody bodyB, int n) {
         List<ContactPoint> points = new ArrayList<>(n);
         float totalImpulse = 0f;
 

@@ -150,6 +150,13 @@ public final class Ode4jRagdollSystem {
         }
     }
 
+    public void clearAll() {
+        var snapshot = List.copyOf(ragdolls.keySet());
+        for (RagdollHandle h : snapshot) {
+            destroy(h);
+        }
+    }
+
     private void step(Instance instance, float dt) {
         if (!instance.handle.isAlive()) {
             return;

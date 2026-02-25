@@ -13,6 +13,7 @@ import org.dynamisphysics.ode4j.query.Ode4jRaycastExecutor;
 import org.vectrix.core.Vector3f;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -64,6 +65,13 @@ public final class Ode4jCharacterController {
 
     public int characterCount() {
         return characters.size();
+    }
+
+    public void clearAll() {
+        var snapshot = List.copyOf(characters.keySet());
+        for (CharacterHandle h : snapshot) {
+            destroy(h);
+        }
     }
 
     public void stepAll(float dt, Vector3f gravity) {

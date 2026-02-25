@@ -109,6 +109,7 @@ public final class Ode4jStepLoop {
             // Build contact joints and solve in the same integration step.
             stepOrderObserver.onPhase("spaceCollide");
             OdeHelper.spaceCollide(space, null, dispatcher.callback);
+            dispatcher.resolveQueuedContacts();
             stepOrderObserver.onPhase("quickStep");
             world.quickStep(dt);
 
@@ -116,6 +117,7 @@ public final class Ode4jStepLoop {
             constraintRegistry.checkBreakForces();
             stepOrderObserver.onPhase("contactGroup.empty");
             contactGroup.empty();
+            dispatcher.clearQueuedContacts();
             stepOrderObserver.onPhase("ragdollSystem.stepAll");
             ragdollSystem.stepAll(dt);
         }
@@ -128,4 +130,5 @@ public final class Ode4jStepLoop {
     public float lastStepMs() { return lastStepMs; }
     public DWorld world() { return world; }
     public DHashSpace space() { return space; }
+    public void setStepCount(int stepCount) { this.stepCount = org.vectrix.core.Math.max(stepCount, 0); }
 }

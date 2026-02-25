@@ -8,6 +8,7 @@ import org.dynamisphysics.api.RagdollDescriptor;
 import org.dynamisphysics.api.RagdollHandle;
 import org.dynamisphysics.api.VehicleDescriptor;
 import org.dynamisphysics.api.VehicleHandle;
+import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.BodyState;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.body.RigidBodyHandle;
@@ -32,12 +33,15 @@ import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
 import org.dynamisphysics.ode4j.query.Ode4jRaycastExecutor;
 import org.dynamisphysics.ode4j.ragdoll.Ode4jRagdollSystem;
+import org.dynamisphysics.ode4j.snapshot.Ode4jSnapshot;
 import org.dynamisphysics.ode4j.vehicle.Ode4jVehicleSystem;
 import org.dynamisphysics.ode4j.world.Ode4jStepLoop;
+import org.ode4j.math.DVector3;
 import org.ode4j.ode.DHashSpace;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
+import org.vectrix.core.Matrix4f;
 import org.vectrix.core.Quaternionf;
 import org.vectrix.core.Vector3f;
 
@@ -235,8 +239,73 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         return events;
     }
 
-    @Override public byte[] snapshot() { return new byte[0]; }
-    @Override public void restore(byte[] snap) {}
+    @Override
+    public byte[] snapshot() {
+        DVector3 g = new DVector3();
+        world.getGravity(g);
+        return Ode4jSnapshot.write(
+            stepLoop.stepCount(),
+            new Vector3f((float) g.get0(), (float) g.get1(), (float) g.get2()),
+            config.solverIterations(),
+            timeScale,
+            bodyRegistry.bodiesInIdOrder(),
+            constraintRegistry.constraintsInIdOrder()
+        );
+    }
+
+    @Override
+    public void restore(byte[] snap) {
+        Ode4jSnapshot.RestoredState restored = Ode4jSnapshot.read(snap);
+
+        ragdollSystem.clearAll();
+        characterController.clearAll();
+        vehicleSystem.clearAll();
+        constraintRegistry.clearAllConstraints();
+        bodyRegistry.clearAllBodies();
+        eventBuffer.clear();
+        contactGroup.empty();
+
+        Ode4jSnapshot.Header header = restored.header();
+        world.setGravity(header.gravity().x(), header.gravity().y(), header.gravity().z());
+        world.setQuickStepNumIterations(header.solverIterations());
+        timeScale = header.timeScale();
+
+        for (Ode4jSnapshot.BodyRecord body : restored.bodies()) {
+            Matrix4f transform = new Matrix4f().translationRotateScale(
+                body.position(),
+                body.orientation(),
+                new Vector3f(1f, 1f, 1f)
+            );
+            RigidBodyConfig config = RigidBodyConfig.builder(body.shape(), body.mass())
+                .mode(body.mode())
+                .worldTransform(transform)
+                .linearVelocity(body.linearVelocity())
+                .angularVelocity(body.angularVelocity())
+                .material(body.material())
+                .layer(body.layer())
+                .collidesWith(body.collidesWith())
+                .ccd(body.ccd())
+                .isSensor(body.sensor())
+                .gravityScale(body.gravityScale())
+                .build();
+            Ode4jBodyHandle restoredHandle = bodyRegistry.spawnWithIds(config, body.bodyId(), body.geomId());
+            if (restoredHandle.body() != null) {
+                if (body.sleeping()) {
+                    restoredHandle.body().disable();
+                } else {
+                    restoredHandle.body().enable();
+                }
+            }
+        }
+
+        for (Ode4jSnapshot.ConstraintRecord c : restored.constraints()) {
+            Ode4jBodyHandle bodyA = c.bodyAId() >= 0 ? bodyRegistry.getHandleById(c.bodyAId()) : null;
+            Ode4jBodyHandle bodyB = c.bodyBId() >= 0 ? bodyRegistry.getHandleById(c.bodyBId()) : null;
+            constraintRegistry.addWithId(c.toConstraintDesc(bodyA, bodyB), c.constraintId());
+        }
+
+        stepLoop.setStepCount(header.stepCount());
+    }
 
     @Override public void setGravity(Vector3f g) { world.setGravity(g.x(), g.y(), g.z()); }
     @Override public void setTimeScale(float s) { timeScale = s; }
@@ -244,12 +313,13 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     @Override
     public PhysicsStats getStats() {
         int total = bodyRegistry.bodyCount();
-        int active = countActive();
+        int active = countActiveDynamic();
+        int sleeping = countSleepingDynamic();
         return new PhysicsStats(
             stepLoop.lastStepMs(),
             total,
             active,
-            total - active,
+            sleeping,
             constraintRegistry.constraintCount(),
             0,
             0f,
@@ -259,9 +329,15 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         );
     }
 
-    private int countActive() {
+    private int countActiveDynamic() {
         return (int) bodyRegistry.allHandles().stream()
-            .filter(h -> h.body() != null && h.body().isEnabled())
+            .filter(h -> h.mode() == BodyMode.DYNAMIC && h.body() != null && h.body().isEnabled())
+            .count();
+    }
+
+    private int countSleepingDynamic() {
+        return (int) bodyRegistry.allHandles().stream()
+            .filter(h -> h.mode() == BodyMode.DYNAMIC && (h.body() == null || !h.body().isEnabled()))
             .count();
     }
 }
