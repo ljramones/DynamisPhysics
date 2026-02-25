@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.dynamisphysics</groupId>
     <artifactId>dynamisphysics-parent</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
   </parent>
 
   <artifactId>dynamisphysics-jolt</artifactId>
@@ -31,16 +31,14 @@
       <artifactId>collision_detection</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.meshforge</groupId>
-      <artifactId>meshforge</artifactId>
+      <groupId>com.github.stephengold</groupId>
+      <artifactId>${jolt.artifactId}</artifactId>
+      <version>${jolt.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.dynamisgpu</groupId>
-      <artifactId>dynamis-gpu-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jolt</groupId>
-      <artifactId>jolt-jni</artifactId>
+      <groupId>org.dynamisphysics</groupId>
+      <artifactId>dynamisphysics-ode4j</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.dynamisphysics</groupId>
@@ -53,5 +51,65 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.8.1</version>
+        <executions>
+          <execution>
+            <id>unpack-jolt-native</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.github.stephengold</groupId>
+                  <artifactId>${jolt.artifactId}</artifactId>
+                  <version>${jolt.version}</version>
+                  <classifier>${jolt.nativeClassifier}</classifier>
+                  <type>jar</type>
+                  <includes>osx/aarch64/com/github/stephengold/libjoltjni.dylib</includes>
+                  <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skipTests>${skip.jolt.tests}</skipTests>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>jolt-tests</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>false</skipTests>
+              <forkCount>1</forkCount>
+              <reuseForks>false</reuseForks>
+              <parallel>none</parallel>
+              <argLine>--enable-native-access=ALL-UNNAMED -XX:ErrorFile=./hs_err_pid%p.log</argLine>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

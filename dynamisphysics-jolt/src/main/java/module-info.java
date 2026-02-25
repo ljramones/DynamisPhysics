@@ -3,9 +3,7 @@ module org.dynamisphysics.jolt {
     requires org.animis;
     requires org.vectrix;
     requires org.dynamiscollision;
-    requires meshforge;
-    requires dynamis.gpu.api;
-    requires jolt.jni;
+    requires com.github.stephengold.joltjni;
 
     exports org.dynamisphysics.jolt;
     exports org.dynamisphysics.jolt.world;
