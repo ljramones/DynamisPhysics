@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.3.0 (2026-02-25)
+
+### Added
+- Physics tuning control plane with profile-driven resolution:
+  - `DETERMINISTIC`, `DEFAULT`, `PERF`
+  - explicit precedence: system properties > config fields > profile defaults > backend fallbacks.
+- Jolt allocator/thread tuning integration:
+  - allocator mode selection (`SAFE`/`MALLOC`/`IMPL`)
+  - allocator size clamping and safeguards
+  - PERF auto-thread policy with safety cap.
+- Extended benchmark realism suite:
+  - constraint-heavy, compound-heavy, and mixed-scene benchmarks
+  - profile compare workflow for `DEFAULT` vs `PERF`.
+- Targeted, gated integration parity suite:
+  - `MixedSceneParityTest`
+  - `TerrainMeshParityTest`
+  - `SnapshotMidMotionParityTest`
+  - gate script: `scripts/gate-parity-integration.sh`.
+- Benchmark baseline update files:
+  - `bench-baselines/0.3.0.json`
+  - `bench-baselines/raw/0.3.0-jmh.json`
+
+### Changed
+- README updated with tuning profiles, integration parity gate usage, and benchmark profile compare guidance.
+- Jolt profile application tests and resolver coverage expanded for clamp/precedence behavior.
+
+### Notes
+- Integration parity tests are gated by `-Dphysics.parity.integration=true` to keep default parity gates fast.
+- Deterministic guarantees remain backend-local in deterministic mode; cross-backend checks are behavioural.
+
 ## 0.2.0 (2026-02-25)
 
 ### Added
