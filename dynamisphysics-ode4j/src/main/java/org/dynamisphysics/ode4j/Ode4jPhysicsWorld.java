@@ -13,6 +13,8 @@ import org.dynamisphysics.api.body.BodyState;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.body.RigidBodyHandle;
 import org.dynamisphysics.api.config.PhysicsWorldConfig;
+import org.dynamisphysics.api.config.PhysicsTuningResolver;
+import org.dynamisphysics.api.config.ResolvedTuning;
 import org.dynamisphysics.api.constraint.ConstraintDesc;
 import org.dynamisphysics.api.constraint.ConstraintHandle;
 import org.dynamisphysics.api.event.ContactEvent;
@@ -41,6 +43,7 @@ import org.dynamisphysics.ode4j.world.Ode4jStepLoop;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DHashSpace;
 import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DMisc;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
 import org.vectrix.core.Matrix4f;
@@ -53,6 +56,7 @@ import java.util.Optional;
 
 public final class Ode4jPhysicsWorld implements PhysicsWorld {
     private final PhysicsWorldConfig config;
+    private final ResolvedTuning resolvedTuning;
     private final DWorld world;
     private final DHashSpace space;
     private final DJointGroup contactGroup;
@@ -73,6 +77,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
 
     private Ode4jPhysicsWorld(
         PhysicsWorldConfig config,
+        ResolvedTuning resolvedTuning,
         DWorld world,
         DHashSpace space,
         DJointGroup contactGroup,
@@ -88,6 +93,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         Ode4jRagdollSystem ragdollSystem
     ) {
         this.config = config;
+        this.resolvedTuning = resolvedTuning;
         this.world = world;
         this.space = space;
         this.contactGroup = contactGroup;
@@ -104,6 +110,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     }
 
     public static Ode4jPhysicsWorld create(PhysicsWorldConfig config) {
+        ResolvedTuning resolved = PhysicsTuningResolver.resolve(config);
         OdeHelper.initODE2(0);
         DWorld world = OdeHelper.createWorld();
         DHashSpace space = OdeHelper.createHashSpace(null);
@@ -112,11 +119,14 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         world.setGravity(config.gravity().x(), config.gravity().y(), config.gravity().z());
         world.setERP(0.2);
         world.setCFM(1e-5);
-        world.setQuickStepNumIterations(config.solverIterations());
+        world.setQuickStepNumIterations(resolved.solverIterations());
         world.setAutoDisableFlag(true);
         world.setAutoDisableLinearThreshold(0.01);
         world.setAutoDisableAngularThreshold(0.01);
         world.setAutoDisableSteps(10);
+        if (resolved.deterministic()) {
+            DMisc.dRandSetSeed(0L);
+        }
 
         var eventBuffer = new Ode4jEventBuffer();
         var forceAccumulator = new Ode4jForceAccumulator();
@@ -143,7 +153,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
             ragdollSystem
         );
 
-        return new Ode4jPhysicsWorld(config, world, space, contactGroup, bodyRegistry, forceAccumulator,
+        return new Ode4jPhysicsWorld(config, resolved, world, space, contactGroup, bodyRegistry, forceAccumulator,
             constraintRegistry,
             eventBuffer, dispatcher, stepLoop, raycastExecutor, vehicleSystem, characterController, ragdollSystem);
     }
@@ -252,7 +262,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         return Ode4jSnapshot.write(
             stepLoop.stepCount(),
             new Vector3f((float) g.get0(), (float) g.get1(), (float) g.get2()),
-            config.solverIterations(),
+            resolvedTuning.solverIterations(),
             timeScale,
             bodyRegistry.bodiesInIdOrder(),
             constraintRegistry.constraintsInIdOrder()
@@ -357,5 +367,9 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
 
     public List<Ode4jContactDispatcher.DebugContact> debugDrainContacts() {
         return dispatcher.drainDebugContacts();
+    }
+
+    ResolvedTuning resolvedTuningForTesting() {
+        return resolvedTuning;
     }
 }

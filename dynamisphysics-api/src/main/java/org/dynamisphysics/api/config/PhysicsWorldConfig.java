@@ -7,12 +7,29 @@ public record PhysicsWorldConfig(
     Vector3f gravity,
     float fixedTimeStep,
     int maxSubSteps,
+    @Deprecated(forRemoval = false)
     int solverIterations,
     int maxBodies,
     int maxConstraints,
     BroadphaseType broadphase,
-    boolean deterministic
+    @Deprecated(forRemoval = false)
+    boolean deterministic,
+    PhysicsTuning tuning
 ) {
+    public PhysicsWorldConfig(
+        PhysicsBackend backend,
+        Vector3f gravity,
+        float fixedTimeStep,
+        int maxSubSteps,
+        int solverIterations,
+        int maxBodies,
+        int maxConstraints,
+        BroadphaseType broadphase,
+        boolean deterministic
+    ) {
+        this(backend, gravity, fixedTimeStep, maxSubSteps, solverIterations, maxBodies, maxConstraints, broadphase, deterministic, null);
+    }
+
     public static PhysicsWorldConfig defaults(PhysicsBackend backend) {
         return new PhysicsWorldConfig(
             backend,
@@ -23,7 +40,8 @@ public record PhysicsWorldConfig(
             65_536,
             16_384,
             BroadphaseType.BVH,
-            true
+            true,
+            PhysicsTuning.defaults()
         );
     }
 }

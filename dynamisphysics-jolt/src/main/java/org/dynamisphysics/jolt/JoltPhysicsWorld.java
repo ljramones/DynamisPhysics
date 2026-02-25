@@ -7,7 +7,9 @@ import com.github.stephengold.joltjni.NarrowPhaseQuery;
 import com.github.stephengold.joltjni.ObjectLayerPairFilterTable;
 import com.github.stephengold.joltjni.ObjectVsBroadPhaseLayerFilterTable;
 import com.github.stephengold.joltjni.PhysicsSystem;
+import com.github.stephengold.joltjni.PhysicsSettings;
 import com.github.stephengold.joltjni.TempAllocator;
+import com.github.stephengold.joltjni.TempAllocatorImpl;
 import com.github.stephengold.joltjni.TempAllocatorMalloc;
 import org.dynamiscollision.shapes.CollisionShape;
 import org.dynamiscollision.shapes.ShapeType;
@@ -22,6 +24,9 @@ import org.dynamisphysics.api.body.BodyState;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.body.RigidBodyHandle;
 import org.dynamisphysics.api.config.PhysicsWorldConfig;
+import org.dynamisphysics.api.config.PhysicsTuningResolver;
+import org.dynamisphysics.api.config.ResolvedTuning;
+import org.dynamisphysics.api.config.AllocatorMode;
 import org.dynamisphysics.api.constraint.ConstraintDesc;
 import org.dynamisphysics.api.constraint.ConstraintHandle;
 import org.dynamisphysics.api.event.ContactEvent;
@@ -67,6 +72,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
     private static final boolean TRACE_STEP = Boolean.getBoolean("jolt.trace");
 
     private final PhysicsWorldConfig config;
+    private final ResolvedTuning resolvedTuning;
     private final PhysicsSystem physicsSystem;
     private final TempAllocator allocator;
     private final JobSystemThreadPool jobs;
@@ -89,6 +95,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
 
     private JoltPhysicsWorld(
         PhysicsWorldConfig config,
+        ResolvedTuning resolvedTuning,
         PhysicsSystem physicsSystem,
         TempAllocator allocator,
         JobSystemThreadPool jobs,
@@ -102,6 +109,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         JoltRagdollSystem ragdollSystem
     ) {
         this.config = config;
+        this.resolvedTuning = resolvedTuning;
         this.physicsSystem = physicsSystem;
         this.allocator = allocator;
         this.jobs = jobs;
@@ -117,6 +125,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
     }
 
     public static JoltPhysicsWorld create(PhysicsWorldConfig config) {
+        ResolvedTuning resolved = PhysicsTuningResolver.resolve(config);
         ensureRuntimeInitialized();
 
         PhysicsSystem physics = new PhysicsSystem();
@@ -145,11 +154,22 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
             pair
         );
         physics.setGravity(config.gravity().x(), config.gravity().y(), config.gravity().z());
+        PhysicsSettings settings = new PhysicsSettings(physics.getPhysicsSettings());
+        settings.setDeterministicSimulation(resolved.deterministic());
+        settings.setNumPositionSteps(resolved.solverIterations());
+        settings.setNumVelocitySteps(Math.max(1, resolved.solverIterations() / 2));
+        physics.setPhysicsSettings(settings);
 
-        TempAllocator allocator = new TempAllocatorMalloc();
-        int threadCount = resolveJoltThreadCount(config);
+        TempAllocator allocator = resolved.allocatorMode() == AllocatorMode.IMPL
+            ? new TempAllocatorImpl(resolved.allocatorBytes())
+            : new TempAllocatorMalloc();
+        int threadCount = resolved.threads();
         JobSystemThreadPool jobs = new JobSystemThreadPool(Jolt.cMaxPhysicsJobs, Jolt.cMaxPhysicsBarriers, threadCount);
-        trace("jobs.threads=" + threadCount + " deterministic=" + config.deterministic());
+        trace("jobs.threads=" + threadCount
+            + " deterministic=" + resolved.deterministic()
+            + " allocator=" + resolved.allocatorMode()
+            + " allocatorBytes=" + resolved.allocatorBytes()
+            + " solverIterations=" + resolved.solverIterations());
 
         JoltBodyRegistry bodyRegistry = new JoltBodyRegistry(physics.getBodyInterface());
         JoltEventBuffer eventBuffer = new JoltEventBuffer();
@@ -165,7 +185,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         JoltRagdollSystem ragdollSystem = new JoltRagdollSystem(physics, bodyRegistry);
 
         return new JoltPhysicsWorld(
-            config, physics, allocator, jobs, bodyRegistry, eventBuffer, raycastExecutor, constraintRegistry,
+            config, resolved, physics, allocator, jobs, bodyRegistry, eventBuffer, raycastExecutor, constraintRegistry,
             mechanicalConstraintController,
             vehicleSystem, characterController, ragdollSystem
         );
@@ -596,17 +616,6 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         }
     }
 
-    private static int resolveJoltThreadCount(PhysicsWorldConfig config) {
-        Integer override = Integer.getInteger("jolt.threads");
-        if (override != null && override > 0) {
-            return override;
-        }
-        if (config.deterministic()) {
-            return 1;
-        }
-        return Math.max(1, Runtime.getRuntime().availableProcessors());
-    }
-
     private static String tryLoadFromResource(String resourcePath) {
         ClassLoader loader = JoltPhysicsWorld.class.getClassLoader();
         try (InputStream in = loader.getResourceAsStream(resourcePath)) {
@@ -623,5 +632,9 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         } catch (IOException | UnsatisfiedLinkError ex) {
             return ex.getClass().getSimpleName() + ": " + ex.getMessage();
         }
+    }
+
+    ResolvedTuning resolvedTuningForTesting() {
+        return resolvedTuning;
     }
 }
