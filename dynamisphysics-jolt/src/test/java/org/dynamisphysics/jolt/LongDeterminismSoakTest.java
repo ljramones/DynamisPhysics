@@ -42,6 +42,7 @@ class LongDeterminismSoakTest {
     private static final int CHECKPOINT_INTERVAL = 1_000;
     private static final float DT = 1f / 60f;
     private static final boolean FULL_MODE = Boolean.getBoolean("physics.long.determinism.full");
+    private static final boolean ALLOW_FAILURE = Boolean.getBoolean("physics.long.determinism.allowFailure");
 
     @BeforeAll
     static void registerBackends() {
@@ -53,7 +54,8 @@ class LongDeterminismSoakTest {
     @EnumSource(value = PhysicsBackend.class, names = {"ODE4J", "JOLT"})
     void longDeterminismSoak(PhysicsBackend backend) {
         Assumptions.assumeTrue(Boolean.getBoolean("physics.long.determinism"));
-        Assumptions.assumeTrue(!FULL_MODE, "Full-mode long soak is temporarily disabled (known ODE4J mismatch).");
+        Assumptions.assumeTrue(!FULL_MODE || ALLOW_FAILURE,
+            "Full-mode long soak repro is gated; set -Dphysics.long.determinism.allowFailure=true to run.");
 
         List<byte[]> run1 = runScenarioAndHashes(backend);
         List<byte[]> run2 = runScenarioAndHashes(backend);

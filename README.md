@@ -56,17 +56,18 @@ mvn -pl dynamisphysics-jolt -am test -Pjolt-tests -Djolt.threads=8 \
 ./scripts/gate-long-determinism.sh
 ```
 
-Optional full-scene probe (includes vehicle/ragdoll and ODE4J-only chain constraints):
+Optional full-scene repro probe (includes vehicle/ragdoll and ODE4J-only chain constraints):
 
 ```bash
 mvn -pl dynamisphysics-jolt -am test -Pjolt-tests \
   -Dphysics.long.determinism=true \
   -Dphysics.long.determinism.full=true \
+  -Dphysics.long.determinism.allowFailure=true \
   -Dtest=LongDeterminismSoakTest \
   -Dsurefire.failIfNoSpecifiedTests=false
 ```
 
-Note: full-scene mode is currently disabled due to a known ODE4J mismatch; use the default soak gate for Block 1 protection.
+Note: full-scene mode is a known failing repro on ODE4J; default soak remains the stable Block 1 gate.
 
 Convenience scripts:
 
