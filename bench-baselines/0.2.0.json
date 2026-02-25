@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "label": "0.2.0",
+  "generatedAt": "2026-02-25T16:51:51.159463+00:00",
+  "git": {
+    "revision": "134b55c"
+  },
+  "environment": {
+    "python": "3.14.3",
+    "os": "Darwin",
+    "arch": "arm64"
+  },
+  "runConfig": {
+    "joltThreads": "1",
+    "opsRatioMin": 0.8,
+    "timeRatioMax": 1.25
+  },
+  "cases": [
+    {
+      "key": "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch|backend=JOLT,raysPerOp=100",
+      "benchmark": "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch",
+      "params": {
+        "backend": "JOLT",
+        "raysPerOp": "100"
+      },
+      "mode": "thrpt",
+      "score": 24876.602350962356,
+      "scoreError": 2263.8369437319107,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch|backend=JOLT,raysPerOp=1000",
+      "benchmark": "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch",
+      "params": {
+        "backend": "JOLT",
+        "raysPerOp": "1000"
+      },
+      "mode": "thrpt",
+      "score": 2451.8376728142466,
+      "scoreError": 22.80544189016016,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch|backend=ODE4J,raysPerOp=100",
+      "benchmark": "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch",
+      "params": {
+        "backend": "ODE4J",
+        "raysPerOp": "100"
+      },
+      "mode": "thrpt",
+      "score": 549.4813986145433,
+      "scoreError": 21.162510882761268,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch|backend=ODE4J,raysPerOp=1000",
+      "benchmark": "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch",
+      "params": {
+        "backend": "ODE4J",
+        "raysPerOp": "1000"
+      },
+      "mode": "thrpt",
+      "score": 56.99066914355785,
+      "scoreError": 10.368384842689098,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld|backend=JOLT,bodyCount=1000",
+      "benchmark": "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld",
+      "params": {
+        "backend": "JOLT",
+        "bodyCount": "1000"
+      },
+      "mode": "thrpt",
+      "score": 726763.5553980779,
+      "scoreError": 13963.212596756895,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld|backend=JOLT,bodyCount=10000",
+      "benchmark": "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld",
+      "params": {
+        "backend": "JOLT",
+        "bodyCount": "10000"
+      },
+      "mode": "thrpt",
+      "score": 719647.0380333243,
+      "scoreError": 64823.10038754399,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld|backend=ODE4J,bodyCount=1000",
+      "benchmark": "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld",
+      "params": {
+        "backend": "ODE4J",
+        "bodyCount": "1000"
+      },
+      "mode": "thrpt",
+      "score": 1446.7758770960586,
+      "scoreError": 314.04347404586366,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld|backend=ODE4J,bodyCount=10000",
+      "benchmark": "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld",
+      "params": {
+        "backend": "ODE4J",
+        "bodyCount": "10000"
+      },
+      "mode": "thrpt",
+      "score": 68.82412208151808,
+      "scoreError": 10.18971138883829,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet|backend=JOLT,vehicleCount=10",
+      "benchmark": "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet",
+      "params": {
+        "backend": "JOLT",
+        "vehicleCount": "10"
+      },
+      "mode": "thrpt",
+      "score": 48130.479195403794,
+      "scoreError": 3587.5245439309283,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet|backend=JOLT,vehicleCount=100",
+      "benchmark": "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet",
+      "params": {
+        "backend": "JOLT",
+        "vehicleCount": "100"
+      },
+      "mode": "thrpt",
+      "score": 2913.6541487981917,
+      "scoreError": 178.7791997781383,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet|backend=ODE4J,vehicleCount=10",
+      "benchmark": "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet",
+      "params": {
+        "backend": "ODE4J",
+        "vehicleCount": "10"
+      },
+      "mode": "thrpt",
+      "score": 88576.23415774372,
+      "scoreError": 34860.851891888866,
+      "unit": "ops/s"
+    },
+    {
+      "key": "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet|backend=ODE4J,vehicleCount=100",
+      "benchmark": "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet",
+      "params": {
+        "backend": "ODE4J",
+        "vehicleCount": "100"
+      },
+      "mode": "thrpt",
+      "score": 4331.273983266774,
+      "scoreError": 133.7644058942809,
+      "unit": "ops/s"
+    }
+  ]
+}

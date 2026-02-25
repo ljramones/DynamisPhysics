@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.2.0 (2026-02-25)
+
+### Added
+- Compound runtime parity across ODE4J and Jolt, including COM-aligned offsets and compound dynamics parity tests.
+- 6DOF spring fidelity improvements with deterministic pre-solve spring control and cross-backend parity coverage.
+- Mechanical constraints realism:
+  - gear ratio coupling
+  - rack-pinion linear/angular coupling
+  - pulley rope-length coupling
+  with deterministic parity tests.
+- MeshForge workflow integration:
+  - PackedMesh extraction helpers (POSITION + UINT16/UINT32 index support)
+  - PackedMesh -> `CollisionShape` builders for triangle-mesh, convex hull, and fitted capsule
+  - Jolt runtime support for convex-hull and triangle-mesh shape creation.
+- Terrain material tag mapping hook via `TerrainMaterialTags`.
+- Heavy mixed-scene snapshot parity test coverage.
+- Benchmark baseline update files:
+  - `bench-baselines/0.2.0.json`
+  - `bench-baselines/raw/0.2.0-jmh.json`
+
+### Changed
+- Extended Jolt parity gate with mesh workflow coverage.
+- Maintained deterministic and heavy-scene snapshot gate compatibility after mesh and constraint fidelity changes.
+
+### Notes
+- Cross-backend snapshot checks remain behavioural parity (not byte-identical between engines).
+- ODE4J and Jolt determinism guarantees remain backend-local in deterministic mode.
+
 ## 0.1.0 (2026-02-25)
 
 ### Added
