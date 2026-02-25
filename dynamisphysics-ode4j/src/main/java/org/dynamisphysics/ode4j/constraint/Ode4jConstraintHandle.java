@@ -9,18 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Ode4jConstraintHandle implements ConstraintHandle {
+    private final int constraintId;
     private final ConstraintDesc desc;
     private final DJoint joint;
     private final List<DJoint> joints;
     private boolean alive = true;
 
-    public Ode4jConstraintHandle(ConstraintDesc desc, DJoint joint) {
+    public Ode4jConstraintHandle(int constraintId, ConstraintDesc desc, DJoint joint) {
+        this.constraintId = constraintId;
         this.desc = desc;
         this.joint = joint;
         this.joints = joint != null ? List.of(joint) : List.of();
     }
 
-    public Ode4jConstraintHandle(ConstraintDesc desc, List<DJoint> joints) {
+    public Ode4jConstraintHandle(int constraintId, ConstraintDesc desc, List<DJoint> joints) {
+        this.constraintId = constraintId;
         this.desc = desc;
         this.joint = joints.isEmpty() ? null : joints.get(0);
         this.joints = List.copyOf(joints);
@@ -29,6 +32,7 @@ public final class Ode4jConstraintHandle implements ConstraintHandle {
     public DJoint primaryJoint() { return joint; }
     public List<DJoint> allJoints() { return joints; }
     public ConstraintDesc desc() { return desc; }
+    public int constraintId() { return constraintId; }
 
     public void kill() {
         alive = false;

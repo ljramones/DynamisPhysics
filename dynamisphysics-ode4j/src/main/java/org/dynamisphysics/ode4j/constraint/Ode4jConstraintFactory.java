@@ -24,42 +24,65 @@ import static org.dynamisphysics.ode4j.world.Ode4jConversions.toOde;
 public final class Ode4jConstraintFactory {
     private Ode4jConstraintFactory() {}
 
-    public static Ode4jConstraintHandle create(ConstraintDesc desc, DWorld world, Ode4jBodyRegistry bodyRegistry) {
+    public static Ode4jConstraintHandle create(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        Ode4jBodyRegistry bodyRegistry
+    ) {
         DBody bodyA = resolveBody(desc.bodyA(), bodyRegistry);
         DBody bodyB = resolveBody(desc.bodyB(), bodyRegistry);
 
         return switch (desc.type()) {
-            case FIXED -> createFixed(desc, world, bodyA, bodyB);
-            case BALL_SOCKET -> createBallSocket(desc, world, bodyA, bodyB);
-            case HINGE -> createHinge(desc, world, bodyA, bodyB);
-            case HINGE2 -> createHinge2(desc, world, bodyA, bodyB);
-            case SLIDER -> createSlider(desc, world, bodyA, bodyB);
-            case CONE_TWIST -> createConeTwist(desc, world, bodyA, bodyB);
-            case SIX_DOF -> createSixDof(desc, world, bodyA, bodyB, false);
-            case SIX_DOF_SPRING -> createSixDof(desc, world, bodyA, bodyB, true);
-            case GEAR -> createGear(desc, world, bodyA, bodyB);
-            case RACK_PINION -> createRackPinion(desc, world, bodyA, bodyB);
-            case PULLEY -> createPulley(desc, world, bodyA, bodyB);
+            case FIXED -> createFixed(constraintId, desc, world, bodyA, bodyB);
+            case BALL_SOCKET -> createBallSocket(constraintId, desc, world, bodyA, bodyB);
+            case HINGE -> createHinge(constraintId, desc, world, bodyA, bodyB);
+            case HINGE2 -> createHinge2(constraintId, desc, world, bodyA, bodyB);
+            case SLIDER -> createSlider(constraintId, desc, world, bodyA, bodyB);
+            case CONE_TWIST -> createConeTwist(constraintId, desc, world, bodyA, bodyB);
+            case SIX_DOF -> createSixDof(constraintId, desc, world, bodyA, bodyB, false);
+            case SIX_DOF_SPRING -> createSixDof(constraintId, desc, world, bodyA, bodyB, true);
+            case GEAR -> createGear(constraintId, desc, world, bodyA, bodyB);
+            case RACK_PINION -> createRackPinion(constraintId, desc, world, bodyA, bodyB);
+            case PULLEY -> createPulley(constraintId, desc, world, bodyA, bodyB);
         };
     }
 
-    private static Ode4jConstraintHandle createFixed(ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB) {
+    private static Ode4jConstraintHandle createFixed(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB
+    ) {
         DFixedJoint j = OdeHelper.createFixedJoint(world);
         j.attach(bodyA, bodyB);
         j.setFixed();
         enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(desc, j);
+        return new Ode4jConstraintHandle(constraintId, desc, j);
     }
 
-    private static Ode4jConstraintHandle createBallSocket(ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB) {
+    private static Ode4jConstraintHandle createBallSocket(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB
+    ) {
         DBallJoint j = OdeHelper.createBallJoint(world);
         j.attach(bodyA, bodyB);
         j.setAnchor(toOde(desc.pivotA()));
         enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(desc, j);
+        return new Ode4jConstraintHandle(constraintId, desc, j);
     }
 
-    private static Ode4jConstraintHandle createHinge(ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB) {
+    private static Ode4jConstraintHandle createHinge(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB
+    ) {
         DHingeJoint j = OdeHelper.createHingeJoint(world);
         j.attach(bodyA, bodyB);
         j.setAnchor(toOde(desc.pivotA()));
@@ -68,10 +91,16 @@ public final class Ode4jConstraintFactory {
         applyHingeMotor(j, desc.motor());
         wakeBodies(bodyA, bodyB);
         enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(desc, j);
+        return new Ode4jConstraintHandle(constraintId, desc, j);
     }
 
-    private static Ode4jConstraintHandle createHinge2(ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB) {
+    private static Ode4jConstraintHandle createHinge2(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB
+    ) {
         DHinge2Joint j = OdeHelper.createHinge2Joint(world);
         j.attach(bodyA, bodyB);
         j.setAnchor(toOde(desc.pivotA()));
@@ -81,10 +110,16 @@ public final class Ode4jConstraintFactory {
         applyHinge2Motor(j, desc.motor());
         wakeBodies(bodyA, bodyB);
         enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(desc, j);
+        return new Ode4jConstraintHandle(constraintId, desc, j);
     }
 
-    private static Ode4jConstraintHandle createSlider(ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB) {
+    private static Ode4jConstraintHandle createSlider(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB
+    ) {
         DSliderJoint j = OdeHelper.createSliderJoint(world);
         j.attach(bodyA, bodyB);
         j.setAxis(toOde(desc.axisA()));
@@ -93,10 +128,16 @@ public final class Ode4jConstraintFactory {
         applySliderMotor(j, desc.motor());
         wakeBodies(bodyA, bodyB);
         enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(desc, j);
+        return new Ode4jConstraintHandle(constraintId, desc, j);
     }
 
-    private static Ode4jConstraintHandle createConeTwist(ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB) {
+    private static Ode4jConstraintHandle createConeTwist(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB
+    ) {
         DAMotorJoint j = OdeHelper.createAMotorJoint(world);
         j.attach(bodyA, bodyB);
         j.setMode(DAMotorJoint.AMotorMode.dAMotorEuler);
@@ -110,11 +151,16 @@ public final class Ode4jConstraintFactory {
         j.setParamLoStop3(-desc.limits().angularUpperLimit());
         j.setParamHiStop3(desc.limits().angularUpperLimit());
         enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(desc, j);
+        return new Ode4jConstraintHandle(constraintId, desc, j);
     }
 
     private static Ode4jConstraintHandle createSixDof(
-        ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB, boolean spring
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB,
+        boolean spring
     ) {
         DAMotorJoint amotor = OdeHelper.createAMotorJoint(world);
         amotor.attach(bodyA, bodyB);
@@ -133,27 +179,45 @@ public final class Ode4jConstraintFactory {
         slider.setParamHiStop(desc.limits().linearUpperLimit());
         enableFeedback(amotor, desc);
         enableFeedback(slider, desc);
-        return new Ode4jConstraintHandle(desc, List.of(amotor, slider));
+        return new Ode4jConstraintHandle(constraintId, desc, List.of(amotor, slider));
     }
 
-    private static Ode4jConstraintHandle createGear(ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB) {
+    private static Ode4jConstraintHandle createGear(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB
+    ) {
         // Placeholder joint for Step 5; true gear torque coupling lands in later tuning.
         DFixedJoint j = OdeHelper.createFixedJoint(world);
         j.attach(bodyA, bodyB);
         j.setFixed();
         enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(desc, j);
+        return new Ode4jConstraintHandle(constraintId, desc, j);
     }
 
-    private static Ode4jConstraintHandle createRackPinion(ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB) {
+    private static Ode4jConstraintHandle createRackPinion(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB
+    ) {
         DSliderJoint j = OdeHelper.createSliderJoint(world);
         j.attach(bodyA, bodyB);
         j.setAxis(toOde(desc.axisA()));
         enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(desc, j);
+        return new Ode4jConstraintHandle(constraintId, desc, j);
     }
 
-    private static Ode4jConstraintHandle createPulley(ConstraintDesc desc, DWorld world, DBody bodyA, DBody bodyB) {
+    private static Ode4jConstraintHandle createPulley(
+        int constraintId,
+        ConstraintDesc desc,
+        DWorld world,
+        DBody bodyA,
+        DBody bodyB
+    ) {
         DSliderJoint j1 = OdeHelper.createSliderJoint(world);
         j1.attach(bodyA, null);
         j1.setAxis(toOde(desc.axisA()));
@@ -167,7 +231,7 @@ public final class Ode4jConstraintFactory {
         j2.setParamHiStop(desc.limits().linearUpperLimit());
         enableFeedback(j1, desc);
         enableFeedback(j2, desc);
-        return new Ode4jConstraintHandle(desc, List.of(j1, j2));
+        return new Ode4jConstraintHandle(constraintId, desc, List.of(j1, j2));
     }
 
     private static DBody resolveBody(RigidBodyHandle h, Ode4jBodyRegistry reg) {

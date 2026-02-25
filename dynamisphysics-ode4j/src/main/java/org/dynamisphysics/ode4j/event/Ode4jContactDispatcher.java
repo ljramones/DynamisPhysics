@@ -40,6 +40,21 @@ public final class Ode4jContactDispatcher {
     }
 
     private void handleNear(Object data, DGeom o1, DGeom o2) {
+        Ode4jBodyHandle h1 = handleFor(o1);
+        Ode4jBodyHandle h2 = handleFor(o2);
+        int bodyId1 = h1 != null ? h1.bodyId() : Integer.MAX_VALUE;
+        int bodyId2 = h2 != null ? h2.bodyId() : Integer.MAX_VALUE;
+        int geomId1 = h1 != null ? h1.geomId() : Integer.MAX_VALUE;
+        int geomId2 = h2 != null ? h2.geomId() : Integer.MAX_VALUE;
+        if (bodyId1 > bodyId2 || (bodyId1 == bodyId2 && geomId1 > geomId2)) {
+            DGeom gtmp = o1;
+            o1 = o2;
+            o2 = gtmp;
+            Ode4jBodyHandle htmp = h1;
+            h1 = h2;
+            h2 = htmp;
+        }
+
         int n = OdeHelper.collide(o1, o2, MAX_CONTACTS, contactBuffer.getGeomBuffer());
         if (n == 0) {
             return;
@@ -49,13 +64,6 @@ public final class Ode4jContactDispatcher {
         DBody bodyB = o2.getBody();
         if (bodyA == null && bodyB == null) {
             return;
-        }
-
-        // TODO Step 9 — replace with stable body ID for snapshot-safe ordering.
-        if (bodyA != null && bodyB != null && System.identityHashCode(bodyA) > System.identityHashCode(bodyB)) {
-            DBody tmp = bodyA;
-            bodyA = bodyB;
-            bodyB = tmp;
         }
 
         List<ContactPoint> points = new ArrayList<>(n);
@@ -97,10 +105,22 @@ public final class Ode4jContactDispatcher {
     }
 
     private static PhysicsMaterial materialFor(DGeom g) {
-        Object data = g.getData();
-        if (data instanceof Ode4jBodyHandle h) {
+        Ode4jBodyHandle h = handleFor(g);
+        if (h != null) {
             return h.config().material();
         }
         return PhysicsMaterial.DEFAULT;
+    }
+
+    private static Ode4jBodyHandle handleFor(DGeom g) {
+        Object data = g.getData();
+        if (data instanceof Ode4jBodyHandle h) {
+            return h;
+        }
+        DBody body = g.getBody();
+        if (body != null && body.getData() instanceof Ode4jBodyHandle h) {
+            return h;
+        }
+        return null;
     }
 }

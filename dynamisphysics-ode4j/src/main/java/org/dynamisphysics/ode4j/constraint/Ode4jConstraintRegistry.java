@@ -14,14 +14,20 @@ import org.ode4j.ode.DWorld;
 import org.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class Ode4jConstraintRegistry {
     private final DWorld world;
     private final Ode4jBodyRegistry bodyRegistry;
     private final Ode4jEventBuffer eventBuffer;
-    private final Map<ConstraintHandle, Ode4jConstraintHandle> handles = new LinkedHashMap<>();
+    private final Map<ConstraintHandle, Ode4jConstraintHandle> handlesByHandle = new LinkedHashMap<>();
+    private final Map<Integer, Ode4jConstraintHandle> handlesById = new LinkedHashMap<>();
+    private final Map<Integer, Ode4jConstraintHandle> lookupById = new HashMap<>();
+    private int nextConstraintId = 1;
 
     public Ode4jConstraintRegistry(DWorld world, Ode4jBodyRegistry bodyRegistry, Ode4jEventBuffer eventBuffer) {
         this.world = world;
@@ -30,20 +36,29 @@ public final class Ode4jConstraintRegistry {
     }
 
     public ConstraintHandle add(ConstraintDesc desc) {
-        Ode4jConstraintHandle h = Ode4jConstraintFactory.create(desc, world, bodyRegistry);
-        handles.put(h, h);
+        return addWithId(desc, nextConstraintId++);
+    }
+
+    public ConstraintHandle addWithId(ConstraintDesc desc, int constraintId) {
+        nextConstraintId = Math.max(nextConstraintId, constraintId + 1);
+        Ode4jConstraintHandle h = Ode4jConstraintFactory.create(constraintId, desc, world, bodyRegistry);
+        handlesByHandle.put(h, h);
+        handlesById.put(h.constraintId(), h);
+        lookupById.put(h.constraintId(), h);
         return h;
     }
 
     public void remove(ConstraintHandle h) {
-        Ode4jConstraintHandle oh = handles.remove(h);
+        Ode4jConstraintHandle oh = handlesByHandle.remove(h);
         if (oh != null) {
+            handlesById.remove(oh.constraintId());
+            lookupById.remove(oh.constraintId());
             oh.kill();
         }
     }
 
     public void setEnabled(ConstraintHandle h, boolean enabled) {
-        Ode4jConstraintHandle oh = handles.get(h);
+        Ode4jConstraintHandle oh = handlesByHandle.get(h);
         if (oh == null) {
             return;
         }
@@ -57,7 +72,7 @@ public final class Ode4jConstraintRegistry {
     }
 
     public void setMotorTarget(ConstraintHandle h, float target) {
-        Ode4jConstraintHandle oh = handles.get(h);
+        Ode4jConstraintHandle oh = handlesByHandle.get(h);
         if (oh == null || !oh.desc().motor().enabled()) {
             return;
         }
@@ -77,7 +92,7 @@ public final class Ode4jConstraintRegistry {
     public void checkBreakForces() {
         var toRemove = new ArrayList<ConstraintHandle>();
 
-        for (Ode4jConstraintHandle oh : handles.values()) {
+        for (Ode4jConstraintHandle oh : handlesByHandle.values()) {
             ConstraintDesc desc = oh.desc();
             if (desc.breakForce() <= 0f && desc.breakTorque() <= 0f) {
                 continue;
@@ -111,7 +126,28 @@ public final class Ode4jConstraintRegistry {
     }
 
     public int constraintCount() {
-        return handles.size();
+        return handlesByHandle.size();
+    }
+
+    public Ode4jConstraintHandle getHandleById(int id) {
+        return lookupById.get(id);
+    }
+
+    public List<Ode4jConstraintHandle> constraintsInIdOrder() {
+        return handlesById.values().stream()
+            .sorted(Comparator.comparingInt(Ode4jConstraintHandle::constraintId))
+            .toList();
+    }
+
+    public void clearAllConstraints() {
+        var snapshot = List.copyOf(handlesByHandle.keySet());
+        for (ConstraintHandle h : snapshot) {
+            remove(h);
+        }
+    }
+
+    public int nextConstraintId() {
+        return nextConstraintId;
     }
 
     private static Vector3f toVec3f(DVector3C v) {
