@@ -3,6 +3,7 @@ package org.dynamisphysics.ode4j.world;
 import org.dynamisphysics.ode4j.body.Ode4jForceAccumulator;
 import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
+import org.dynamisphysics.ode4j.vehicle.Ode4jVehicleSystem;
 import org.ode4j.ode.DHashSpace;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DWorld;
@@ -15,6 +16,7 @@ public final class Ode4jStepLoop {
     private final Ode4jForceAccumulator forceAccumulator;
     private final Ode4jContactDispatcher dispatcher;
     private final Ode4jConstraintRegistry constraintRegistry;
+    private final Ode4jVehicleSystem vehicleSystem;
 
     private int stepCount = 0;
     private float lastStepMs = 0f;
@@ -25,7 +27,8 @@ public final class Ode4jStepLoop {
         DJointGroup contactGroup,
         Ode4jForceAccumulator forceAccumulator,
         Ode4jContactDispatcher dispatcher,
-        Ode4jConstraintRegistry constraintRegistry
+        Ode4jConstraintRegistry constraintRegistry,
+        Ode4jVehicleSystem vehicleSystem
     ) {
         this.world = world;
         this.space = space;
@@ -33,6 +36,7 @@ public final class Ode4jStepLoop {
         this.forceAccumulator = forceAccumulator;
         this.dispatcher = dispatcher;
         this.constraintRegistry = constraintRegistry;
+        this.vehicleSystem = vehicleSystem;
     }
 
     public void step(float deltaSeconds, int subSteps) {
@@ -44,6 +48,7 @@ public final class Ode4jStepLoop {
             OdeHelper.spaceCollide(space, null, dispatcher.callback);
             world.quickStep(dt);
             contactGroup.empty();
+            vehicleSystem.stepAll(dt);
             constraintRegistry.checkBreakForces();
         }
 

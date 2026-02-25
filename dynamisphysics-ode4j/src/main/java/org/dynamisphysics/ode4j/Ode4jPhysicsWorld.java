@@ -30,6 +30,7 @@ import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
 import org.dynamisphysics.ode4j.query.Ode4jRaycastExecutor;
+import org.dynamisphysics.ode4j.vehicle.Ode4jVehicleSystem;
 import org.dynamisphysics.ode4j.world.Ode4jStepLoop;
 import org.ode4j.ode.DHashSpace;
 import org.ode4j.ode.DJointGroup;
@@ -54,6 +55,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     private final Ode4jContactDispatcher dispatcher;
     private final Ode4jStepLoop stepLoop;
     private final Ode4jRaycastExecutor raycastExecutor;
+    private final Ode4jVehicleSystem vehicleSystem;
     private final List<ContactListener> contactListeners = new ArrayList<>();
 
     private boolean paused = false;
@@ -70,7 +72,8 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         Ode4jEventBuffer eventBuffer,
         Ode4jContactDispatcher dispatcher,
         Ode4jStepLoop stepLoop,
-        Ode4jRaycastExecutor raycastExecutor
+        Ode4jRaycastExecutor raycastExecutor,
+        Ode4jVehicleSystem vehicleSystem
     ) {
         this.config = config;
         this.world = world;
@@ -83,6 +86,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         this.dispatcher = dispatcher;
         this.stepLoop = stepLoop;
         this.raycastExecutor = raycastExecutor;
+        this.vehicleSystem = vehicleSystem;
     }
 
     public static Ode4jPhysicsWorld create(PhysicsWorldConfig config) {
@@ -105,12 +109,21 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         var bodyRegistry = new Ode4jBodyRegistry(world, space);
         var constraintRegistry = new Ode4jConstraintRegistry(world, bodyRegistry, eventBuffer);
         var dispatcher = new Ode4jContactDispatcher(world, contactGroup, eventBuffer);
-        var stepLoop = new Ode4jStepLoop(world, space, contactGroup, forceAccumulator, dispatcher, constraintRegistry);
         var raycastExecutor = new Ode4jRaycastExecutor(space);
+        var vehicleSystem = new Ode4jVehicleSystem(bodyRegistry, eventBuffer, raycastExecutor);
+        var stepLoop = new Ode4jStepLoop(
+            world,
+            space,
+            contactGroup,
+            forceAccumulator,
+            dispatcher,
+            constraintRegistry,
+            vehicleSystem
+        );
 
         return new Ode4jPhysicsWorld(config, world, space, contactGroup, bodyRegistry, forceAccumulator,
             constraintRegistry,
-            eventBuffer, dispatcher, stepLoop, raycastExecutor);
+            eventBuffer, dispatcher, stepLoop, raycastExecutor, vehicleSystem);
     }
 
     @Override public void step(float dt) { step(dt, config.maxSubSteps()); }
@@ -165,13 +178,13 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     @Override public void setConstraintEnabled(ConstraintHandle h, boolean e) { constraintRegistry.setEnabled(h, e); }
     @Override public void setMotorTarget(ConstraintHandle h, float t) { constraintRegistry.setMotorTarget(h, t); }
 
-    @Override public VehicleHandle spawnVehicle(VehicleDescriptor d) { throw new UnsupportedOperationException("Step 6"); }
-    @Override public void destroyVehicle(VehicleHandle h) {}
-    @Override public void applyThrottle(VehicleHandle h, float t) {}
-    @Override public void applyBrake(VehicleHandle h, float b) {}
-    @Override public void applySteering(VehicleHandle h, float s) {}
-    @Override public void applyHandbrake(VehicleHandle h, boolean e) {}
-    @Override public VehicleState getVehicleState(VehicleHandle h) { return VehicleState.ZERO; }
+    @Override public VehicleHandle spawnVehicle(VehicleDescriptor d) { return vehicleSystem.spawn(d); }
+    @Override public void destroyVehicle(VehicleHandle h) { vehicleSystem.destroy(h); }
+    @Override public void applyThrottle(VehicleHandle h, float t) { vehicleSystem.applyThrottle(h, t); }
+    @Override public void applyBrake(VehicleHandle h, float b) { vehicleSystem.applyBrake(h, b); }
+    @Override public void applySteering(VehicleHandle h, float s) { vehicleSystem.applySteering(h, s); }
+    @Override public void applyHandbrake(VehicleHandle h, boolean e) { vehicleSystem.applyHandbrake(h, e); }
+    @Override public VehicleState getVehicleState(VehicleHandle h) { return vehicleSystem.getVehicleState(h); }
 
     @Override public CharacterHandle spawnCharacter(CharacterDescriptor d) { throw new UnsupportedOperationException("Step 7"); }
     @Override public void destroyCharacter(CharacterHandle h) {}
