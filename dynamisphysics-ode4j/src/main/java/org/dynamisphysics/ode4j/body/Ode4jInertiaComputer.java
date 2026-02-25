@@ -3,6 +3,7 @@ package org.dynamisphysics.ode4j.body;
 import org.dynamiscollision.shapes.CollisionShape;
 import org.dynamiscollision.shapes.BoxCollisionShape;
 import org.dynamiscollision.shapes.CapsuleCollisionShape;
+import org.dynamiscollision.shapes.CompoundCollisionShape;
 import org.dynamiscollision.shapes.CylinderCollisionShape;
 import org.dynamiscollision.shapes.SphereCollisionShape;
 import org.vectrix.affine.Transformf;
@@ -40,7 +41,12 @@ public final class Ode4jInertiaComputer {
                 CylinderCollisionShape c = (CylinderCollisionShape) shape;
                 InertiaTensorf.cylinder(mass, c.radius(), c.height(), diag);
             }
-            case CONVEX_HULL, TRIANGLE_MESH, COMPOUND -> {
+            case COMPOUND -> {
+                DMass compoundMass = Ode4jCompoundMassProperties.compute((CompoundCollisionShape) shape, mass);
+                body.setMass(compoundMass);
+                return;
+            }
+            case CONVEX_HULL, TRIANGLE_MESH -> {
                 float radius = halfDiagonal(shape);
                 InertiaTensorf.sphere(mass, radius, diag);
             }
@@ -56,7 +62,7 @@ public final class Ode4jInertiaComputer {
         body.setMass(m);
     }
 
-    private static float halfDiagonal(CollisionShape shape) {
+    static float halfDiagonal(CollisionShape shape) {
         var aabb = shape.getWorldBounds(new Transformf().identity());
         double x = aabb.sizeX();
         double y = aabb.sizeY();

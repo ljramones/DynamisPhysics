@@ -5,6 +5,7 @@ import org.dynamiscollision.shapes.CompoundCollisionShape;
 import org.dynamiscollision.shapes.ConvexHullCollisionShape;
 import org.dynamiscollision.shapes.HeightfieldCollisionShape;
 import org.dynamiscollision.shapes.TriangleMeshCollisionShape;
+import org.dynamisphysics.ode4j.body.Ode4jCompoundMassProperties;
 import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSimpleSpace;
@@ -12,6 +13,7 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.OdeHelper;
 import org.vectrix.affine.Transformf;
+import org.vectrix.core.Vector3f;
 
 import static org.dynamisphysics.ode4j.world.Ode4jConversions.toOde;
 
@@ -69,17 +71,28 @@ public final class Ode4jShapeAdapter {
             case COMPOUND -> {
                 CompoundCollisionShape c = (CompoundCollisionShape) shape;
                 DSimpleSpace sub = OdeHelper.createSimpleSpace(space);
-                for (int i = 0; i < c.childCount(); i++) {
-                    DGeom child = toGeom(c.children().get(i), sub);
-                    applyLocalTransform(child, c.localTransforms().get(i));
-                }
+                toCompoundChildGeoms(c, sub, new Vector3f());
                 yield sub;
             }
         };
     }
 
-    private static void applyLocalTransform(DGeom geom, Transformf t) {
-        geom.setPosition(toOde(t.translation));
+    public static java.util.List<DGeom> toCompoundChildGeoms(
+        CompoundCollisionShape compound,
+        DSpace space,
+        Vector3f compoundCom
+    ) {
+        java.util.ArrayList<DGeom> out = new java.util.ArrayList<>(compound.childCount());
+        for (int i = 0; i < compound.childCount(); i++) {
+            DGeom child = toGeom(compound.children().get(i), space);
+            applyLocalTransform(child, compound.localTransforms().get(i), compoundCom);
+            out.add(child);
+        }
+        return out;
+    }
+
+    private static void applyLocalTransform(DGeom geom, Transformf t, Vector3f compoundCom) {
+        geom.setPosition(toOde(new Vector3f(t.translation).sub(compoundCom)));
         geom.setQuaternion(toOde(t.rotation));
     }
 }
