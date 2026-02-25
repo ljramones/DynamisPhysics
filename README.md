@@ -85,3 +85,36 @@ Included JMH suites:
 Convenience script:
 
 - `./scripts/bench.sh` (`./scripts/bench.sh smoke` for quick run)
+
+## Benchmark Regression Guard
+
+Capture a baseline (stores raw JMH JSON and normalized summary):
+
+```bash
+./scripts/bench-baseline-capture.sh 0.1.0
+```
+
+Run regression check against a baseline:
+
+```bash
+./scripts/bench-regression.sh bench-baselines/0.1.0.json
+```
+
+Current defaults:
+
+- Throughput guard: fail if `current/baseline < 0.80`
+- Time-per-op guard: fail if `current/baseline > 1.25`
+- Jolt threads are pinned to `1` by default (`JOLT_THREADS` override is available)
+
+Tuning knobs:
+
+- `JOLT_THREADS` (default `1`)
+- `BENCH_OPS_RATIO_MIN` (default `0.80`)
+- `BENCH_TIME_RATIO_MAX` (default `1.25`)
+- `BENCH_WI`, `BENCH_I`, `BENCH_FORKS`, `BENCH_THREADS`
+
+Notes:
+
+- `BENCH_FORKS` defaults to `0` for local/sandbox compatibility.
+- Use `BENCH_FORKS=1` on dedicated benchmark runners.
+- CI wrapper: `./scripts/bench-regression-ci.sh` (defaults: `BENCH_FORKS=1`, `BENCH_WI=2`, `BENCH_I=3`).

@@ -1,0 +1,676 @@
+[
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "ODE4J",
+            "raysPerOp" : "100"
+        },
+        "primaryMetric" : {
+            "score" : 528.4828688717555,
+            "scoreError" : 13.327841530960814,
+            "scoreConfidence" : [
+                515.1550273407947,
+                541.8107104027163
+            ],
+            "scorePercentiles" : {
+                "0.0" : 523.4845697439417,
+                "50.0" : 530.705454960065,
+                "90.0" : 531.1452847507092,
+                "95.0" : 531.1452847507092,
+                "99.0" : 531.1452847507092,
+                "99.9" : 531.1452847507092,
+                "99.99" : 531.1452847507092,
+                "99.999" : 531.1452847507092,
+                "99.9999" : 531.1452847507092,
+                "100.0" : 531.1452847507092
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    531.1452847507092,
+                    530.705454960065,
+                    523.4845697439417,
+                    530.8742348022025,
+                    526.204800101859
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "ODE4J",
+            "raysPerOp" : "1000"
+        },
+        "primaryMetric" : {
+            "score" : 53.71632301478489,
+            "scoreError" : 2.7096192991612695,
+            "scoreConfidence" : [
+                51.00670371562362,
+                56.42594231394616
+            ],
+            "scorePercentiles" : {
+                "0.0" : 52.99777024345991,
+                "50.0" : 53.843134757276516,
+                "90.0" : 54.56983060917366,
+                "95.0" : 54.56983060917366,
+                "99.0" : 54.56983060917366,
+                "99.9" : 54.56983060917366,
+                "99.99" : 54.56983060917366,
+                "99.999" : 54.56983060917366,
+                "99.9999" : 54.56983060917366,
+                "100.0" : 54.56983060917366
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    54.56983060917366,
+                    53.843134757276516,
+                    54.1708985793408,
+                    52.99777024345991,
+                    52.99998088467356
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "JOLT",
+            "raysPerOp" : "100"
+        },
+        "primaryMetric" : {
+            "score" : 25917.97528443514,
+            "scoreError" : 622.7610808208824,
+            "scoreConfidence" : [
+                25295.214203614258,
+                26540.73636525602
+            ],
+            "scorePercentiles" : {
+                "0.0" : 25647.558924502984,
+                "50.0" : 25988.17175027526,
+                "90.0" : 26034.65959301609,
+                "95.0" : 26034.65959301609,
+                "99.0" : 26034.65959301609,
+                "99.9" : 26034.65959301609,
+                "99.99" : 26034.65959301609,
+                "99.999" : 26034.65959301609,
+                "99.9999" : 26034.65959301609,
+                "100.0" : 26034.65959301609
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    25647.558924502984,
+                    25988.17175027526,
+                    26028.548231096876,
+                    26034.65959301609,
+                    25890.937923284488
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.RaycastBenchmark.raycastClosestBatch",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "JOLT",
+            "raysPerOp" : "1000"
+        },
+        "primaryMetric" : {
+            "score" : 2524.7422048116123,
+            "scoreError" : 62.885072590584976,
+            "scoreConfidence" : [
+                2461.8571322210273,
+                2587.6272774021973
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2496.369304353415,
+                "50.0" : 2530.701932123347,
+                "90.0" : 2535.9213028706076,
+                "95.0" : 2535.9213028706076,
+                "99.0" : 2535.9213028706076,
+                "99.9" : 2535.9213028706076,
+                "99.99" : 2535.9213028706076,
+                "99.999" : 2535.9213028706076,
+                "99.9999" : 2535.9213028706076,
+                "100.0" : 2535.9213028706076
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    2496.369304353415,
+                    2525.988946684248,
+                    2530.701932123347,
+                    2535.9213028706076,
+                    2534.729538026447
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "ODE4J",
+            "bodyCount" : "1000"
+        },
+        "primaryMetric" : {
+            "score" : 1753.165656140176,
+            "scoreError" : 265.2357822312381,
+            "scoreConfidence" : [
+                1487.929873908938,
+                2018.401438371414
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1679.1442636774243,
+                "50.0" : 1747.7151896509415,
+                "90.0" : 1863.0110891795632,
+                "95.0" : 1863.0110891795632,
+                "99.0" : 1863.0110891795632,
+                "99.9" : 1863.0110891795632,
+                "99.99" : 1863.0110891795632,
+                "99.999" : 1863.0110891795632,
+                "99.9999" : 1863.0110891795632,
+                "100.0" : 1863.0110891795632
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1716.2747458101835,
+                    1679.1442636774243,
+                    1759.682992382767,
+                    1747.7151896509415,
+                    1863.0110891795632
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "ODE4J",
+            "bodyCount" : "10000"
+        },
+        "primaryMetric" : {
+            "score" : 84.93175715494326,
+            "scoreError" : 5.443690938304651,
+            "scoreConfidence" : [
+                79.4880662166386,
+                90.37544809324791
+            ],
+            "scorePercentiles" : {
+                "0.0" : 83.22573706934578,
+                "50.0" : 85.4060790376675,
+                "90.0" : 86.7347709270733,
+                "95.0" : 86.7347709270733,
+                "99.0" : 86.7347709270733,
+                "99.9" : 86.7347709270733,
+                "99.99" : 86.7347709270733,
+                "99.999" : 86.7347709270733,
+                "99.9999" : 86.7347709270733,
+                "100.0" : 86.7347709270733
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    86.7347709270733,
+                    85.4060790376675,
+                    85.49602589220501,
+                    83.79617284842473,
+                    83.22573706934578
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "JOLT",
+            "bodyCount" : "1000"
+        },
+        "primaryMetric" : {
+            "score" : 827189.0195477117,
+            "scoreError" : 68674.61587884297,
+            "scoreConfidence" : [
+                758514.4036688687,
+                895863.6354265547
+            ],
+            "scorePercentiles" : {
+                "0.0" : 808274.0906751311,
+                "50.0" : 828661.0372292035,
+                "90.0" : 848073.0194619563,
+                "95.0" : 848073.0194619563,
+                "99.0" : 848073.0194619563,
+                "99.9" : 848073.0194619563,
+                "99.99" : 848073.0194619563,
+                "99.999" : 848073.0194619563,
+                "99.9999" : 848073.0194619563,
+                "100.0" : 848073.0194619563
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    808274.0906751311,
+                    810134.1092422275,
+                    828661.0372292035,
+                    840802.8411300402,
+                    848073.0194619563
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.RigidBodyStepBenchmark.stepWorld",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "JOLT",
+            "bodyCount" : "10000"
+        },
+        "primaryMetric" : {
+            "score" : 834240.5815234494,
+            "scoreError" : 11873.5603024214,
+            "scoreConfidence" : [
+                822367.021221028,
+                846114.1418258708
+            ],
+            "scorePercentiles" : {
+                "0.0" : 831202.4112682586,
+                "50.0" : 832842.797597201,
+                "90.0" : 838174.7356232428,
+                "95.0" : 838174.7356232428,
+                "99.0" : 838174.7356232428,
+                "99.9" : 838174.7356232428,
+                "99.99" : 838174.7356232428,
+                "99.999" : 838174.7356232428,
+                "99.9999" : 838174.7356232428,
+                "100.0" : 838174.7356232428
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    836862.6394530816,
+                    832842.797597201,
+                    831202.4112682586,
+                    832120.3236754636,
+                    838174.7356232428
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "ODE4J",
+            "vehicleCount" : "10"
+        },
+        "primaryMetric" : {
+            "score" : 100878.85527736468,
+            "scoreError" : 25806.740124742857,
+            "scoreConfidence" : [
+                75072.11515262182,
+                126685.59540210754
+            ],
+            "scorePercentiles" : {
+                "0.0" : 92820.4672051473,
+                "50.0" : 100904.66329449232,
+                "90.0" : 111013.83495803198,
+                "95.0" : 111013.83495803198,
+                "99.0" : 111013.83495803198,
+                "99.9" : 111013.83495803198,
+                "99.99" : 111013.83495803198,
+                "99.999" : 111013.83495803198,
+                "99.9999" : 111013.83495803198,
+                "100.0" : 111013.83495803198
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    97614.37276623494,
+                    92820.4672051473,
+                    100904.66329449232,
+                    102040.93816291685,
+                    111013.83495803198
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "ODE4J",
+            "vehicleCount" : "100"
+        },
+        "primaryMetric" : {
+            "score" : 4887.182343669751,
+            "scoreError" : 336.2198653188024,
+            "scoreConfidence" : [
+                4550.962478350949,
+                5223.402208988554
+            ],
+            "scorePercentiles" : {
+                "0.0" : 4744.1562390696145,
+                "50.0" : 4931.760683961842,
+                "90.0" : 4955.050700342438,
+                "95.0" : 4955.050700342438,
+                "99.0" : 4955.050700342438,
+                "99.9" : 4955.050700342438,
+                "99.99" : 4955.050700342438,
+                "99.999" : 4955.050700342438,
+                "99.9999" : 4955.050700342438,
+                "100.0" : 4955.050700342438
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    4744.1562390696145,
+                    4863.881637199257,
+                    4931.760683961842,
+                    4941.062457775606,
+                    4955.050700342438
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "JOLT",
+            "vehicleCount" : "10"
+        },
+        "primaryMetric" : {
+            "score" : 53443.682831117454,
+            "scoreError" : 1851.3160771452572,
+            "scoreConfidence" : [
+                51592.366753972194,
+                55294.998908262714
+            ],
+            "scorePercentiles" : {
+                "0.0" : 52636.17204866095,
+                "50.0" : 53708.94193955359,
+                "90.0" : 53757.05649047879,
+                "95.0" : 53757.05649047879,
+                "99.0" : 53757.05649047879,
+                "99.9" : 53757.05649047879,
+                "99.99" : 53757.05649047879,
+                "99.999" : 53757.05649047879,
+                "99.9999" : 53757.05649047879,
+                "100.0" : 53757.05649047879
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    53757.05649047879,
+                    53360.929752880154,
+                    53755.3139240138,
+                    53708.94193955359,
+                    52636.17204866095
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.dynamisphysics.bench.VehicleBenchmark.stepVehicleFleet",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 0,
+        "jvm" : "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-Djolt.threads=1"
+        ],
+        "jdkVersion" : "25.0.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.1+8-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "backend" : "JOLT",
+            "vehicleCount" : "100"
+        },
+        "primaryMetric" : {
+            "score" : 3192.0068024496127,
+            "scoreError" : 270.44966914831093,
+            "scoreConfidence" : [
+                2921.5571333013017,
+                3462.4564715979236
+            ],
+            "scorePercentiles" : {
+                "0.0" : 3099.869519269228,
+                "50.0" : 3210.5225292757546,
+                "90.0" : 3256.493511739642,
+                "95.0" : 3256.493511739642,
+                "99.0" : 3256.493511739642,
+                "99.9" : 3256.493511739642,
+                "99.99" : 3256.493511739642,
+                "99.999" : 3256.493511739642,
+                "99.9999" : 3256.493511739642,
+                "100.0" : 3256.493511739642
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    3254.4508473219475,
+                    3210.5225292757546,
+                    3138.697604641492,
+                    3099.869519269228,
+                    3256.493511739642
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+

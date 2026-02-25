@@ -1,0 +1,67 @@
+name: Bench Regression
+
+on:
+  workflow_dispatch:
+    inputs:
+      baseline:
+        description: "Baseline JSON path"
+        required: false
+        default: "bench-baselines/0.1.0.json"
+      quick:
+        description: "Use CI quick mode"
+        required: false
+        default: "true"
+  schedule:
+    - cron: "0 7 * * *"
+
+jobs:
+  bench-regression:
+    name: Bench Regression (JDK 25)
+    runs-on: macos-14
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Verify baseline exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASELINE="${{ github.event.inputs.baseline || 'bench-baselines/0.1.0.json' }}"
+          test -f "$BASELINE"
+
+      - name: Run bench regression (quick)
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.quick == 'true' || github.event.inputs.quick == '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASELINE="${{ github.event.inputs.baseline || 'bench-baselines/0.1.0.json' }}"
+          ./scripts/bench-regression-ci.sh "$BASELINE" | tee bench-baselines/tmp/regression-report.txt
+
+      - name: Run bench regression (full)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.quick == 'false' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASELINE="${{ github.event.inputs.baseline || 'bench-baselines/0.1.0.json' }}"
+          BENCH_FORKS=1 BENCH_WI=3 BENCH_I=5 BENCH_THREADS=1 JOLT_THREADS=1 \
+            ./scripts/bench-regression.sh "$BASELINE" | tee bench-baselines/tmp/regression-report.txt
+
+      - name: Upload benchmark artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-regression-${{ github.run_id }}
+          path: |
+            bench-baselines/tmp/current-jmh.json
+            bench-baselines/tmp/current.json
+            bench-baselines/tmp/regression-report.txt
+          if-no-files-found: warn
