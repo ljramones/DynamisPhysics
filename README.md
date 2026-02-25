@@ -18,7 +18,7 @@ ODE4J and Jolt Physics implementations behind a clean API.
 ## Requirements
 
 - Java 25+
-- Vectrix 1.10.12
+- Vectrix 1.10.13+
 
 ## Architecture Deviations
 
