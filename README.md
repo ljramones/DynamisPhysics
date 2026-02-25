@@ -191,6 +191,25 @@ CI wrapper:
 ./scripts/bench-regression-ci.sh
 ```
 
+## Profile Compare (DEFAULT vs PERF)
+
+Run a quick side-by-side profile comparison for Jolt benchmark cases:
+
+```bash
+./scripts/bench-profile-compare.sh
+```
+
+Run a longer comparison:
+
+```bash
+FULL=1 ./scripts/bench-profile-compare.sh
+```
+
+Notes:
+
+- Defaults to `-Djolt.threads=1` for reproducibility (`JOLT_THREADS` can override).
+- Uses `-Dphysics.profile=DEFAULT` and `-Dphysics.profile=PERF` in separate runs.
+
 ## Development Workflow
 
 Use branch-first flow for all non-trivial work:
