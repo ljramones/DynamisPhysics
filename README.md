@@ -54,6 +54,39 @@ Recommended defaults:
 - Validation/parity runs: deterministic mode
 - Performance profiling/stress: explicit `-Djolt.threads=8` (or machine-tuned)
 
+## Tuning Profiles (0.3.0)
+
+`PhysicsWorldConfig` now supports profile-driven tuning via `PhysicsTuning`.
+
+Available profiles:
+
+- `DETERMINISTIC`
+- `DEFAULT`
+- `PERF`
+
+Override precedence (highest wins):
+
+1. System properties
+2. Explicit `PhysicsWorldConfig.tuning` fields
+3. Profile defaults
+4. Backend fallback defaults
+
+Example precedence:
+
+- profile = `PERF`
+- config `threads = 4`
+- runtime `-Djolt.threads=8`
+- resolved result: `threads = 8`
+
+System property overrides:
+
+- `physics.profile=DETERMINISTIC|DEFAULT|PERF`
+- `physics.deterministic=true|false`
+- `physics.solver.iterations=<int>`
+- `jolt.threads=<int>`
+- `jolt.alloc=safe|malloc|impl`
+- `jolt.alloc.mb=<int>`
+
 ## Quick Start (Validation First)
 
 Run these in order from repo root.
