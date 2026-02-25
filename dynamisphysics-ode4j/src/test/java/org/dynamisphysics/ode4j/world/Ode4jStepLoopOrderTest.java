@@ -4,6 +4,7 @@ import org.dynamisphysics.ode4j.body.Ode4jBodyRegistry;
 import org.dynamisphysics.ode4j.body.Ode4jForceAccumulator;
 import org.dynamisphysics.ode4j.character.Ode4jCharacterController;
 import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
+import org.dynamisphysics.ode4j.constraint.Ode4jMechanicalConstraintController;
 import org.dynamisphysics.ode4j.constraint.Ode4jSpringController;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
@@ -52,6 +53,8 @@ class Ode4jStepLoopOrderTest {
         Ode4jBodyRegistry bodyRegistry = new Ode4jBodyRegistry(world, space);
         Ode4jConstraintRegistry constraintRegistry = new Ode4jConstraintRegistry(world, bodyRegistry, eventBuffer);
         Ode4jSpringController springController = new Ode4jSpringController(constraintRegistry);
+        Ode4jMechanicalConstraintController mechanicalController =
+            new Ode4jMechanicalConstraintController(constraintRegistry, bodyRegistry);
         Ode4jRaycastExecutor raycastExecutor = new Ode4jRaycastExecutor(space);
         Ode4jVehicleSystem vehicleSystem = new Ode4jVehicleSystem(bodyRegistry, eventBuffer, raycastExecutor);
         Ode4jCharacterController characterController = new Ode4jCharacterController(bodyRegistry, raycastExecutor, eventBuffer);
@@ -67,6 +70,7 @@ class Ode4jStepLoopOrderTest {
             dispatcher,
             constraintRegistry,
             springController,
+            mechanicalController,
             vehicleSystem,
             characterController,
             ragdollSystem,
@@ -82,6 +86,7 @@ class Ode4jStepLoopOrderTest {
             "springController.step",
             "spaceCollide",
             "quickStep",
+            "mechanicalController.postSolve",
             "constraintRegistry.checkBreakForces",
             "contactGroup.empty",
             "ragdollSystem.stepAll"

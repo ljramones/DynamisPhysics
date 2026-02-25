@@ -29,6 +29,10 @@ public final class JoltConstraintHandle implements ConstraintHandle {
         return constraint;
     }
 
+    public boolean hasNativeConstraint() {
+        return constraint != null;
+    }
+
     public void kill() {
         this.alive = false;
     }

@@ -7,6 +7,7 @@ import org.dynamisphysics.jolt.body.JoltBodyHandle;
 import org.dynamisphysics.jolt.body.JoltBodyRegistry;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class JoltConstraintRegistry {
@@ -27,7 +28,9 @@ public final class JoltConstraintRegistry {
             throw new IllegalArgumentException("Both constraint bodies must be live Jolt bodies");
         }
         JoltConstraintHandle handle = JoltConstraintFactory.create(nextConstraintId++, desc, physicsSystem, a, b);
-        physicsSystem.addConstraint(handle.constraint());
+        if (handle.hasNativeConstraint()) {
+            physicsSystem.addConstraint(handle.constraint());
+        }
         byHandle.put(handle, handle);
         return handle;
     }
@@ -37,13 +40,15 @@ public final class JoltConstraintRegistry {
         if (jh == null) {
             return;
         }
-        physicsSystem.removeConstraint(jh.constraint());
+        if (jh.hasNativeConstraint()) {
+            physicsSystem.removeConstraint(jh.constraint());
+        }
         jh.kill();
     }
 
     public void setEnabled(ConstraintHandle handle, boolean enabled) {
         JoltConstraintHandle jh = byHandle.get(handle);
-        if (jh != null) {
+        if (jh != null && jh.hasNativeConstraint()) {
             jh.constraint().setEnabled(enabled);
         }
     }
@@ -59,5 +64,11 @@ public final class JoltConstraintRegistry {
         for (ConstraintHandle handle : java.util.List.copyOf(byHandle.keySet())) {
             remove(handle);
         }
+    }
+
+    public List<JoltConstraintHandle> constraintsInIdOrder() {
+        return byHandle.values().stream()
+            .sorted(java.util.Comparator.comparingInt(JoltConstraintHandle::constraintId))
+            .toList();
     }
 }

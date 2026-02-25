@@ -34,6 +34,7 @@ final class JoltConstraintFactory {
     ) {
         Constraint constraint = switch (desc.type()) {
             case SIX_DOF_SPRING -> createSixDofSpring(desc, physicsSystem, bodyA, bodyB);
+            case GEAR, RACK_PINION, PULLEY -> null;
             default -> throw new UnsupportedOperationException("Jolt constraint type not yet supported: " + desc.type());
         };
         return new JoltConstraintHandle(constraintId, desc, constraint);
