@@ -105,6 +105,10 @@ public final class Ode4jBodyRegistry {
         return handles.size();
     }
 
+    public Ode4jBodyHandle getHandle(RigidBodyHandle h) {
+        return handles.get(h);
+    }
+
     private static BodyState readState(Ode4jBodyHandle h) {
         if (h.body() == null) {
             DVector3C pos = h.geom().getPosition();

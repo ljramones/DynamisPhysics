@@ -26,6 +26,7 @@ import org.dynamisphysics.api.world.VehicleState;
 import org.dynamisphysics.ode4j.body.Ode4jBodyHandle;
 import org.dynamisphysics.ode4j.body.Ode4jBodyRegistry;
 import org.dynamisphysics.ode4j.body.Ode4jForceAccumulator;
+import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
 import org.dynamisphysics.ode4j.query.Ode4jRaycastExecutor;
@@ -48,6 +49,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     private final DJointGroup contactGroup;
     private final Ode4jBodyRegistry bodyRegistry;
     private final Ode4jForceAccumulator forceAccumulator;
+    private final Ode4jConstraintRegistry constraintRegistry;
     private final Ode4jEventBuffer eventBuffer;
     private final Ode4jContactDispatcher dispatcher;
     private final Ode4jStepLoop stepLoop;
@@ -64,6 +66,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         DJointGroup contactGroup,
         Ode4jBodyRegistry bodyRegistry,
         Ode4jForceAccumulator forceAccumulator,
+        Ode4jConstraintRegistry constraintRegistry,
         Ode4jEventBuffer eventBuffer,
         Ode4jContactDispatcher dispatcher,
         Ode4jStepLoop stepLoop,
@@ -75,6 +78,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         this.contactGroup = contactGroup;
         this.bodyRegistry = bodyRegistry;
         this.forceAccumulator = forceAccumulator;
+        this.constraintRegistry = constraintRegistry;
         this.eventBuffer = eventBuffer;
         this.dispatcher = dispatcher;
         this.stepLoop = stepLoop;
@@ -99,11 +103,13 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         var eventBuffer = new Ode4jEventBuffer();
         var forceAccumulator = new Ode4jForceAccumulator();
         var bodyRegistry = new Ode4jBodyRegistry(world, space);
+        var constraintRegistry = new Ode4jConstraintRegistry(world, bodyRegistry, eventBuffer);
         var dispatcher = new Ode4jContactDispatcher(world, contactGroup, eventBuffer);
-        var stepLoop = new Ode4jStepLoop(world, space, contactGroup, forceAccumulator, dispatcher);
+        var stepLoop = new Ode4jStepLoop(world, space, contactGroup, forceAccumulator, dispatcher, constraintRegistry);
         var raycastExecutor = new Ode4jRaycastExecutor(space);
 
         return new Ode4jPhysicsWorld(config, world, space, contactGroup, bodyRegistry, forceAccumulator,
+            constraintRegistry,
             eventBuffer, dispatcher, stepLoop, raycastExecutor);
     }
 
@@ -154,10 +160,10 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         bodyRegistry.setState(h, new BodyState(pos, ori, new Vector3f(), new Vector3f(), false));
     }
 
-    @Override public ConstraintHandle addConstraint(ConstraintDesc d) { throw new UnsupportedOperationException("Step 5"); }
-    @Override public void removeConstraint(ConstraintHandle h) {}
-    @Override public void setConstraintEnabled(ConstraintHandle h, boolean e) {}
-    @Override public void setMotorTarget(ConstraintHandle h, float t) {}
+    @Override public ConstraintHandle addConstraint(ConstraintDesc d) { return constraintRegistry.add(d); }
+    @Override public void removeConstraint(ConstraintHandle h) { constraintRegistry.remove(h); }
+    @Override public void setConstraintEnabled(ConstraintHandle h, boolean e) { constraintRegistry.setEnabled(h, e); }
+    @Override public void setMotorTarget(ConstraintHandle h, float t) { constraintRegistry.setMotorTarget(h, t); }
 
     @Override public VehicleHandle spawnVehicle(VehicleDescriptor d) { throw new UnsupportedOperationException("Step 6"); }
     @Override public void destroyVehicle(VehicleHandle h) {}
@@ -214,7 +220,18 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     public PhysicsStats getStats() {
         int total = bodyRegistry.bodyCount();
         int active = countActive();
-        return new PhysicsStats(stepLoop.lastStepMs(), total, active, total - active, 0, 0, 0f, 0f, 0f, 0f);
+        return new PhysicsStats(
+            stepLoop.lastStepMs(),
+            total,
+            active,
+            total - active,
+            constraintRegistry.constraintCount(),
+            0,
+            0f,
+            0f,
+            0f,
+            0f
+        );
     }
 
     private int countActive() {
