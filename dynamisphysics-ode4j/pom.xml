@@ -31,10 +31,6 @@
       <artifactId>collision_detection</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.meshforge</groupId>
-      <artifactId>meshforge</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.dynamisgpu</groupId>
       <artifactId>dynamis-gpu-api</artifactId>
     </dependency>

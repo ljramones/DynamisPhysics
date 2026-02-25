@@ -44,12 +44,14 @@ public final class Ode4jShapeAdapter {
                 ConvexHullCollisionShape h = (ConvexHullCollisionShape) shape;
                 DTriMeshData triMeshData = OdeHelper.createTriMeshData();
                 triMeshData.build(h.vertices(), h.indices());
+                triMeshData.preprocess();
                 yield OdeHelper.createTriMesh(space, triMeshData);
             }
             case TRIANGLE_MESH -> {
                 TriangleMeshCollisionShape m = (TriangleMeshCollisionShape) shape;
                 DTriMeshData triMeshData = OdeHelper.createTriMeshData();
                 triMeshData.build(m.vertices(), m.indices());
+                triMeshData.preprocess();
                 yield OdeHelper.createTriMesh(space, triMeshData);
             }
             case HEIGHTFIELD -> {

@@ -2,19 +2,12 @@ package org.dynamisphysics.ode4j;
 
 import org.dynamisphysics.api.PhysicsWorldFactory;
 import org.dynamisphysics.api.body.BodyMode;
+import org.dynamisphysics.api.body.BodyState;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.config.PhysicsBackend;
 import org.dynamisphysics.api.config.PhysicsWorldConfig;
 import org.dynamisphysics.api.world.PhysicsWorld;
 import org.dynamiscollision.shapes.CollisionShape;
-import org.dynamisphysics.ode4j.shape.BvhTriangleMeshBuilder;
-import org.dynamisphysics.ode4j.shape.ConvexHullShapeBuilder;
-import org.dynamisphysics.ode4j.shape.RagdollCapsuleFitter;
-import org.meshforge.core.attr.AttributeKey;
-import org.meshforge.core.attr.AttributeSemantic;
-import org.meshforge.core.attr.VertexFormat;
-import org.meshforge.pack.buffer.PackedMesh;
-import org.meshforge.pack.layout.VertexLayout;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,14 +17,12 @@ import org.vectrix.core.Matrix4f;
 import org.vectrix.core.Quaternionf;
 import org.vectrix.core.Vector3f;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.dynamisphysics.test.assertions.PhysicsAssertions.assertAlive;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.dynamisphysics.test.assertions.PhysicsAssertions.assertYAbove;
+import static org.dynamisphysics.test.assertions.PhysicsAssertions.assertYBelow;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class Ode4jShapeAdapterTest {
     private PhysicsWorld world;
@@ -106,7 +97,7 @@ class Ode4jShapeAdapterTest {
             5f, 0f, 5f,
             -5f, 0f, 5f
         };
-        int[] idx = {0, 1, 2, 0, 2, 3};
+        int[] idx = {0, 2, 1, 0, 3, 2};
         var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.triangleMesh(verts, idx), 0f)
             .mode(BodyMode.STATIC)
             .build());
@@ -142,89 +133,60 @@ class Ode4jShapeAdapterTest {
     }
 
     @Test
-    void convexHullBuilderFromPackedMeshProducesShape() {
-        PackedMesh mesh = packedQuad();
-        var shape = ConvexHullShapeBuilder.fromPackedMesh(mesh);
-        assertEquals(12, shape.vertices().length);
-        assertTrue(shape.indices().length >= 3);
+    void triangleMeshGroundStopsDynamicSphere() {
+        float[] verts = {
+            -10f, 0f, -10f,
+            10f, 0f, -10f,
+            10f, 0f, 10f,
+            -10f, 0f, 10f
+        };
+        int[] idx = {0, 2, 1, 0, 3, 2};
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.triangleMesh(verts, idx), 0f)
+            .mode(BodyMode.STATIC)
+            .build());
+        var sphere = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f)
+            .worldTransform(new Matrix4f().translation(0f, 3f, 0f))
+            .build());
+        for (int i = 0; i < 120; i++) {
+            world.step(1f / 60f, 1);
+        }
+        BodyState state = world.getBodyState(sphere);
+        assertYAbove(state, -0.5f);
+        assertYBelow(state, 2f);
     }
 
     @Test
-    void bvhBuilderFromPackedMeshProducesShape() {
-        PackedMesh mesh = packedQuad();
-        var shape = BvhTriangleMeshBuilder.fromPackedMesh(mesh);
-        assertEquals(12, shape.vertices().length);
-        assertEquals(6, shape.indices().length);
+    void heightfieldGroundStopsDynamicSphere() {
+        int w = 8;
+        int d = 8;
+        float[] heights = new float[w * d];
+        world.spawnRigidBody(RigidBodyConfig.builder(
+                CollisionShape.heightfield(heights, w, d, 16f, 16f, 2f), 0f)
+            .mode(BodyMode.STATIC)
+            .build());
+        var sphere = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f)
+            .worldTransform(new Matrix4f().translation(4f, 5f, 4f))
+            .build());
+        for (int i = 0; i < 120; i++) {
+            world.step(1f / 60f, 1);
+        }
+        BodyState state = world.getBodyState(sphere);
+        assertYAbove(state, -0.5f);
+        assertYBelow(state, 4f);
     }
 
     @Test
-    void ragdollCapsuleFitterProducesReasonableDimensions() {
-        PackedMesh mesh = packedPrism();
-        var capsule = RagdollCapsuleFitter.fitToBoneYAxis(mesh);
-        assertTrue(capsule.radius() > 0f);
-        assertTrue(capsule.height() >= capsule.radius() * 2f);
-    }
-
-    private static PackedMesh packedQuad() {
-        float[] pos = {
-            -1f, 0f, -1f,
-            1f, 0f, -1f,
-            1f, 0f, 1f,
-            -1f, 0f, 1f
+    void convexHullBodyStepsWithoutThrow() {
+        float[] verts = {
+            0f, 1f, 0f,
+            -1f, -1f, 1f,
+            1f, -1f, 1f,
+            0f, -1f, -1f
         };
-        int[] idx = {0, 1, 2, 0, 2, 3};
-        return packedMesh(pos, idx);
-    }
-
-    private static PackedMesh packedPrism() {
-        float[] pos = {
-            -0.04f, 0.15f, -0.04f,
-            0.04f, 0.15f, -0.04f,
-            0.04f, 0.15f, 0.04f,
-            -0.04f, 0.15f, 0.04f,
-            -0.04f, -0.15f, -0.04f,
-            0.04f, -0.15f, -0.04f,
-            0.04f, -0.15f, 0.04f,
-            -0.04f, -0.15f, 0.04f
-        };
-        int[] idx = {
-            0, 1, 2, 0, 2, 3,
-            4, 6, 5, 4, 7, 6,
-            0, 4, 5, 0, 5, 1,
-            1, 5, 6, 1, 6, 2,
-            2, 6, 7, 2, 7, 3,
-            3, 7, 4, 3, 4, 0
-        };
-        return packedMesh(pos, idx);
-    }
-
-    private static PackedMesh packedMesh(float[] positions, int[] indices) {
-        ByteBuffer vb = ByteBuffer.allocateDirect(positions.length * Float.BYTES).order(ByteOrder.nativeOrder());
-        for (float v : positions) {
-            vb.putFloat(v);
-        }
-        vb.flip();
-
-        ByteBuffer ib = ByteBuffer.allocateDirect(indices.length * Integer.BYTES).order(ByteOrder.nativeOrder());
-        for (int idx : indices) {
-            ib.putInt(idx);
-        }
-        ib.flip();
-
-        AttributeKey positionKey = new AttributeKey(AttributeSemantic.POSITION, 0);
-        var entries = new LinkedHashMap<AttributeKey, VertexLayout.Entry>();
-        entries.put(positionKey, new VertexLayout.Entry(positionKey, VertexFormat.F32x3, 0));
-        VertexLayout layout = new VertexLayout(3 * Float.BYTES, entries);
-
-        PackedMesh.IndexBufferView indexView = new PackedMesh.IndexBufferView(
-            PackedMesh.IndexType.UINT32, ib, indices.length
-        );
-
-        return new PackedMesh(
-            layout,
-            vb,
-            indexView,
-            List.of(new PackedMesh.SubmeshRange(0, indices.length, null))
-        );
+        int[] idx = {0, 1, 2, 0, 2, 3, 0, 3, 1, 1, 3, 2};
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.convexHull(verts, idx), 1f)
+            .worldTransform(new Matrix4f().translation(0f, 5f, 0f))
+            .build());
+        assertDoesNotThrow(() -> world.step(1f / 60f, 1));
     }
 }
