@@ -29,6 +29,9 @@ import java.util.Map;
 import static org.dynamisphysics.ode4j.world.Ode4jConversions.toOde;
 
 public final class Ode4jRagdollSystem {
+    // TODO Step 8 mesh auto-fit follow-up: when MeshForgeExtractors is introduced
+    // for ragdoll capsule fitting, branch index reads by IndexBufferView.IndexType
+    // (SHORT vs INT) so packed meshes decode deterministically and correctly.
     private static final class Instance {
         private final Ode4jRagdollHandle handle;
         private final RagdollDescriptor descriptor;
