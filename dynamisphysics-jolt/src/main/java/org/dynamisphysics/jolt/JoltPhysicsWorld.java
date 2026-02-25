@@ -157,6 +157,14 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         TempAllocator allocator = resolved.allocatorMode() == AllocatorMode.IMPL
             ? new TempAllocatorImpl(resolved.allocatorBytes())
             : new TempAllocatorMalloc();
+        if (resolved.profile() == org.dynamisphysics.api.config.PhysicsTuningProfile.PERF
+            && resolved.allocatorMode() == AllocatorMode.IMPL
+            && resolved.allocatorBytes() < (16 * 1024 * 1024)) {
+            System.err.println(
+                "DYNAMIS-TUNING PERF with IMPL allocator below 16MB may increase native allocation pressure: "
+                    + (resolved.allocatorBytes() / (1024 * 1024)) + "MB"
+            );
+        }
         int threadCount = resolved.threads();
         JobSystemThreadPool jobs = new JobSystemThreadPool(Jolt.cMaxPhysicsJobs, Jolt.cMaxPhysicsBarriers, threadCount);
         trace("jobs.threads=" + threadCount

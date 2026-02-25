@@ -5,7 +5,7 @@ import java.util.Locale;
 public final class PhysicsTuningResolver {
     private static final int MAX_THREADS = 64;
     private static final int MAX_SOLVER_ITERATIONS = 64;
-    private static final int MAX_ALLOCATOR_MB = 1024;
+    private static final int MAX_ALLOCATOR_MB = 512;
 
     private PhysicsTuningResolver() {
     }
@@ -72,9 +72,18 @@ public final class PhysicsTuningResolver {
 
         int threads;
         if (backend == PhysicsBackend.JOLT) {
-            int resolved = values.threads == null
-                ? (values.deterministic ? 1 : Runtime.getRuntime().availableProcessors())
-                : values.threads;
+            int resolved;
+            if (values.threads == null) {
+                if (values.deterministic) {
+                    resolved = 1;
+                } else if (profile == PhysicsTuningProfile.PERF) {
+                    resolved = Math.min(Runtime.getRuntime().availableProcessors(), 8);
+                } else {
+                    resolved = Runtime.getRuntime().availableProcessors();
+                }
+            } else {
+                resolved = values.threads;
+            }
             threads = clamp(resolved, 1, MAX_THREADS, "jolt.threads");
         } else {
             threads = 1;
