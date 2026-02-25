@@ -1,34 +1,84 @@
 # DynamisPhysics
 
-Dual-backend physics simulation library for the Dynamis engine ecosystem.
-ODE4J and Jolt Physics implementations behind a clean API.
+DynamisPhysics is a dual-backend physics platform for the Dynamis ecosystem.
+It exposes one API and supports two implementations:
 
-**Status:** 🚧 0.1.0 in development
+- **ODE4J backend**: deterministic-first, pure Java
+- **Jolt backend**: native JNI backend with deterministic mode and multithreaded performance mode
 
-## Modules
+The project is built around parity testing: core gameplay-facing behavior is validated across backends so engine code can switch providers without rewriting systems.
+
+## Current State
+
+- **Version line**: `0.2.1-SNAPSHOT` (post-`0.2.0` stabilization)
+- **Java target**: Java 25
+- **Core status**:
+  - Rigid bodies, constraints, characters, vehicles, ragdolls
+  - Snapshot/restore support
+  - Determinism soak gates
+  - Cross-backend parity suite
+  - Benchmark regression guard + CI workflow
+
+## Why DynamisPhysics
+
+- One API for simulation features used by gameplay and animation systems
+- Deterministic mode for replay/verification workflows
+- Native-performance path (Jolt) without giving up backend parity discipline
+- Strong local validation workflow (gates + stress + benchmarks)
+
+## Module Layout
 
 | Module | Purpose |
-|--------|---------|
-| `dynamisphysics-api` | Zero-dependency interfaces and value types. All consumers depend only on this. |
-| `dynamisphysics-ode4j` | ODE4J backend implementation. Pure Java, JPMS-clean. |
-| `dynamisphysics-jolt` | Jolt Physics backend implementation. High-performance, multi-threaded. |
-| `dynamisphysics-test` | MockPhysicsWorld, PhysicsSimHarness, PhysicsAssertions. |
-| `dynamisphysics-bench` | JMH benchmarks — ODE4J vs Jolt head-to-head comparison. |
+|---|---|
+| `dynamisphysics-api` | Public interfaces, descriptors, events, world contracts |
+| `dynamisphysics-ode4j` | ODE4J backend implementation |
+| `dynamisphysics-jolt` | Jolt backend implementation |
+| `dynamisphysics-test` | Shared test harness, scene builders, assertions |
+| `dynamisphysics-bench` | JMH benchmark suite |
 
 ## Requirements
 
 - Java 25+
-- Vectrix 1.10.13+
+- Maven 3.9+
+- macOS arm64 for Jolt native flow used in this repository
+- Vectrix `1.10.13+`
 
-## Architecture Deviations
+## Determinism and Threading Model
 
-Backend-specific, documented architecture deviations are tracked in
-`ARCHITECTURE_NOTES.md`. Treat that file as authoritative when behavior differs
-from the baseline architecture text.
+- **ODE4J deterministic mode**: enabled by config; tuned for repeatable simulation runs.
+- **Jolt deterministic mode**: runs with single-thread job system by default.
+- **Jolt performance mode**: set `-Djolt.threads=<N>` to enable multithread stepping.
 
-## Gate Commands
+Recommended defaults:
 
-### ODE4J gate (default CI-safe)
+- Validation/parity runs: deterministic mode
+- Performance profiling/stress: explicit `-Djolt.threads=8` (or machine-tuned)
+
+## Quick Start (Validation First)
+
+Run these in order from repo root.
+
+### 1) ODE4J gate
+
+```bash
+./scripts/gate-ode4j.sh
+```
+
+### 2) Jolt parity gate
+
+```bash
+./scripts/gate-jolt.sh
+```
+
+### 3) Jolt stress gate (optional, high signal)
+
+```bash
+./scripts/gate-jolt-stress.sh
+```
+
+## Canonical Gate Commands
+
+### ODE4J gate (CI-safe default)
 
 ```bash
 mvn test -pl dynamisphysics-api,dynamisphysics-test,dynamisphysics-ode4j
@@ -38,11 +88,11 @@ mvn test -pl dynamisphysics-api,dynamisphysics-test,dynamisphysics-ode4j
 
 ```bash
 mvn -pl dynamisphysics-jolt -am test -Pjolt-tests \
-  -Dtest="JoltNativeSmokeTest,JoltStepSmokeTest,BackendParityTest,JoltCharacterParityTest,JoltVehicleParityTest,JoltRagdollParityTest,SnapshotParityTest" \
+  -Dtest="JoltNativeSmokeTest,JoltStepSmokeTest,BackendParityTest,JoltCharacterParityTest,JoltVehicleParityTest,JoltRagdollParityTest,SnapshotParityTest,HeavySnapshotParityTest,CompoundDynamicsParityTest,SixDofSpringParityTest,MechanicalConstraintsParityTest,MeshCollisionParityTest" \
   -Dsurefire.failIfNoSpecifiedTests=false
 ```
 
-### Jolt stress gate (optional)
+### Jolt stress gate
 
 ```bash
 mvn -pl dynamisphysics-jolt -am test -Pjolt-tests -Djolt.threads=8 \
@@ -56,84 +106,86 @@ mvn -pl dynamisphysics-jolt -am test -Pjolt-tests -Djolt.threads=8 \
 ./scripts/gate-long-determinism.sh
 ```
 
-Optional full-scene repro probe (includes vehicle/ragdoll and ODE4J-only chain constraints):
+## Benchmarks
 
-```bash
-mvn -pl dynamisphysics-jolt -am test -Pjolt-tests \
-  -Dphysics.long.determinism=true \
-  -Dphysics.long.determinism.full=true \
-  -Dphysics.long.determinism.allowFailure=true \
-  -Dtest=LongDeterminismSoakTest \
-  -Dsurefire.failIfNoSpecifiedTests=false
-```
-
-Note: full-scene mode is a known failing repro on ODE4J; default soak remains the stable Block 1 gate.
-
-Convenience scripts:
-
-- `./scripts/gate-ode4j.sh`
-- `./scripts/gate-jolt.sh`
-- `./scripts/gate-jolt-stress.sh`
-
-## Benchmarks (Step 13)
-
-Build benchmark fat jar:
+### Build benchmark jar
 
 ```bash
 mvn -pl dynamisphysics-bench -am package -DskipTests
 ```
 
-Smoke run:
+### Smoke run
 
 ```bash
 java -jar dynamisphysics-bench/target/dynamisphysics-bench.jar -wi 1 -i 1 -f 0 -t 1
 ```
 
-Full run:
+### Full run
 
 ```bash
 java -jar dynamisphysics-bench/target/dynamisphysics-bench.jar -wi 3 -i 5 -f 1
 ```
 
-Included JMH suites:
+Bench suites include:
 
-- `RigidBodyStepBenchmark` (`bodyCount`: 1000, 10000, 50000)
-- `RaycastBenchmark` (`raysPerOp`: 1, 100, 1000)
-- `VehicleBenchmark` (`vehicleCount`: 10, 100)
-
-Convenience script:
-
-- `./scripts/bench.sh` (`./scripts/bench.sh smoke` for quick run)
+- `RigidBodyStepBenchmark`
+- `RaycastBenchmark`
+- `VehicleBenchmark`
 
 ## Benchmark Regression Guard
 
-Capture a baseline (stores raw JMH JSON and normalized summary):
+### Capture baseline
 
 ```bash
-./scripts/bench-baseline-capture.sh 0.1.0
+./scripts/bench-baseline-capture.sh 0.2.0
 ```
 
-Run regression check against a baseline:
+### Run regression against baseline
 
 ```bash
 ./scripts/bench-regression.sh bench-baselines/0.2.0.json
 ```
 
-Current defaults:
+Defaults:
 
-- Throughput guard: fail if `current/baseline < 0.80`
-- Time-per-op guard: fail if `current/baseline > 1.25`
-- Jolt threads are pinned to `1` by default (`JOLT_THREADS` override is available)
+- Throughput fail threshold: `current/baseline < 0.80`
+- Time/op fail threshold: `current/baseline > 1.25`
+- Jolt threads pinned to `1` unless overridden
 
-Tuning knobs:
+CI wrapper:
 
-- `JOLT_THREADS` (default `1`)
-- `BENCH_OPS_RATIO_MIN` (default `0.80`)
-- `BENCH_TIME_RATIO_MAX` (default `1.25`)
-- `BENCH_WI`, `BENCH_I`, `BENCH_FORKS`, `BENCH_THREADS`
+```bash
+./scripts/bench-regression-ci.sh
+```
 
-Notes:
+## Development Workflow
 
-- `BENCH_FORKS` defaults to `0` for local/sandbox compatibility.
-- Use `BENCH_FORKS=1` on dedicated benchmark runners.
-- CI wrapper: `./scripts/bench-regression-ci.sh` (defaults: `BENCH_FORKS=1`, `BENCH_WI=2`, `BENCH_I=3`).
+Use branch-first flow for all non-trivial work:
+
+1. `feature/<topic>` branch
+2. split commits into `feat` and `test/parity`
+3. run gates locally
+4. merge to `main`
+
+For architecture caveats and intentional deviations, see:
+
+- `ARCHITECTURE_NOTES.md`
+- `CHANGELOG.md`
+
+## Troubleshooting
+
+### Jolt native warnings on Java 25
+
+Use native-access flag where relevant:
+
+- `--enable-native-access=ALL-UNNAMED`
+
+This is already wired into Jolt/bench scripts used in this repo.
+
+### Toolchain/JDK mismatch
+
+This repository is Java 25. Ensure Maven and runtime use JDK 25 for normal gates.
+
+### Native crashes
+
+Jolt CI workflows upload crash artifacts (`hs_err_pid*.log`, macOS diagnostics) for postmortem analysis.
