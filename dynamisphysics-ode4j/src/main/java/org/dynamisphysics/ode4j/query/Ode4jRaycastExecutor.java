@@ -48,6 +48,9 @@ public final class Ode4jRaycastExecutor {
             if (data2 instanceof Ode4jBodyHandle h) {
                 mat = h.config().material();
                 handle = h;
+            } else if (data2 instanceof Ode4jBodyHandle.GeomRef ref) {
+                mat = ref.handle().config().material();
+                handle = ref.handle();
             }
             RaycastResult result = new RaycastResult(
                 handle,
@@ -90,6 +93,9 @@ public final class Ode4jRaycastExecutor {
             if (data2 instanceof Ode4jBodyHandle h) {
                 mat = h.config().material();
                 handle = h;
+            } else if (data2 instanceof Ode4jBodyHandle.GeomRef ref) {
+                mat = ref.handle().config().material();
+                handle = ref.handle();
             }
             hits.add(new RaycastResult(
                 handle,

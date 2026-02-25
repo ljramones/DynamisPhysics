@@ -4,6 +4,7 @@ import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.BodyState;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.body.RigidBodyHandle;
+import org.dynamiscollision.shapes.CompoundCollisionShape;
 import org.dynamisphysics.ode4j.shape.Ode4jShapeAdapter;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3C;
@@ -41,18 +42,39 @@ public final class Ode4jBodyRegistry {
     }
 
     public Ode4jBodyHandle spawn(RigidBodyConfig config) {
-        return spawnWithIds(config, nextBodyId++, nextGeomId++);
+        int geomCount = geomCountFor(config);
+        int bodyId = nextBodyId++;
+        int geomId = nextGeomId;
+        nextGeomId += geomCount;
+        return spawnWithIds(config, bodyId, geomId);
     }
 
     public Ode4jBodyHandle spawnWithIds(RigidBodyConfig config, int bodyId, int geomId) {
         nextBodyId = Math.max(nextBodyId, bodyId + 1);
-        nextGeomId = Math.max(nextGeomId, geomId + 1);
-        DGeom geom = Ode4jShapeAdapter.toGeom(config.shape(), space);
+        int geomCount = geomCountFor(config);
+        nextGeomId = Math.max(nextGeomId, geomId + geomCount);
+        DGeom geom;
+        List<DGeom> ownedGeoms;
         DBody body = null;
+        boolean compoundDynamic = config.shape().shapeType() == org.dynamiscollision.shapes.ShapeType.COMPOUND
+            && (config.mode() == BodyMode.DYNAMIC || config.mode() == BodyMode.KINEMATIC);
 
         if (config.mode() == BodyMode.DYNAMIC || config.mode() == BodyMode.KINEMATIC) {
             body = OdeHelper.createBody(world);
             Ode4jInertiaComputer.applyInertia(body, config.shape(), config.mass());
+        }
+
+        if (compoundDynamic) {
+            CompoundCollisionShape compound = (CompoundCollisionShape) config.shape();
+            Vector3f com = Ode4jCompoundMassProperties.computeCenterOfMass(compound);
+            ownedGeoms = Ode4jShapeAdapter.toCompoundChildGeoms(compound, space, com);
+            if (ownedGeoms.isEmpty()) {
+                throw new IllegalArgumentException("CompoundCollisionShape has no children");
+            }
+            geom = ownedGeoms.get(0);
+        } else {
+            geom = Ode4jShapeAdapter.toGeom(config.shape(), space);
+            ownedGeoms = List.of(geom);
         }
 
         applyWorldTransform(body, geom, config.worldTransform());
@@ -62,9 +84,13 @@ public final class Ode4jBodyRegistry {
         }
 
         if (config.mode() == BodyMode.STATIC || body == null) {
-            geom.setBody(null);
+            for (DGeom g : ownedGeoms) {
+                g.setBody(null);
+            }
         } else {
-            geom.setBody(body);
+            for (DGeom g : ownedGeoms) {
+                g.setBody(body);
+            }
         }
 
         if (body != null && config.linearVelocity() != null) {
@@ -77,7 +103,7 @@ public final class Ode4jBodyRegistry {
             body.setGravityMode(config.gravityScale() > 0f);
         }
 
-        var handle = new Ode4jBodyHandle(bodyId, geomId, body, geom, config);
+        var handle = new Ode4jBodyHandle(bodyId, geomId, body, geom, ownedGeoms, config);
         handlesByHandle.put(handle, handle);
         handlesById.put(handle.bodyId(), handle);
         lookupById.put(handle.bodyId(), handle);
@@ -147,6 +173,13 @@ public final class Ode4jBodyRegistry {
 
     public int nextGeomId() {
         return nextGeomId;
+    }
+
+    private static int geomCountFor(RigidBodyConfig config) {
+        if (config.shape().shapeType() == org.dynamiscollision.shapes.ShapeType.COMPOUND) {
+            return Math.max(((CompoundCollisionShape) config.shape()).childCount(), 1);
+        }
+        return 1;
     }
 
     private static BodyState readState(Ode4jBodyHandle h) {
