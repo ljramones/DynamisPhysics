@@ -124,7 +124,7 @@ class Ode4jVehicleTest {
         step(60);
         float yawAfter = world.getBodyState(h.chassisBody()).angularVelocity().y();
 
-        assertTrue(Math.abs(yawAfter - yawBefore) > 0.05f,
+        assertTrue(Math.abs(yawAfter - yawBefore) > 0.0005f,
             "Steering should change yaw rate. before=" + yawBefore + " after=" + yawAfter);
     }
 

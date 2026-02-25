@@ -51,10 +51,10 @@ public final class Ode4jStepLoop {
         world.getGravity(gravity);
 
         for (int i = 0; i < subSteps; i++) {
+            // Apply queued external forces/impulses for this substep.
             forceAccumulator.flush();
-            OdeHelper.spaceCollide(space, null, dispatcher.callback);
-            world.quickStep(dt);
-            contactGroup.empty();
+
+            // Vehicle and character controllers must contribute forces before integration.
             vehicleSystem.stepAll(dt);
             characterController.stepAll(
                 dt,
@@ -64,7 +64,13 @@ public final class Ode4jStepLoop {
                     (float) gravity.get2()
                 )
             );
+
+            // Build contact joints and solve in the same integration step.
+            OdeHelper.spaceCollide(space, null, dispatcher.callback);
+            world.quickStep(dt);
+
             constraintRegistry.checkBreakForces();
+            contactGroup.empty();
         }
 
         lastStepMs = (System.nanoTime() - start) / 1_000_000f;
