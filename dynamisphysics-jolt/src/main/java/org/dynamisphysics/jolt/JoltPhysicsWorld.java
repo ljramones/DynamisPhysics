@@ -7,7 +7,6 @@ import com.github.stephengold.joltjni.NarrowPhaseQuery;
 import com.github.stephengold.joltjni.ObjectLayerPairFilterTable;
 import com.github.stephengold.joltjni.ObjectVsBroadPhaseLayerFilterTable;
 import com.github.stephengold.joltjni.PhysicsSystem;
-import com.github.stephengold.joltjni.PhysicsSettings;
 import com.github.stephengold.joltjni.TempAllocator;
 import com.github.stephengold.joltjni.TempAllocatorImpl;
 import com.github.stephengold.joltjni.TempAllocatorMalloc;
@@ -154,11 +153,6 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
             pair
         );
         physics.setGravity(config.gravity().x(), config.gravity().y(), config.gravity().z());
-        PhysicsSettings settings = new PhysicsSettings(physics.getPhysicsSettings());
-        settings.setDeterministicSimulation(resolved.deterministic());
-        settings.setNumPositionSteps(resolved.solverIterations());
-        settings.setNumVelocitySteps(Math.max(1, resolved.solverIterations() / 2));
-        physics.setPhysicsSettings(settings);
 
         TempAllocator allocator = resolved.allocatorMode() == AllocatorMode.IMPL
             ? new TempAllocatorImpl(resolved.allocatorBytes())
