@@ -4,10 +4,10 @@ import com.github.stephengold.joltjni.BodyCreationSettings;
 import com.github.stephengold.joltjni.BodyInterface;
 import com.github.stephengold.joltjni.Quat;
 import com.github.stephengold.joltjni.RVec3;
-import com.github.stephengold.joltjni.Shape;
 import com.github.stephengold.joltjni.Vec3;
 import com.github.stephengold.joltjni.enumerate.EActivation;
 import com.github.stephengold.joltjni.enumerate.EMotionType;
+import com.github.stephengold.joltjni.readonly.ConstShape;
 import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.BodyState;
 import org.dynamisphysics.api.body.RigidBodyConfig;
@@ -50,7 +50,7 @@ public final class JoltBodyRegistry {
 
     public JoltBodyHandle spawnWithId(RigidBodyConfig config, int stableBodyId) {
         nextBodyId = Math.max(nextBodyId, stableBodyId + 1);
-        Shape shape = JoltShapeAdapter.toJoltShape(config.shape());
+        ConstShape shape = JoltShapeAdapter.toJoltShape(config.shape());
 
         BodyCreationSettings settings = new BodyCreationSettings(
             shape,

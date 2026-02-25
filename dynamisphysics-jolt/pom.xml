@@ -31,6 +31,10 @@
       <artifactId>collision_detection</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.meshforge</groupId>
+      <artifactId>meshforge</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.github.stephengold</groupId>
       <artifactId>${jolt.artifactId}</artifactId>
       <version>${jolt.version}</version>
