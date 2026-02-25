@@ -8,6 +8,7 @@ if [[ ! -f "$BASELINE" ]]; then
 fi
 
 JOLT_THREADS="${JOLT_THREADS:-1}"
+NATIVE_ACCESS="${NATIVE_ACCESS:---enable-native-access=ALL-UNNAMED}"
 OPS_RATIO_MIN="${BENCH_OPS_RATIO_MIN:-0.80}"
 TIME_RATIO_MAX="${BENCH_TIME_RATIO_MAX:-1.25}"
 
@@ -24,7 +25,7 @@ mkdir -p bench-baselines/tmp
 
 mvn -pl dynamisphysics-bench -am package -DskipTests
 
-java -Djolt.threads="${JOLT_THREADS}" -jar dynamisphysics-bench/target/dynamisphysics-bench.jar \
+java ${NATIVE_ACCESS} -Djolt.threads="${JOLT_THREADS}" -jar dynamisphysics-bench/target/dynamisphysics-bench.jar \
   -wi "${WI}" -i "${ITERS}" -f "${FORKS}" -t "${THREADS}" \
   -rf json -rff "${RAW}" \
   "${PATTERN}" \
