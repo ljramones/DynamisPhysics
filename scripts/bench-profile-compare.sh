@@ -4,6 +4,7 @@ set -euo pipefail
 FULL="${FULL:-0}"
 JOLT_THREADS="${JOLT_THREADS:-1}"
 NATIVE_ACCESS="${NATIVE_ACCESS:---enable-native-access=ALL-UNNAMED}"
+BENCH_SUITE="${BENCH_SUITE:-core}"
 
 if [[ "${FULL}" == "1" ]]; then
   WI="${BENCH_WI:-3}"
@@ -16,7 +17,17 @@ else
 fi
 
 THREADS="${BENCH_THREADS:-1}"
-PATTERN='org.dynamisphysics.bench.(RigidBodyStepBenchmark|RaycastBenchmark|VehicleBenchmark).*'
+CORE_PATTERN='org.dynamisphysics.bench.(RigidBodyStepBenchmark|RaycastBenchmark|VehicleBenchmark).*'
+EXPANDED_PATTERN='org.dynamisphysics.bench.(ConstraintSolveBenchmark|CompoundPileBenchmark|MixedSceneBenchmark).*'
+case "${BENCH_SUITE}" in
+  core) PATTERN="${CORE_PATTERN}" ;;
+  expanded) PATTERN="${EXPANDED_PATTERN}" ;;
+  all) PATTERN="${CORE_PATTERN}|${EXPANDED_PATTERN}" ;;
+  *)
+    echo "Unknown BENCH_SUITE=${BENCH_SUITE}. Use core|expanded|all."
+    exit 2
+    ;;
+esac
 TMP_DIR="bench-baselines/tmp/profile-compare"
 RAW_DEFAULT="${TMP_DIR}/default-jmh.json"
 RAW_PERF="${TMP_DIR}/perf-jmh.json"
@@ -25,7 +36,7 @@ SUM_PERF="${TMP_DIR}/perf.json"
 
 mkdir -p "${TMP_DIR}"
 
-echo "[bench-profile-compare] mode=$([[ "${FULL}" == "1" ]] && echo full || echo quick) wi=${WI} i=${ITERS} forks=${FORKS} threads=${THREADS} jolt.threads=${JOLT_THREADS}"
+echo "[bench-profile-compare] suite=${BENCH_SUITE} mode=$([[ "${FULL}" == "1" ]] && echo full || echo quick) wi=${WI} i=${ITERS} forks=${FORKS} threads=${THREADS} jolt.threads=${JOLT_THREADS}"
 
 mvn -pl dynamisphysics-bench -am package -DskipTests
 
@@ -36,7 +47,13 @@ java ${NATIVE_ACCESS} -Dphysics.profile=DEFAULT -Djolt.threads="${JOLT_THREADS}"
   "${PATTERN}" \
   -p bodyCount=1000,10000 \
   -p raysPerOp=100,1000 \
-  -p vehicleCount=10,100
+  -p vehicleCount=10,100 \
+  -p constraintCount=100,1000 \
+  -p constraintTypeMix=SPRING_ONLY,MIXED \
+  -p compoundCount=100,1000 \
+  -p childrenPerCompound=2,4 \
+  -p ragdollCount=1,10 \
+  -p constraintModules=10,100
 
 python3 scripts/bench_extract_baseline.py \
   --input "${RAW_DEFAULT}" \
@@ -53,7 +70,13 @@ java ${NATIVE_ACCESS} -Dphysics.profile=PERF -Djolt.threads="${JOLT_THREADS}" \
   "${PATTERN}" \
   -p bodyCount=1000,10000 \
   -p raysPerOp=100,1000 \
-  -p vehicleCount=10,100
+  -p vehicleCount=10,100 \
+  -p constraintCount=100,1000 \
+  -p constraintTypeMix=SPRING_ONLY,MIXED \
+  -p compoundCount=100,1000 \
+  -p childrenPerCompound=2,4 \
+  -p ragdollCount=1,10 \
+  -p constraintModules=10,100
 
 python3 scripts/bench_extract_baseline.py \
   --input "${RAW_PERF}" \

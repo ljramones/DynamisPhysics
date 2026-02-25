@@ -150,20 +150,27 @@ mvn -pl dynamisphysics-bench -am package -DskipTests
 ### Smoke run
 
 ```bash
-java -jar dynamisphysics-bench/target/dynamisphysics-bench.jar -wi 1 -i 1 -f 0 -t 1
+./scripts/bench.sh smoke
 ```
 
 ### Full run
 
 ```bash
-java -jar dynamisphysics-bench/target/dynamisphysics-bench.jar -wi 3 -i 5 -f 1
+./scripts/bench.sh
 ```
 
-Bench suites include:
+Bench suites:
 
-- `RigidBodyStepBenchmark`
-- `RaycastBenchmark`
-- `VehicleBenchmark`
+- `core` (default): `RigidBodyStepBenchmark`, `RaycastBenchmark`, `VehicleBenchmark`
+- `expanded`: `ConstraintSolveBenchmark`, `CompoundPileBenchmark`, `MixedSceneBenchmark`
+- `all`: core + expanded
+
+Examples:
+
+```bash
+BENCH_SUITE=expanded ./scripts/bench.sh smoke
+BENCH_SUITE=all ./scripts/bench.sh
+```
 
 ## Benchmark Regression Guard
 
@@ -209,6 +216,7 @@ Notes:
 
 - Defaults to `-Djolt.threads=1` for reproducibility (`JOLT_THREADS` can override).
 - Uses `-Dphysics.profile=DEFAULT` and `-Dphysics.profile=PERF` in separate runs.
+- Supports `BENCH_SUITE=core|expanded|all` (default `core`).
 
 ## Development Workflow
 
