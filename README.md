@@ -133,6 +133,17 @@ mvn -pl dynamisphysics-jolt -am test -Pjolt-tests -Djolt.threads=8 \
   -Dtest=JoltParallelStabilityTest -Dsurefire.failIfNoSpecifiedTests=false
 ```
 
+### Integration parity gate (manual/nightly)
+
+```bash
+./scripts/gate-parity-integration.sh
+```
+
+Notes:
+
+- Gated by `-Dphysics.parity.integration=true` to keep default parity runs fast.
+- Runs mixed-scene, terrain-mesh, and snapshot-mid-motion integration parity tests.
+
 ### Long determinism soak (manual/nightly)
 
 ```bash
