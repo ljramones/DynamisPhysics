@@ -19,3 +19,9 @@ ODE4J and Jolt Physics implementations behind a clean API.
 
 - Java 25+
 - Vectrix 1.10.12
+
+## Architecture Deviations
+
+Backend-specific, documented architecture deviations are tracked in
+`ARCHITECTURE_NOTES.md`. Treat that file as authoritative when behavior differs
+from the baseline architecture text.
