@@ -26,11 +26,13 @@ import static org.dynamisphysics.ode4j.world.Ode4jConversions.toVec3f;
 public final class Ode4jContactDispatcher {
     private static final int MAX_CONTACTS = 8;
     private record PendingPair(DGeom o1, DGeom o2, int bodyIdA, int bodyIdB, int geomIdA, int geomIdB) {}
+    public record DebugContact(Vector3f position, Vector3f normal, float depth) {}
 
     private final DWorld world;
     private final DJointGroup contactGroup;
     private final Ode4jEventBuffer eventBuffer;
     private final List<PendingPair> pendingPairs = new ArrayList<>(256);
+    private final List<DebugContact> debugContacts = new ArrayList<>(256);
     private final DContactBuffer contactBuffer = new DContactBuffer(MAX_CONTACTS);
 
     public final DGeom.DNearCallback callback;
@@ -94,6 +96,12 @@ public final class Ode4jContactDispatcher {
         pendingPairs.clear();
     }
 
+    public List<DebugContact> drainDebugContacts() {
+        var copy = List.copyOf(debugContacts);
+        debugContacts.clear();
+        return copy;
+    }
+
     private void emitContacts(DGeom o1, DGeom o2, DBody bodyA, DBody bodyB, int n) {
         List<ContactPoint> points = new ArrayList<>(n);
         float totalImpulse = 0f;
@@ -109,6 +117,7 @@ public final class Ode4jContactDispatcher {
             DJoint cj = OdeHelper.createContactJoint(world, contactGroup, contact);
             cj.attach(bodyA, bodyB);
             points.add(new ContactPoint(toVec3f(cg.pos), toVec3f(cg.normal), (float) cg.depth, 0f));
+            debugContacts.add(new DebugContact(toVec3f(cg.pos), toVec3f(cg.normal), (float) cg.depth));
         }
 
         RigidBodyHandle hA = bodyA != null ? (RigidBodyHandle) bodyA.getData() : null;

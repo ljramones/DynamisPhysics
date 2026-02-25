@@ -340,4 +340,16 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
             .filter(h -> h.mode() == BodyMode.DYNAMIC && (h.body() == null || !h.body().isEnabled()))
             .count();
     }
+
+    public List<Ode4jBodyHandle> debugBodiesInIdOrder() {
+        return bodyRegistry.bodiesInIdOrder();
+    }
+
+    public List<org.dynamisphysics.ode4j.constraint.Ode4jConstraintHandle> debugConstraintsInIdOrder() {
+        return constraintRegistry.constraintsInIdOrder();
+    }
+
+    public List<Ode4jContactDispatcher.DebugContact> debugDrainContacts() {
+        return dispatcher.drainDebugContacts();
+    }
 }

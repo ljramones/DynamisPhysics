@@ -7,5 +7,6 @@ module org.dynamisphysics.ode4j {
     requires org.ode4j;
 
     exports org.dynamisphysics.ode4j;
+    exports org.dynamisphysics.ode4j.debug;
     exports org.dynamisphysics.ode4j.world;
 }
