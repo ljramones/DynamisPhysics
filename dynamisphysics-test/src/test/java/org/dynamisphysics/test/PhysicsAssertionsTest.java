@@ -6,7 +6,7 @@ import org.dynamisphysics.api.event.PhysicsEvent;
 import org.dynamisphysics.api.event.SleepEvent;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.test.mock.MockRigidBodyHandle;
-import org.dynamisphysics.test.mock.TestCollisionShapes;
+import org.dynamiscollision.shapes.CollisionShape;
 import org.vectrix.core.Quaternionf;
 import org.vectrix.core.Vector3f;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ class PhysicsAssertionsTest {
 
     @Test
     void assertEventFiredPassesWhenPresent() {
-        var h = new MockRigidBodyHandle(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var h = new MockRigidBodyHandle(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         var events = List.<PhysicsEvent>of(new SleepEvent(h));
         assertDoesNotThrow(() -> assertEventFired(events, SleepEvent.class));
     }

@@ -5,7 +5,7 @@ import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.test.mock.MockPhysicsWorld;
-import org.dynamisphysics.test.mock.TestCollisionShapes;
+import org.dynamiscollision.shapes.CollisionShape;
 import org.vectrix.core.Matrix4f;
 
 public final class SceneFactory {
@@ -18,11 +18,11 @@ public final class SceneFactory {
     public static MockPhysicsWorld flatPlaneWithSphere(float sphereRadius, float spawnHeight) {
         var world = new MockPhysicsWorld();
         world.spawnRigidBody(RigidBodyConfig.builder(
-                TestCollisionShapes.sphere(sphereRadius), 1f)
+                CollisionShape.sphere(sphereRadius), 1f)
             .worldTransform(new Matrix4f().translation(0f, spawnHeight, 0f))
             .build());
         world.spawnRigidBody(RigidBodyConfig.builder(
-                TestCollisionShapes.box(100f, 0.1f, 100f), 0f)
+                CollisionShape.box(100f, 0.1f, 100f), 0f)
             .mode(BodyMode.STATIC)
             .material(PhysicsMaterial.ASPHALT)
             .build());
@@ -33,7 +33,7 @@ public final class SceneFactory {
         var world = new MockPhysicsWorld();
         for (int i = 0; i < n; i++) {
             world.spawnRigidBody(RigidBodyConfig.builder(
-                    TestCollisionShapes.box(boxSize, boxSize, boxSize), 1f)
+                    CollisionShape.box(boxSize, boxSize, boxSize), 1f)
                 .worldTransform(new Matrix4f().translation(0f, boxSize * (i + 0.5f), 0f))
                 .build());
         }
@@ -43,7 +43,7 @@ public final class SceneFactory {
     public static MockPhysicsWorld rampAndSphere() {
         var world = new MockPhysicsWorld();
         world.spawnRigidBody(RigidBodyConfig.builder(
-                TestCollisionShapes.box(5f, 0.1f, 2f), 0f)
+                CollisionShape.box(5f, 0.1f, 2f), 0f)
             .mode(BodyMode.STATIC)
             .material(PhysicsMaterial.ROCK)
             .worldTransform(new Matrix4f()
@@ -51,7 +51,7 @@ public final class SceneFactory {
                 .translate(0f, 2f, 0f))
             .build());
         world.spawnRigidBody(RigidBodyConfig.builder(
-                TestCollisionShapes.sphere(0.3f), 1f)
+                CollisionShape.sphere(0.3f), 1f)
             .worldTransform(new Matrix4f().translation(0f, 4f, -2f))
             .build());
         return world;
@@ -60,11 +60,11 @@ public final class SceneFactory {
     public static MockPhysicsWorld twoBodies(float separation) {
         var world = new MockPhysicsWorld();
         world.spawnRigidBody(RigidBodyConfig.builder(
-                TestCollisionShapes.box(0.5f, 0.5f, 0.5f), 1f)
+                CollisionShape.box(0.5f, 0.5f, 0.5f), 1f)
             .worldTransform(new Matrix4f().translation(-separation / 2f, 5f, 0f))
             .build());
         world.spawnRigidBody(RigidBodyConfig.builder(
-                TestCollisionShapes.box(0.5f, 0.5f, 0.5f), 1f)
+                CollisionShape.box(0.5f, 0.5f, 0.5f), 1f)
             .worldTransform(new Matrix4f().translation(separation / 2f, 5f, 0f))
             .build());
         return world;
@@ -73,7 +73,7 @@ public final class SceneFactory {
     public static MockPhysicsWorld groundWithCharacter() {
         var world = new MockPhysicsWorld();
         world.spawnRigidBody(RigidBodyConfig.builder(
-                TestCollisionShapes.box(100f, 0.1f, 100f), 0f)
+                CollisionShape.box(100f, 0.1f, 100f), 0f)
             .mode(BodyMode.STATIC)
             .material(PhysicsMaterial.GRASS)
             .build());

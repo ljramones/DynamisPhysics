@@ -29,7 +29,7 @@
     <vectrix.version>1.10.12</vectrix.version>
 
     <animis.version>1.0.0</animis.version>
-    <collision.version>1.1.0</collision.version>
+    <collision.version>1.1.1</collision.version>
     <meshforge.version>1.1.0</meshforge.version>
     <dynamis.gpu.api.version>1.0.1</dynamis.gpu.api.version>
 

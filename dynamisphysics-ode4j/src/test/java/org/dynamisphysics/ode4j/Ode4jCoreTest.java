@@ -9,7 +9,7 @@ import org.dynamisphysics.api.config.PhysicsWorldConfig;
 import org.dynamisphysics.api.event.ContactEvent;
 import org.dynamisphysics.api.event.PhysicsEvent;
 import org.dynamisphysics.api.world.PhysicsWorld;
-import org.dynamisphysics.ode4j.shape.Ode4jPrimitiveShape;
+import org.dynamiscollision.shapes.CollisionShape;
 import org.vectrix.core.Matrix4f;
 import org.vectrix.core.Vector3f;
 import org.junit.jupiter.api.AfterEach;
@@ -52,31 +52,31 @@ class Ode4jCoreTest {
 
     @Test
     void sphereBodySpawnReturnsLiveHandle() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.sphere(0.5f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f).build());
         assertAlive(h);
     }
 
     @Test
     void boxBodySpawnReturnsLiveHandle() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.box(1f, 1f, 1f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.box(1f, 1f, 1f), 1f).build());
         assertAlive(h);
     }
 
     @Test
     void capsuleBodySpawnReturnsLiveHandle() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.capsule(0.3f, 1f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.capsule(0.3f, 1f), 1f).build());
         assertAlive(h);
     }
 
     @Test
     void cylinderBodySpawnReturnsLiveHandle() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.cylinder(0.3f, 1f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.cylinder(0.3f, 1f), 1f).build());
         assertAlive(h);
     }
 
     @Test
     void staticBodyDoesNotMoveUnderGravity() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.box(10f, 0.1f, 10f), 0f)
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.box(10f, 0.1f, 10f), 0f)
             .mode(BodyMode.STATIC)
             .worldTransform(new Matrix4f().translation(0f, 0f, 0f))
             .build());
@@ -88,7 +88,7 @@ class Ode4jCoreTest {
 
     @Test
     void dynamicBodyFallsUnderGravity() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.sphere(0.5f), 1f)
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f)
             .worldTransform(new Matrix4f().translation(0f, 10f, 0f))
             .build());
         BodyState before = world.getBodyState(h);
@@ -99,7 +99,7 @@ class Ode4jCoreTest {
 
     @Test
     void impulseChangesLinearVelocity() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.sphere(0.5f), 1f)
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f)
             .worldTransform(new Matrix4f().translation(0f, 5f, 0f))
             .build());
         world.applyImpulse(h, new Vector3f(10f, 0f, 0f), new Vector3f());
@@ -110,7 +110,7 @@ class Ode4jCoreTest {
 
     @Test
     void torqueChangesAngularVelocity() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.box(1f, 1f, 1f), 1f)
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.box(1f, 1f, 1f), 1f)
             .worldTransform(new Matrix4f().translation(0f, 5f, 0f))
             .build());
         world.applyTorque(h, new Vector3f(0f, 10f, 0f));
@@ -121,14 +121,14 @@ class Ode4jCoreTest {
 
     @Test
     void destroyedBodyHandleIsNotAlive() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.sphere(0.5f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f).build());
         world.destroyRigidBody(h);
         assertDead(h);
     }
 
     @Test
     void stepDoesNotThrow() {
-        world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.sphere(0.5f), 1f).build());
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f).build());
         assertDoesNotThrow(() -> {
             for (int i = 0; i < 120; i++) world.step(1f / 60f);
         });
@@ -136,8 +136,8 @@ class Ode4jCoreTest {
 
     @Test
     void contactEventFiredOnSphereVsPlaneCollision() {
-        world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.plane(), 0f).mode(BodyMode.STATIC).build());
-        world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.sphere(0.5f), 1f)
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.planeY(), 0f).mode(BodyMode.STATIC).build());
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f)
             .worldTransform(new Matrix4f().translation(0f, 0.4f, 0f))
             .build());
         List<PhysicsEvent> allEvents = new ArrayList<>();
@@ -150,8 +150,8 @@ class Ode4jCoreTest {
 
     @Test
     void statsBodyCountMatchesSpawned() {
-        world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.sphere(0.5f), 1f).build());
-        world.spawnRigidBody(RigidBodyConfig.builder(Ode4jPrimitiveShape.sphere(0.5f), 1f).build());
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f).build());
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(0.5f), 1f).build());
         assertStatsBodyCount(world.getStats(), 2);
     }
 }

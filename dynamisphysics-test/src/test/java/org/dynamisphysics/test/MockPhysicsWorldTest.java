@@ -9,7 +9,7 @@ import org.dynamisphysics.api.constraint.ConstraintMotor;
 import org.dynamisphysics.api.constraint.ConstraintType;
 import org.dynamisphysics.api.event.SleepEvent;
 import org.dynamisphysics.test.mock.MockPhysicsWorld;
-import org.dynamisphysics.test.mock.TestCollisionShapes;
+import org.dynamiscollision.shapes.CollisionShape;
 import org.vectrix.core.Matrix4f;
 import org.vectrix.core.Vector3f;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,33 +38,33 @@ class MockPhysicsWorldTest {
 
     @Test
     void spawnBodyTrackedInCount() {
-        world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         assertEquals(1, world.spawnedBodyCount());
     }
 
     @Test
     void spawnBodyHandleIsAlive() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         assertTrue(h.isAlive());
     }
 
     @Test
     void destroyBodyKillsHandle() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         world.destroyRigidBody(h);
         assertFalse(h.isAlive());
     }
 
     @Test
     void destroyBodyRemovesFromWorld() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         world.destroyRigidBody(h);
         assertFalse(world.hasBody(h));
     }
 
     @Test
     void getBodyStateReturnsPositionFromTransform() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f)
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f)
             .worldTransform(new Matrix4f().translation(3f, 7f, 0f))
             .build());
         BodyState s = world.getBodyState(h);
@@ -73,7 +73,7 @@ class MockPhysicsWorldTest {
 
     @Test
     void injectEventAppearsInDrainedList() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         world.injectEvent(new SleepEvent(h));
         var events = world.drainEvents();
         assertEventFired(events, SleepEvent.class);
@@ -81,7 +81,7 @@ class MockPhysicsWorldTest {
 
     @Test
     void drainClearsQueue() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         world.injectEvent(new SleepEvent(h));
         world.drainEvents();
         assertEquals(0, world.drainEvents().size());
@@ -89,16 +89,16 @@ class MockPhysicsWorldTest {
 
     @Test
     void injectContactProducesContactEvent() {
-        var a = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
-        var b = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var a = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
+        var b = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         world.injectContact(a, b, new Vector3f(0f, 0f, 0f), 5f);
         assertContactFired(world.drainEvents(), a, b);
     }
 
     @Test
     void addConstraintReturnsLiveHandle() {
-        var a = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
-        var b = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var a = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
+        var b = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         var ch = world.addConstraint(new ConstraintDesc(
             ConstraintType.FIXED, a, b,
             new Vector3f(), new Vector3f(),
@@ -109,8 +109,8 @@ class MockPhysicsWorldTest {
 
     @Test
     void removeConstraintKillsHandle() {
-        var a = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
-        var b = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var a = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
+        var b = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         var ch = world.addConstraint(new ConstraintDesc(
             ConstraintType.FIXED, a, b,
             new Vector3f(), new Vector3f(),
@@ -122,15 +122,15 @@ class MockPhysicsWorldTest {
 
     @Test
     void applyImpulseTracked() {
-        var h = world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         world.applyImpulse(h, new Vector3f(1f, 0f, 0f), new Vector3f());
         assertEquals(1, world.applyImpulseCount());
     }
 
     @Test
     void statsBodyCountMatchesSpawned() {
-        world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
-        world.spawnRigidBody(RigidBodyConfig.builder(TestCollisionShapes.sphere(1f), 1f).build());
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.sphere(1f), 1f).build());
         assertStatsBodyCount(world.getStats(), 2);
     }
 }

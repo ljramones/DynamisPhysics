@@ -1,7 +1,10 @@
 package org.dynamisphysics.ode4j.body;
 
 import org.dynamiscollision.shapes.CollisionShape;
-import org.dynamisphysics.ode4j.shape.Ode4jPrimitiveShape;
+import org.dynamiscollision.shapes.BoxCollisionShape;
+import org.dynamiscollision.shapes.CapsuleCollisionShape;
+import org.dynamiscollision.shapes.CylinderCollisionShape;
+import org.dynamiscollision.shapes.SphereCollisionShape;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DMass;
@@ -19,16 +22,24 @@ public final class Ode4jInertiaComputer {
         DMass m = OdeHelper.createMass();
         Vector3f diag = new Vector3f();
 
-        if (shape instanceof Ode4jPrimitiveShape primitive) {
-            switch (primitive.kind()) {
-                case SPHERE -> InertiaTensorf.sphere(mass, primitive.x(), diag);
-                case BOX -> InertiaTensorf.box(mass, primitive.x(), primitive.y(), primitive.z(), diag);
-                case CAPSULE -> InertiaTensorf.capsule(mass, primitive.x(), primitive.y(), diag);
-                case CYLINDER -> InertiaTensorf.cylinder(mass, primitive.x(), primitive.y(), diag);
-                default -> InertiaTensorf.sphere(mass, 0.5f, diag);
+        switch (shape.shapeType()) {
+            case SPHERE -> {
+                SphereCollisionShape s = (SphereCollisionShape) shape;
+                InertiaTensorf.sphere(mass, s.radius(), diag);
             }
-        } else {
-            InertiaTensorf.sphere(mass, 0.5f, diag);
+            case BOX -> {
+                BoxCollisionShape b = (BoxCollisionShape) shape;
+                InertiaTensorf.box(mass, b.halfExtentX(), b.halfExtentY(), b.halfExtentZ(), diag);
+            }
+            case CAPSULE -> {
+                CapsuleCollisionShape c = (CapsuleCollisionShape) shape;
+                InertiaTensorf.capsule(mass, c.radius(), c.height(), diag);
+            }
+            case CYLINDER -> {
+                CylinderCollisionShape c = (CylinderCollisionShape) shape;
+                InertiaTensorf.cylinder(mass, c.radius(), c.height(), diag);
+            }
+            default -> InertiaTensorf.sphere(mass, 0.5f, diag);
         }
 
         DMatrix3 inertia = new DMatrix3();
