@@ -36,6 +36,7 @@ import org.dynamisphysics.api.world.VehicleState;
 import org.dynamisphysics.jolt.body.JoltBodyHandle;
 import org.dynamisphysics.jolt.body.JoltBodyRegistry;
 import org.dynamisphysics.jolt.character.JoltCharacterController;
+import org.dynamisphysics.jolt.constraint.JoltConstraintRegistry;
 import org.dynamisphysics.jolt.event.JoltContactListener;
 import org.dynamisphysics.jolt.event.JoltEventBuffer;
 import org.dynamisphysics.jolt.query.JoltRaycastExecutor;
@@ -71,6 +72,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
     private final JoltBodyRegistry bodyRegistry;
     private final JoltEventBuffer eventBuffer;
     private final JoltRaycastExecutor raycastExecutor;
+    private final JoltConstraintRegistry constraintRegistry;
     private final JoltVehicleSystem vehicleSystem;
     private final JoltCharacterController characterController;
     private final JoltRagdollSystem ragdollSystem;
@@ -91,6 +93,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         JoltBodyRegistry bodyRegistry,
         JoltEventBuffer eventBuffer,
         JoltRaycastExecutor raycastExecutor,
+        JoltConstraintRegistry constraintRegistry,
         JoltVehicleSystem vehicleSystem,
         JoltCharacterController characterController,
         JoltRagdollSystem ragdollSystem
@@ -102,6 +105,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         this.bodyRegistry = bodyRegistry;
         this.eventBuffer = eventBuffer;
         this.raycastExecutor = raycastExecutor;
+        this.constraintRegistry = constraintRegistry;
         this.vehicleSystem = vehicleSystem;
         this.characterController = characterController;
         this.ragdollSystem = ragdollSystem;
@@ -148,13 +152,15 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         physics.setContactListener(new JoltContactListener(bodyRegistry, eventBuffer));
         NarrowPhaseQuery query = (NarrowPhaseQuery) physics.getNarrowPhaseQuery();
         JoltRaycastExecutor raycastExecutor = new JoltRaycastExecutor(query, physics.getBodyInterface(), bodyRegistry);
+        JoltConstraintRegistry constraintRegistry = new JoltConstraintRegistry(physics, bodyRegistry);
         JoltVehicleSystem vehicleSystem = new JoltVehicleSystem(physics, bodyRegistry, eventBuffer);
         JoltCharacterController characterController =
             new JoltCharacterController(physics, bodyRegistry, raycastExecutor, eventBuffer, allocator);
         JoltRagdollSystem ragdollSystem = new JoltRagdollSystem(physics, bodyRegistry);
 
         return new JoltPhysicsWorld(
-            config, physics, allocator, jobs, bodyRegistry, eventBuffer, raycastExecutor, vehicleSystem, characterController, ragdollSystem
+            config, physics, allocator, jobs, bodyRegistry, eventBuffer, raycastExecutor, constraintRegistry,
+            vehicleSystem, characterController, ragdollSystem
         );
     }
 
@@ -210,6 +216,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         ragdollSystem.clearAll();
         vehicleSystem.clearAll();
         characterController.clearAll();
+        constraintRegistry.clearAll();
         bodyRegistry.clearAllBodies();
         physicsSystem.destroyAllBodies();
     }
@@ -270,19 +277,26 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
 
     @Override
     public ConstraintHandle addConstraint(ConstraintDesc desc) {
-        throw new UnsupportedOperationException("Jolt constraints are implemented in Step 12");
+        ensureNotDestroyed();
+        return constraintRegistry.add(desc);
     }
 
     @Override
     public void removeConstraint(ConstraintHandle handle) {
+        ensureNotDestroyed();
+        constraintRegistry.remove(handle);
     }
 
     @Override
     public void setConstraintEnabled(ConstraintHandle h, boolean enabled) {
+        ensureNotDestroyed();
+        constraintRegistry.setEnabled(h, enabled);
     }
 
     @Override
     public void setMotorTarget(ConstraintHandle h, float targetVelocityOrPosition) {
+        ensureNotDestroyed();
+        constraintRegistry.setMotorTarget(h, targetVelocityOrPosition);
     }
 
     @Override
