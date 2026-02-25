@@ -37,6 +37,7 @@ import org.dynamisphysics.jolt.body.JoltBodyHandle;
 import org.dynamisphysics.jolt.body.JoltBodyRegistry;
 import org.dynamisphysics.jolt.character.JoltCharacterController;
 import org.dynamisphysics.jolt.constraint.JoltConstraintRegistry;
+import org.dynamisphysics.jolt.constraint.JoltMechanicalConstraintController;
 import org.dynamisphysics.jolt.event.JoltContactListener;
 import org.dynamisphysics.jolt.event.JoltEventBuffer;
 import org.dynamisphysics.jolt.query.JoltRaycastExecutor;
@@ -73,6 +74,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
     private final JoltEventBuffer eventBuffer;
     private final JoltRaycastExecutor raycastExecutor;
     private final JoltConstraintRegistry constraintRegistry;
+    private final JoltMechanicalConstraintController mechanicalConstraintController;
     private final JoltVehicleSystem vehicleSystem;
     private final JoltCharacterController characterController;
     private final JoltRagdollSystem ragdollSystem;
@@ -94,6 +96,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         JoltEventBuffer eventBuffer,
         JoltRaycastExecutor raycastExecutor,
         JoltConstraintRegistry constraintRegistry,
+        JoltMechanicalConstraintController mechanicalConstraintController,
         JoltVehicleSystem vehicleSystem,
         JoltCharacterController characterController,
         JoltRagdollSystem ragdollSystem
@@ -106,6 +109,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         this.eventBuffer = eventBuffer;
         this.raycastExecutor = raycastExecutor;
         this.constraintRegistry = constraintRegistry;
+        this.mechanicalConstraintController = mechanicalConstraintController;
         this.vehicleSystem = vehicleSystem;
         this.characterController = characterController;
         this.ragdollSystem = ragdollSystem;
@@ -153,6 +157,8 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         NarrowPhaseQuery query = (NarrowPhaseQuery) physics.getNarrowPhaseQuery();
         JoltRaycastExecutor raycastExecutor = new JoltRaycastExecutor(query, physics.getBodyInterface(), bodyRegistry);
         JoltConstraintRegistry constraintRegistry = new JoltConstraintRegistry(physics, bodyRegistry);
+        JoltMechanicalConstraintController mechanicalConstraintController =
+            new JoltMechanicalConstraintController(physics.getBodyInterface(), bodyRegistry, constraintRegistry);
         JoltVehicleSystem vehicleSystem = new JoltVehicleSystem(physics, bodyRegistry, eventBuffer);
         JoltCharacterController characterController =
             new JoltCharacterController(physics, bodyRegistry, raycastExecutor, eventBuffer, allocator);
@@ -160,6 +166,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
 
         return new JoltPhysicsWorld(
             config, physics, allocator, jobs, bodyRegistry, eventBuffer, raycastExecutor, constraintRegistry,
+            mechanicalConstraintController,
             vehicleSystem, characterController, ragdollSystem
         );
     }
@@ -190,6 +197,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         trace("step.before-update");
         physicsSystem.update(deltaSeconds * timeScale, clamped, allocator, jobs);
         trace("step.after-update");
+        mechanicalConstraintController.postSolve(deltaSeconds * timeScale);
         ragdollSystem.stepAll(deltaSeconds * timeScale);
         lastStepMs = (System.nanoTime() - start) / 1_000_000f;
         stepCount++;

@@ -191,12 +191,9 @@ public final class Ode4jConstraintFactory {
         DBody bodyA,
         DBody bodyB
     ) {
-        // Placeholder joint for Step 5; true gear torque coupling lands in later tuning.
-        DFixedJoint j = OdeHelper.createFixedJoint(world);
-        j.attach(bodyA, bodyB);
-        j.setFixed();
-        enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(constraintId, desc, j);
+        // Enforced by deterministic post-solve mechanical controller.
+        wakeBodies(bodyA, bodyB);
+        return new Ode4jConstraintHandle(constraintId, desc, List.of());
     }
 
     private static Ode4jConstraintHandle createRackPinion(
@@ -206,11 +203,9 @@ public final class Ode4jConstraintFactory {
         DBody bodyA,
         DBody bodyB
     ) {
-        DSliderJoint j = OdeHelper.createSliderJoint(world);
-        j.attach(bodyA, bodyB);
-        j.setAxis(toOde(desc.axisA()));
-        enableFeedback(j, desc);
-        return new Ode4jConstraintHandle(constraintId, desc, j);
+        // Enforced by deterministic post-solve mechanical controller.
+        wakeBodies(bodyA, bodyB);
+        return new Ode4jConstraintHandle(constraintId, desc, List.of());
     }
 
     private static Ode4jConstraintHandle createPulley(
@@ -220,20 +215,9 @@ public final class Ode4jConstraintFactory {
         DBody bodyA,
         DBody bodyB
     ) {
-        DSliderJoint j1 = OdeHelper.createSliderJoint(world);
-        j1.attach(bodyA, null);
-        j1.setAxis(toOde(desc.axisA()));
-        j1.setParamLoStop(desc.limits().linearLowerLimit());
-        j1.setParamHiStop(desc.limits().linearUpperLimit());
-
-        DSliderJoint j2 = OdeHelper.createSliderJoint(world);
-        j2.attach(bodyB, null);
-        j2.setAxis(toOde(desc.axisA()));
-        j2.setParamLoStop(desc.limits().linearLowerLimit());
-        j2.setParamHiStop(desc.limits().linearUpperLimit());
-        enableFeedback(j1, desc);
-        enableFeedback(j2, desc);
-        return new Ode4jConstraintHandle(constraintId, desc, List.of(j1, j2));
+        // Enforced by deterministic post-solve mechanical controller.
+        wakeBodies(bodyA, bodyB);
+        return new Ode4jConstraintHandle(constraintId, desc, List.of());
     }
 
     private static DBody resolveBody(RigidBodyHandle h, Ode4jBodyRegistry reg) {
