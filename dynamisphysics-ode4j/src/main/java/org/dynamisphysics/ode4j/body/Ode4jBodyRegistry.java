@@ -135,8 +135,8 @@ public final class Ode4jBodyRegistry {
             body.setQuaternion(toOde(ori));
             return;
         }
-        // Plane geoms are not placeable in ODE; skip explicit transforms.
-        if (geom.getClassID() == DGeom.dPlaneClass) {
+        // Plane and space geoms are not placeable in ODE; skip explicit transforms.
+        if (geom.getClassID() == DGeom.dPlaneClass || geom.isSpace()) {
             return;
         }
         geom.setPosition(toOde(pos));
