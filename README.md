@@ -116,7 +116,7 @@ Capture a baseline (stores raw JMH JSON and normalized summary):
 Run regression check against a baseline:
 
 ```bash
-./scripts/bench-regression.sh bench-baselines/0.1.0.json
+./scripts/bench-regression.sh bench-baselines/0.2.0.json
 ```
 
 Current defaults:

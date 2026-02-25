@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASELINE="${1:-}"
-if [[ -z "$BASELINE" ]]; then
-  echo "usage: $0 <baseline-json>"
-  exit 2
-fi
+BASELINE="${1:-bench-baselines/0.2.0.json}"
 if [[ ! -f "$BASELINE" ]]; then
   echo "baseline not found: $BASELINE"
   exit 2

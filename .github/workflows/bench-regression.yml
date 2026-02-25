@@ -6,13 +6,17 @@ on:
       baseline:
         description: "Baseline JSON path"
         required: false
-        default: "bench-baselines/0.1.0.json"
+        default: "bench-baselines/0.2.0.json"
       quick:
         description: "Use CI quick mode"
         required: false
         default: "true"
   schedule:
     - cron: "0 7 * * *"
+
+concurrency:
+  group: bench-regression
+  cancel-in-progress: false
 
 jobs:
   bench-regression:
@@ -31,11 +35,22 @@ jobs:
           java-version: '25'
           cache: maven
 
+      - name: Environment diagnostics
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "JAVA_HOME=${JAVA_HOME}"
+          java -version
+          uname -a
+          uname -m
+          echo "JOLT_THREADS=${JOLT_THREADS:-1}"
+          echo "JOLT_ALLOCATOR=${JOLT_ALLOCATOR:-TempAllocatorMalloc}"
+
       - name: Verify baseline exists
         shell: bash
         run: |
           set -euo pipefail
-          BASELINE="${{ github.event.inputs.baseline || 'bench-baselines/0.1.0.json' }}"
+          BASELINE="${{ github.event.inputs.baseline || 'bench-baselines/0.2.0.json' }}"
           test -f "$BASELINE"
 
       - name: Run bench regression (quick)
@@ -43,7 +58,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          BASELINE="${{ github.event.inputs.baseline || 'bench-baselines/0.1.0.json' }}"
+          BASELINE="${{ github.event.inputs.baseline || 'bench-baselines/0.2.0.json' }}"
           ./scripts/bench-regression-ci.sh "$BASELINE" | tee bench-baselines/tmp/regression-report.txt
 
       - name: Run bench regression (full)
@@ -51,9 +66,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          BASELINE="${{ github.event.inputs.baseline || 'bench-baselines/0.1.0.json' }}"
+          BASELINE="${{ github.event.inputs.baseline || 'bench-baselines/0.2.0.json' }}"
           BENCH_FORKS=1 BENCH_WI=3 BENCH_I=5 BENCH_THREADS=1 JOLT_THREADS=1 \
             ./scripts/bench-regression.sh "$BASELINE" | tee bench-baselines/tmp/regression-report.txt
+
+      - name: Collect crash artifacts
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ci-artifacts/crash
+          shopt -s nullglob
+          for f in hs_err_pid*.log dynamisphysics-jolt/hs_err_pid*.log "$HOME"/Library/Logs/DiagnosticReports/java*.ips; do
+            cp "$f" ci-artifacts/crash/ || true
+          done
 
       - name: Upload benchmark artifacts
         if: always()
@@ -64,4 +90,5 @@ jobs:
             bench-baselines/tmp/current-jmh.json
             bench-baselines/tmp/current.json
             bench-baselines/tmp/regression-report.txt
+            ci-artifacts/crash
           if-no-files-found: warn

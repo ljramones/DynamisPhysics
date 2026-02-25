@@ -1,0 +1,116 @@
+name: Jolt CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_stress:
+        description: "Run reduced stress gate"
+        required: false
+        default: "true"
+      stress_threads:
+        description: "Stress thread count"
+        required: false
+        default: "4"
+  schedule:
+    - cron: "30 7 * * *"
+
+concurrency:
+  group: jolt-ci
+  cancel-in-progress: false
+
+jobs:
+  jolt-parity-and-stress:
+    name: Jolt Parity + Stress (JDK 25)
+    runs-on: macos-14
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
+      - name: Environment diagnostics
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "JAVA_HOME=${JAVA_HOME}"
+          java -version
+          uname -a
+          uname -m
+          echo "JOLT_THREADS=${JOLT_THREADS:-1}"
+          echo "JOLT_ALLOCATOR=${JOLT_ALLOCATOR:-TempAllocatorMalloc}"
+
+      - name: Run Jolt parity gate (retry once)
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_retry() {
+            local attempt=1
+            local max=2
+            while true; do
+              echo "Attempt ${attempt}/${max}: $*"
+              if "$@"; then
+                return 0
+              fi
+              if [[ "${attempt}" -ge "${max}" ]]; then
+                return 1
+              fi
+              attempt=$((attempt + 1))
+              echo "Retrying after transient failure..."
+              sleep 5
+            done
+          }
+          run_retry ./scripts/gate-jolt.sh
+
+      - name: Run reduced Jolt stress gate (retry once)
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.run_stress == 'true' || github.event.inputs.run_stress == '' }}
+        shell: bash
+        env:
+          JOLT_THREADS: ${{ github.event.inputs.stress_threads || '4' }}
+          PHYSICS_JOLT_STRESS_SIZE: "2000"
+          PHYSICS_JOLT_STRESS_ISLANDS: "100"
+        run: |
+          set -euo pipefail
+          run_retry() {
+            local attempt=1
+            local max=2
+            while true; do
+              echo "Attempt ${attempt}/${max}: $*"
+              if "$@"; then
+                return 0
+              fi
+              if [[ "${attempt}" -ge "${max}" ]]; then
+                return 1
+              fi
+              attempt=$((attempt + 1))
+              echo "Retrying after transient failure..."
+              sleep 5
+            done
+          }
+          run_retry ./scripts/gate-jolt-stress.sh
+
+      - name: Collect crash artifacts
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ci-artifacts/crash
+          shopt -s nullglob
+          for f in hs_err_pid*.log dynamisphysics-jolt/hs_err_pid*.log "$HOME"/Library/Logs/DiagnosticReports/java*.ips; do
+            cp "$f" ci-artifacts/crash/ || true
+          done
+
+      - name: Upload Jolt artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jolt-ci-${{ github.run_id }}
+          path: |
+            ci-artifacts/crash
+          if-no-files-found: warn

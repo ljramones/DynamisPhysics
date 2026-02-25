@@ -51,6 +51,8 @@ def main() -> int:
         kind = unit_kind(b["unit"])
         b_score = float(b["score"])
         c_score = float(c["score"])
+        b_err = float(b.get("scoreError", 0.0))
+        c_err = float(c.get("scoreError", 0.0))
 
         if b_score <= 0.0:
             failures += 1
@@ -61,14 +63,20 @@ def main() -> int:
             ratio = c_score / b_score
             ok = ratio >= args.ops_ratio_min
             status = "PASS" if ok else "FAIL"
-            print(f"{status} {key} current={c_score:.3f} baseline={b_score:.3f} ratio={ratio:.3f}")
+            print(
+                f"{status} {key} current={c_score:.3f}±{c_err:.3f} "
+                f"baseline={b_score:.3f}±{b_err:.3f} ratio={ratio:.3f}"
+            )
             if not ok:
                 failures += 1
         elif kind == "time":
             ratio = c_score / b_score
             ok = ratio <= args.time_ratio_max
             status = "PASS" if ok else "FAIL"
-            print(f"{status} {key} current={c_score:.6f} baseline={b_score:.6f} ratio={ratio:.3f}")
+            print(
+                f"{status} {key} current={c_score:.6f}±{c_err:.6f} "
+                f"baseline={b_score:.6f}±{b_err:.6f} ratio={ratio:.3f}"
+            )
             if not ok:
                 failures += 1
         else:

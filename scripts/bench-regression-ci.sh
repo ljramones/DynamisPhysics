@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASELINE="${1:-bench-baselines/0.1.0.json}"
+BASELINE="${1:-bench-baselines/0.2.0.json}"
 
 export BENCH_FORKS="${BENCH_FORKS:-1}"
 export BENCH_WI="${BENCH_WI:-2}"
