@@ -3,6 +3,7 @@ package org.dynamisphysics.ode4j.world;
 import org.dynamisphysics.ode4j.body.Ode4jForceAccumulator;
 import org.dynamisphysics.ode4j.character.Ode4jCharacterController;
 import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
+import org.dynamisphysics.ode4j.constraint.Ode4jSpringController;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
 import org.dynamisphysics.ode4j.ragdoll.Ode4jRagdollSystem;
 import org.dynamisphysics.ode4j.vehicle.Ode4jVehicleSystem;
@@ -24,6 +25,7 @@ public final class Ode4jStepLoop {
     private final Ode4jForceAccumulator forceAccumulator;
     private final Ode4jContactDispatcher dispatcher;
     private final Ode4jConstraintRegistry constraintRegistry;
+    private final Ode4jSpringController springController;
     private final Ode4jVehicleSystem vehicleSystem;
     private final Ode4jCharacterController characterController;
     private final Ode4jRagdollSystem ragdollSystem;
@@ -39,6 +41,7 @@ public final class Ode4jStepLoop {
         Ode4jForceAccumulator forceAccumulator,
         Ode4jContactDispatcher dispatcher,
         Ode4jConstraintRegistry constraintRegistry,
+        Ode4jSpringController springController,
         Ode4jVehicleSystem vehicleSystem,
         Ode4jCharacterController characterController,
         Ode4jRagdollSystem ragdollSystem
@@ -50,6 +53,7 @@ public final class Ode4jStepLoop {
             forceAccumulator,
             dispatcher,
             constraintRegistry,
+            springController,
             vehicleSystem,
             characterController,
             ragdollSystem,
@@ -64,6 +68,7 @@ public final class Ode4jStepLoop {
         Ode4jForceAccumulator forceAccumulator,
         Ode4jContactDispatcher dispatcher,
         Ode4jConstraintRegistry constraintRegistry,
+        Ode4jSpringController springController,
         Ode4jVehicleSystem vehicleSystem,
         Ode4jCharacterController characterController,
         Ode4jRagdollSystem ragdollSystem,
@@ -75,6 +80,7 @@ public final class Ode4jStepLoop {
         this.forceAccumulator = forceAccumulator;
         this.dispatcher = dispatcher;
         this.constraintRegistry = constraintRegistry;
+        this.springController = springController;
         this.vehicleSystem = vehicleSystem;
         this.characterController = characterController;
         this.ragdollSystem = ragdollSystem;
@@ -105,6 +111,8 @@ public final class Ode4jStepLoop {
                     (float) gravity.get2()
                 )
             );
+            stepOrderObserver.onPhase("springController.step");
+            springController.step(dt);
 
             // Build contact joints and solve in the same integration step.
             stepOrderObserver.onPhase("spaceCollide");

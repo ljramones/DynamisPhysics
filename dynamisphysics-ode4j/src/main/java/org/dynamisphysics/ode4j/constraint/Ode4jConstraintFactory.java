@@ -166,6 +166,8 @@ public final class Ode4jConstraintFactory {
         amotor.attach(bodyA, bodyB);
         amotor.setMode(DAMotorJoint.AMotorMode.dAMotorEuler);
         amotor.setNumAxes(3);
+        amotor.setAxis(0, 1, toOde(desc.axisA()));
+        amotor.setAxis(2, 2, toOde(desc.axisB()));
         amotor.setParamLoStop(desc.limits().angularLowerLimit());
         amotor.setParamHiStop(desc.limits().angularUpperLimit());
         if (spring) {

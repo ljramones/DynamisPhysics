@@ -29,6 +29,7 @@ import org.dynamisphysics.ode4j.body.Ode4jBodyRegistry;
 import org.dynamisphysics.ode4j.body.Ode4jForceAccumulator;
 import org.dynamisphysics.ode4j.character.Ode4jCharacterController;
 import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
+import org.dynamisphysics.ode4j.constraint.Ode4jSpringController;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
 import org.dynamisphysics.ode4j.query.Ode4jRaycastExecutor;
@@ -120,6 +121,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         var forceAccumulator = new Ode4jForceAccumulator();
         var bodyRegistry = new Ode4jBodyRegistry(world, space);
         var constraintRegistry = new Ode4jConstraintRegistry(world, bodyRegistry, eventBuffer);
+        var springController = new Ode4jSpringController(constraintRegistry);
         var dispatcher = new Ode4jContactDispatcher(world, contactGroup, eventBuffer);
         var raycastExecutor = new Ode4jRaycastExecutor(space);
         var vehicleSystem = new Ode4jVehicleSystem(bodyRegistry, eventBuffer, raycastExecutor);
@@ -132,6 +134,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
             forceAccumulator,
             dispatcher,
             constraintRegistry,
+            springController,
             vehicleSystem,
             characterController,
             ragdollSystem
