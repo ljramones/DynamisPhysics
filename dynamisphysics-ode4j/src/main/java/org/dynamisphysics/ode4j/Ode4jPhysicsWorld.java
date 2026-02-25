@@ -26,6 +26,7 @@ import org.dynamisphysics.api.world.VehicleState;
 import org.dynamisphysics.ode4j.body.Ode4jBodyHandle;
 import org.dynamisphysics.ode4j.body.Ode4jBodyRegistry;
 import org.dynamisphysics.ode4j.body.Ode4jForceAccumulator;
+import org.dynamisphysics.ode4j.character.Ode4jCharacterController;
 import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
@@ -56,6 +57,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     private final Ode4jStepLoop stepLoop;
     private final Ode4jRaycastExecutor raycastExecutor;
     private final Ode4jVehicleSystem vehicleSystem;
+    private final Ode4jCharacterController characterController;
     private final List<ContactListener> contactListeners = new ArrayList<>();
 
     private boolean paused = false;
@@ -73,7 +75,8 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         Ode4jContactDispatcher dispatcher,
         Ode4jStepLoop stepLoop,
         Ode4jRaycastExecutor raycastExecutor,
-        Ode4jVehicleSystem vehicleSystem
+        Ode4jVehicleSystem vehicleSystem,
+        Ode4jCharacterController characterController
     ) {
         this.config = config;
         this.world = world;
@@ -87,6 +90,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         this.stepLoop = stepLoop;
         this.raycastExecutor = raycastExecutor;
         this.vehicleSystem = vehicleSystem;
+        this.characterController = characterController;
     }
 
     public static Ode4jPhysicsWorld create(PhysicsWorldConfig config) {
@@ -111,6 +115,7 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         var dispatcher = new Ode4jContactDispatcher(world, contactGroup, eventBuffer);
         var raycastExecutor = new Ode4jRaycastExecutor(space);
         var vehicleSystem = new Ode4jVehicleSystem(bodyRegistry, eventBuffer, raycastExecutor);
+        var characterController = new Ode4jCharacterController(bodyRegistry, raycastExecutor, eventBuffer);
         var stepLoop = new Ode4jStepLoop(
             world,
             space,
@@ -118,12 +123,13 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
             forceAccumulator,
             dispatcher,
             constraintRegistry,
-            vehicleSystem
+            vehicleSystem,
+            characterController
         );
 
         return new Ode4jPhysicsWorld(config, world, space, contactGroup, bodyRegistry, forceAccumulator,
             constraintRegistry,
-            eventBuffer, dispatcher, stepLoop, raycastExecutor, vehicleSystem);
+            eventBuffer, dispatcher, stepLoop, raycastExecutor, vehicleSystem, characterController);
     }
 
     @Override public void step(float dt) { step(dt, config.maxSubSteps()); }
@@ -186,11 +192,11 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
     @Override public void applyHandbrake(VehicleHandle h, boolean e) { vehicleSystem.applyHandbrake(h, e); }
     @Override public VehicleState getVehicleState(VehicleHandle h) { return vehicleSystem.getVehicleState(h); }
 
-    @Override public CharacterHandle spawnCharacter(CharacterDescriptor d) { throw new UnsupportedOperationException("Step 7"); }
-    @Override public void destroyCharacter(CharacterHandle h) {}
-    @Override public void moveCharacter(CharacterHandle h, Vector3f v) {}
-    @Override public void jumpCharacter(CharacterHandle h, float i) {}
-    @Override public CharacterState getCharacterState(CharacterHandle h) { return CharacterState.ZERO; }
+    @Override public CharacterHandle spawnCharacter(CharacterDescriptor d) { return characterController.spawn(d); }
+    @Override public void destroyCharacter(CharacterHandle h) { characterController.destroy(h); }
+    @Override public void moveCharacter(CharacterHandle h, Vector3f v) { characterController.move(h, v); }
+    @Override public void jumpCharacter(CharacterHandle h, float i) { characterController.jump(h, i); }
+    @Override public CharacterState getCharacterState(CharacterHandle h) { return characterController.getState(h); }
 
     @Override public RagdollHandle spawnRagdoll(RagdollDescriptor d, AnimisPose p) { throw new UnsupportedOperationException("Step 8"); }
     @Override public void destroyRagdoll(RagdollHandle h) {}
