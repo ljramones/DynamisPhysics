@@ -11,6 +11,7 @@ import org.dynamisphysics.api.event.PhysicsEvent;
 import org.dynamisphysics.api.world.PhysicsWorld;
 import org.dynamiscollision.shapes.CollisionShape;
 import org.vectrix.core.Matrix4f;
+import org.vectrix.core.Quaternionf;
 import org.vectrix.core.Vector3f;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -117,6 +118,39 @@ class Ode4jCoreTest {
         world.step(1f / 60f, 1);
         BodyState state = world.getBodyState(h);
         assertTrue(Math.abs(state.angularVelocity().y()) > 0f, "Torque did not produce angular velocity");
+    }
+
+    @Test
+    void dynamicCompoundBodySupportsTorqueAndCollision() {
+        world.spawnRigidBody(RigidBodyConfig.builder(CollisionShape.box(30f, 0.1f, 30f), 0f)
+            .mode(BodyMode.STATIC)
+            .worldTransform(new Matrix4f().identity().translation(0f, -0.1f, 0f))
+            .build());
+
+        CollisionShape compound = CollisionShape.compound(
+            List.of(CollisionShape.sphere(0.4f), CollisionShape.sphere(0.4f)),
+            List.of(
+                new org.vectrix.affine.Transformf(
+                    new Vector3f(-0.8f, 0f, 0f),
+                    new Quaternionf(0f, 0f, 0f, 1f),
+                    new Vector3f(1f, 1f, 1f)
+                ),
+                new org.vectrix.affine.Transformf(
+                    new Vector3f(0.8f, 0f, 0f),
+                    new Quaternionf(0f, 0f, 0f, 1f),
+                    new Vector3f(1f, 1f, 1f)
+                )
+            )
+        );
+
+        var h = world.spawnRigidBody(RigidBodyConfig.builder(compound, 2f)
+            .worldTransform(new Matrix4f().identity().translation(0f, 5f, 0f))
+            .build());
+        world.applyTorque(h, new Vector3f(0f, 8f, 0f));
+        for (int i = 0; i < 120; i++) world.step(1f / 60f, 1);
+        BodyState state = world.getBodyState(h);
+        assertTrue(state.position().y() < 5f, "Compound did not fall");
+        assertTrue(Math.abs(state.angularVelocity().y()) > 0f, "Compound torque had no effect");
     }
 
     @Test
