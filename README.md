@@ -10,14 +10,20 @@ The project is built around parity testing: core gameplay-facing behavior is val
 
 ## Current State
 
-- **Version line**: `0.3.1-SNAPSHOT` (post-`0.3.0` release)
+- **Version line**: `0.3.2-SNAPSHOT` (post-`0.3.1` replay hardening)
 - **Java target**: Java 25
+- **Project status**: active development is currently paused while work shifts to other priorities.
 - **Core status**:
   - Rigid bodies, constraints, characters, vehicles, ragdolls
   - Snapshot/restore support
   - Determinism soak gates
   - Cross-backend parity suite
   - Benchmark regression guard + CI workflow
+  - Replay v1.2 hardening:
+    - canonical STRICT history model (`fresh world -> restore -> step -> hash`)
+    - backend capability assertions in replay tests
+    - frozen replay packet schema v1 (`magic + version + validation`)
+    - debug provenance banner support
 
 ## Why DynamisPhysics
 
