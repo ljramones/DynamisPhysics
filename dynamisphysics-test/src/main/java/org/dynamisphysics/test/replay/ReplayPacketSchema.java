@@ -2,7 +2,9 @@ package org.dynamisphysics.test.replay;
 
 final class ReplayPacketSchema {
     static final String MAGIC = "DYRP";
-    static final int VERSION = 1;
+    static final int CURRENT_SCHEMA_VERSION = 1;
+    static final int MIN_SUPPORTED_SCHEMA_VERSION = 1;
+    static final int MAX_SUPPORTED_SCHEMA_VERSION = 1;
     static final String FINGERPRINT = "repro-packet-v1";
 
     private ReplayPacketSchema() {
@@ -14,9 +16,11 @@ final class ReplayPacketSchema {
                 "Unsupported replay packet magic: " + packet.magic() + " expected=" + MAGIC
             );
         }
-        if (packet.formatVersion() != VERSION) {
+        int schemaVersion = packet.formatVersion();
+        if (schemaVersion < MIN_SUPPORTED_SCHEMA_VERSION || schemaVersion > MAX_SUPPORTED_SCHEMA_VERSION) {
             throw new IllegalArgumentException(
-                "Unsupported replay packet schemaVersion: " + packet.formatVersion() + " expected=" + VERSION
+                "Unsupported replay packet schemaVersion: " + schemaVersion
+                    + " (supported range: " + MIN_SUPPORTED_SCHEMA_VERSION + "-" + MAX_SUPPORTED_SCHEMA_VERSION + ")"
             );
         }
         if (packet.initialSnapshotB64() == null || packet.initialSnapshotB64().isBlank()) {

@@ -31,10 +31,13 @@ public final class PhysicsReplayRunner {
         }
 
         byte[] snapshot = Base64.getDecoder().decode(packet.initialSnapshotB64());
-        world.restore(snapshot);
         ReplayValidationMode mode = packet.validationMode() != null
             ? packet.validationMode()
             : (packet.tuning().deterministic() ? ReplayValidationMode.STRICT : ReplayValidationMode.BEHAVIOURAL);
+        if (Boolean.getBoolean("physics.replay.debug.provenance")) {
+            printProvenance(packet, mode);
+        }
+        world.restore(snapshot);
         ReplayInvariants invariants = packet.invariants() != null ? packet.invariants() : ReplayInvariants.defaults();
         int initialBodyCount = world.getStats().bodyCount();
 
@@ -199,6 +202,22 @@ public final class PhysicsReplayRunner {
             throw new UnsupportedOperationException("SetRagdollBlendTargetOp replay requires AnimisPose reconstruction");
         }
         throw new IllegalArgumentException("Unknown replay op: " + op.getClass().getName());
+    }
+
+    private static void printProvenance(ReproPacket packet, ReplayValidationMode mode) {
+        String gitSha = System.getProperty("git.commit.id.abbrev", System.getProperty("physics.gitSha", "unknown"));
+        System.out.println("[ReplayProvenance] schema=" + packet.formatVersion()
+            + " magic=" + packet.magic()
+            + " fingerprint=" + ReproPacket.SCHEMA_FINGERPRINT
+            + " backend=" + packet.backend()
+            + " validationMode=" + mode
+            + " deterministic=" + packet.tuning().deterministic()
+            + " threads=" + packet.tuning().threads()
+            + " allocator=" + packet.tuning().allocatorMode() + "(" + packet.tuning().allocatorMb() + "MB)"
+            + " solverIterations=" + packet.tuning().solverIterations()
+            + " jdk=" + System.getProperty("java.version", "unknown")
+            + " os=" + System.getProperty("os.name", "unknown") + " " + System.getProperty("os.version", "unknown")
+            + " gitSha=" + gitSha);
     }
 
     public interface ReplayHandleResolver {

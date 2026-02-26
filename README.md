@@ -175,6 +175,8 @@ Notes:
   - `-Dphysics.replay.invariant.maxSpeed=1000`
   - `-Dphysics.replay.invariant.requireFinite=true|false`
   - `-Dphysics.replay.invariant.requireBodyCountStable=true|false`
+- Optional replay provenance banner:
+  - `-Dphysics.replay.debug.provenance=true`
 - Current v1 op replay coverage: rigid-body ops (`applyImpulse`, `applyForce`, `applyTorque`, `setVelocity`, `teleport`).
 - Backend capability matrix and replay contracts: `docs/replay-backend-capabilities.md`.
 - Replay packet schema freeze: `docs/replay-packet-schema.md`.

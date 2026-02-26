@@ -22,7 +22,7 @@ public record ReproPacket(
     List<ReplayInputFrame> inputs,
     List<ReplayCheckpoint> checkpoints
 ) {
-    public static final int FORMAT_VERSION = ReplayPacketSchema.VERSION;
+    public static final int FORMAT_VERSION = ReplayPacketSchema.CURRENT_SCHEMA_VERSION;
     public static final String MAGIC = ReplayPacketSchema.MAGIC;
     public static final String SCHEMA_FINGERPRINT = ReplayPacketSchema.FINGERPRINT;
 
