@@ -176,6 +176,7 @@ Notes:
   - `-Dphysics.replay.invariant.requireFinite=true|false`
   - `-Dphysics.replay.invariant.requireBodyCountStable=true|false`
 - Current v1 op replay coverage: rigid-body ops (`applyImpulse`, `applyForce`, `applyTorque`, `setVelocity`, `teleport`).
+- Backend capability matrix and replay contracts: `docs/replay-backend-capabilities.md`.
 ```
 
 ## Benchmarks

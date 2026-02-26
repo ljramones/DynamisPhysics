@@ -3,6 +3,7 @@ package org.dynamisphysics.jolt;
 import org.dynamisphysics.api.PhysicsWorldFactory;
 import org.dynamisphysics.api.body.RigidBodyHandle;
 import org.dynamisphysics.api.config.PhysicsBackend;
+import org.dynamisphysics.api.config.PhysicsTuningResolver;
 import org.dynamisphysics.api.config.PhysicsWorldConfig;
 import org.dynamisphysics.api.world.PhysicsWorld;
 import org.dynamisphysics.test.replay.PhysicsReplayRecorder;
@@ -30,6 +31,7 @@ class ReplayStrictRoundTripTest {
     @EnumSource(PhysicsBackend.class)
     void strictRoundTripMatchesCheckpoints(PhysicsBackend backend) {
         PhysicsWorldConfig config = ReplayTestSupport.deterministicConfig(backend);
+        ReplayBackendAssertions.requireStrict(backend, PhysicsTuningResolver.resolve(config));
         PhysicsWorld world = PhysicsWorldFactory.create(config);
         try {
             PhysicsReplayRecorder recorder = ReplayTestSupport.newRecorder(world, backend, config);
