@@ -269,6 +269,10 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
         );
     }
 
+    public RigidBodyHandle resolveBodyById(int bodyId) {
+        return bodyRegistry.getHandleById(bodyId);
+    }
+
     @Override
     public void restore(byte[] snap) {
         Ode4jSnapshot.RestoredState restored = Ode4jSnapshot.read(snap);

@@ -3,8 +3,9 @@ package org.dynamisphysics.jolt.body;
 import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.body.RigidBodyHandle;
+import org.dynamisphysics.api.body.StableRigidBodyId;
 
-public final class JoltBodyHandle implements RigidBodyHandle {
+public final class JoltBodyHandle implements RigidBodyHandle, StableRigidBodyId {
     private final int bodyId;
     private final int joltBodyId;
     private final RigidBodyConfig config;

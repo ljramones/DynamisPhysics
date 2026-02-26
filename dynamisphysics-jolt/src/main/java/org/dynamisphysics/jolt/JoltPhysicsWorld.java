@@ -485,6 +485,10 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         return JoltSnapshot.write(stepCount, config.gravity(), timeScale, bodyRegistry.bodiesInIdOrder(), bodyRegistry::getState);
     }
 
+    public RigidBodyHandle resolveBodyById(int bodyId) {
+        return bodyRegistry.getByStableId(bodyId);
+    }
+
     @Override
     public void restore(byte[] snapshot) {
         ensureNotDestroyed();

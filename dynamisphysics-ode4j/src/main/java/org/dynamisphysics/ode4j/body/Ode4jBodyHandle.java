@@ -3,13 +3,14 @@ package org.dynamisphysics.ode4j.body;
 import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.body.RigidBodyHandle;
+import org.dynamisphysics.api.body.StableRigidBodyId;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DGeom;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Ode4jBodyHandle implements RigidBodyHandle {
+public final class Ode4jBodyHandle implements RigidBodyHandle, StableRigidBodyId {
     public record GeomRef(Ode4jBodyHandle handle, int geomId) {}
 
     private final int bodyId;

@@ -10,7 +10,7 @@ The project is built around parity testing: core gameplay-facing behavior is val
 
 ## Current State
 
-- **Version line**: `0.2.1-SNAPSHOT` (post-`0.2.0` stabilization)
+- **Version line**: `0.3.1-SNAPSHOT` (post-`0.3.0` release)
 - **Java target**: Java 25
 - **Core status**:
   - Rigid bodies, constraints, characters, vehicles, ragdolls
@@ -148,6 +148,34 @@ Notes:
 
 ```bash
 ./scripts/gate-long-determinism.sh
+```
+
+### Replay roundtrip gate (manual/nightly)
+
+```bash
+./scripts/gate-replay.sh
+```
+
+Notes:
+
+- Gated by `-Dphysics.replay.tests=true`.
+- Verifies snapshot packet serialize/deserialize + op replay.
+- Replay validation modes:
+  - `STRICT`: checkpoint hash equality required.
+  - `BEHAVIOURAL`: hash drift tolerated, invariants enforced.
+- STRICT canonical rule:
+  - STRICT reference checkpoints must be generated from fresh-restore history (`new world -> restore packet snapshot -> step -> hash`).
+  - Same-world post-build history is diagnostic-only and not a valid STRICT reference stream.
+- Recorder default mode:
+  - ODE4J deterministic => `STRICT`
+  - otherwise => `BEHAVIOURAL`
+- Override with `-Dphysics.replay.validationMode=STRICT|BEHAVIOURAL`.
+- Behavioural invariant overrides:
+  - `-Dphysics.replay.invariant.minY=-10`
+  - `-Dphysics.replay.invariant.maxSpeed=1000`
+  - `-Dphysics.replay.invariant.requireFinite=true|false`
+  - `-Dphysics.replay.invariant.requireBodyCountStable=true|false`
+- Current v1 op replay coverage: rigid-body ops (`applyImpulse`, `applyForce`, `applyTorque`, `setVelocity`, `teleport`).
 ```
 
 ## Benchmarks
