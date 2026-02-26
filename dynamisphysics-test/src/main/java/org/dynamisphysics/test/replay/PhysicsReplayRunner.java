@@ -24,8 +24,10 @@ public final class PhysicsReplayRunner {
     }
 
     public static ReplayResult run(PhysicsWorld world, ReproPacket packet, ReplayHandleResolver resolver) {
-        if (packet.formatVersion() != ReproPacket.FORMAT_VERSION) {
-            return ReplayResult.failed(0, "Unsupported format version: " + packet.formatVersion());
+        try {
+            ReplayPacketSchema.validate(packet);
+        } catch (IllegalArgumentException e) {
+            return ReplayResult.failed(0, e.getMessage());
         }
 
         byte[] snapshot = Base64.getDecoder().decode(packet.initialSnapshotB64());

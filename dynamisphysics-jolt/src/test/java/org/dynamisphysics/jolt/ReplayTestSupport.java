@@ -141,6 +141,7 @@ final class ReplayTestSupport {
 
     static ReproPacket withValidationMode(ReproPacket packet, ReplayValidationMode mode) {
         return new ReproPacket(
+            packet.magic(),
             packet.formatVersion(),
             packet.createdUtc(),
             packet.engineVersion(),
@@ -201,6 +202,7 @@ final class ReplayTestSupport {
         }
         canonical.sort(Comparator.comparingInt(ReplayCheckpoint::step));
         return new ReproPacket(
+            packet.magic(),
             packet.formatVersion(),
             packet.createdUtc(),
             packet.engineVersion(),

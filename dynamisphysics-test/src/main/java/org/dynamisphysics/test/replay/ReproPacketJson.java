@@ -16,6 +16,7 @@ public final class ReproPacketJson {
 
     public static String toJson(ReproPacket packet) {
         try {
+            ReplayPacketSchema.validate(packet);
             return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packet);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Failed to serialize repro packet", e);
@@ -24,9 +25,13 @@ public final class ReproPacketJson {
 
     public static ReproPacket fromJson(String json) {
         try {
-            return MAPPER.readValue(json, ReproPacket.class);
+            ReproPacket packet = MAPPER.readValue(json, ReproPacket.class);
+            ReplayPacketSchema.validate(packet);
+            return packet;
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed to parse repro packet JSON", e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid replay packet schema: " + e.getMessage(), e);
         }
     }
 }

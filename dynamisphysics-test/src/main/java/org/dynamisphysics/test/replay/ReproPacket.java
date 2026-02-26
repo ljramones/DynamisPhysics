@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public record ReproPacket(
+    String magic,
     int formatVersion,
     String createdUtc,
     String engineVersion,
@@ -21,7 +22,9 @@ public record ReproPacket(
     List<ReplayInputFrame> inputs,
     List<ReplayCheckpoint> checkpoints
 ) {
-    public static final int FORMAT_VERSION = 1;
+    public static final int FORMAT_VERSION = ReplayPacketSchema.VERSION;
+    public static final String MAGIC = ReplayPacketSchema.MAGIC;
+    public static final String SCHEMA_FINGERPRINT = ReplayPacketSchema.FINGERPRINT;
 
     public static ReproPacket of(
         String engineVersion,
@@ -38,6 +41,7 @@ public record ReproPacket(
         List<ReplayCheckpoint> checkpoints
     ) {
         return new ReproPacket(
+            MAGIC,
             FORMAT_VERSION,
             java.time.Instant.now().toString(),
             engineVersion,
