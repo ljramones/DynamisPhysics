@@ -12,4 +12,5 @@ module org.dynamisphysics.api {
     exports org.dynamisphysics.api.event;
     exports org.dynamisphysics.api.query;
     exports org.dynamisphysics.api.config;
+    exports org.dynamisphysics.api.collision;
 }
