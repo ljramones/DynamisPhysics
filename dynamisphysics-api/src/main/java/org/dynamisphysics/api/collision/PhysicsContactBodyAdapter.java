@@ -7,6 +7,10 @@ import org.vectrix.core.Vector3d;
  */
 public interface PhysicsContactBodyAdapter<T> {
 
+    Vector3d getPosition(T body);
+
+    void setPosition(T body, Vector3d position);
+
     Vector3d getVelocity(T body);
 
     void setVelocity(T body, Vector3d velocity);
