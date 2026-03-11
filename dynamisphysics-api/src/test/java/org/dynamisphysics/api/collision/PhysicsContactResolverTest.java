@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.vectrix.core.Vector3d;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -266,6 +267,31 @@ class PhysicsContactResolverTest {
         assertEquals(1, policy.loadCalls.get(), "Policy load should occur for seam path");
         assertEquals(1, policy.storeCalls.get(), "Policy store should be Physics-seam preferred post-resolution path");
         assertEquals(1.25, policy.lastStored.normalImpulse(), 1e-9);
+    }
+
+    @Test
+    void preferredResponderUsesPhysicsOwnedOrderingPolicyForSeamStrategies() {
+        TestBody bodyA = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        TestBody bodyB = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        List<String> execution = new ArrayList<>();
+        PhysicsContactResolutionStrategy<TestBody> strategyA = (contact, dt) -> execution.add("A");
+        PhysicsContactResolutionStrategy<TestBody> strategyB = (contact, dt) -> execution.add("B");
+
+        var preferred = new PhysicsPreferredCollisionResponder<>(
+                List.of(strategyA, strategyB),
+                null,
+                null,
+                (contact, loaded) -> loaded,
+                (event, base) -> List.of(base.get(1), base.get(0)));
+
+        var enterEvent = new CollisionEvent<>(
+                new CollisionPair<>(bodyA, bodyB),
+                CollisionEventType.ENTER,
+                true,
+                sampleManifold());
+        preferred.resolve(enterEvent);
+
+        assertEquals(List.of("B", "A"), execution);
     }
 
     private static ContactManifold3D sampleManifold() {
