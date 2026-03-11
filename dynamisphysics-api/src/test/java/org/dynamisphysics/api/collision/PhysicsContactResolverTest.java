@@ -242,6 +242,32 @@ class PhysicsContactResolverTest {
         assertEquals(0.0, bodyB.velocity().x(), 1e-9, "Warm-start should be evicted after EXIT");
     }
 
+    @Test
+    void preferredResponderPersistsWarmStartViaPhysicsPolicyAfterSeamResolution() {
+        TestBody bodyA = new TestBody(new Vector3d(2.0, 0.0, 0.0), 1.0, 0.2);
+        TestBody bodyB = new TestBody(new Vector3d(-1.0, 0.0, 0.0), 1.0, 0.2);
+        AtomicInteger fallbackCalls = new AtomicInteger(0);
+        CollisionResponder3D<TestBody> fallback = event -> fallbackCalls.incrementAndGet();
+        var policy = new CountingWarmStartPolicy<TestBody>(new PhysicsWarmStartImpulse(0.25, 0.0));
+        var preferred = new PhysicsPreferredCollisionResponder<>(
+                List.of(new NormalImpulseContactResolutionStrategy<>(new TestPhysicsAdapter())),
+                fallback,
+                policy,
+                (contact, loadedBefore) -> new PhysicsWarmStartImpulse(loadedBefore.normalImpulse() + 1.0, loadedBefore.tangentImpulse()));
+
+        var enterEvent = new CollisionEvent<>(
+                new CollisionPair<>(bodyA, bodyB),
+                CollisionEventType.ENTER,
+                true,
+                sampleManifold());
+        preferred.resolve(enterEvent);
+
+        assertEquals(0, fallbackCalls.get());
+        assertEquals(1, policy.loadCalls.get(), "Policy load should occur for seam path");
+        assertEquals(1, policy.storeCalls.get(), "Policy store should be Physics-seam preferred post-resolution path");
+        assertEquals(1.25, policy.lastStored.normalImpulse(), 1e-9);
+    }
+
     private static ContactManifold3D sampleManifold() {
         return new ContactManifold3D(
                 new CollisionManifold3D(1.0, 0.0, 0.0, 0.05),
@@ -351,6 +377,34 @@ class PhysicsContactResolverTest {
         @Override
         public double getFriction(TestBody body) {
             return body.friction;
+        }
+    }
+
+    private static final class CountingWarmStartPolicy<T> implements PhysicsWarmStartCachePolicy<T> {
+        private final PhysicsWarmStartImpulse loadValue;
+        private final AtomicInteger loadCalls = new AtomicInteger(0);
+        private final AtomicInteger storeCalls = new AtomicInteger(0);
+        private PhysicsWarmStartImpulse lastStored = PhysicsWarmStartImpulse.ZERO;
+
+        private CountingWarmStartPolicy(PhysicsWarmStartImpulse loadValue) {
+            this.loadValue = loadValue;
+        }
+
+        @Override
+        public PhysicsWarmStartImpulse load(DetectedCollisionContact<T> contact) {
+            loadCalls.incrementAndGet();
+            return loadValue;
+        }
+
+        @Override
+        public void store(DetectedCollisionContact<T> contact, PhysicsWarmStartImpulse impulse) {
+            storeCalls.incrementAndGet();
+            lastStored = impulse;
+        }
+
+        @Override
+        public void onCollisionEvent(CollisionEvent<T> event) {
+            // No-op for this focused test.
         }
     }
 }

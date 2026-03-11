@@ -18,6 +18,7 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
     private final List<PhysicsContactResolutionStrategy<T>> preferredStrategies;
     private final CollisionResponder3D<T> fallbackResponder;
     private final PhysicsWarmStartCachePolicy<T> warmStartCachePolicy;
+    private final PhysicsWarmStartPersistenceStrategy<T> warmStartPersistenceStrategy;
 
     public PhysicsPreferredCollisionResponder(
             List<PhysicsContactResolutionStrategy<T>> preferredStrategies,
@@ -29,13 +30,25 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
             List<PhysicsContactResolutionStrategy<T>> preferredStrategies,
             CollisionResponder3D<T> fallbackResponder,
             PhysicsWarmStartCachePolicy<T> warmStartCachePolicy) {
+        this(preferredStrategies, fallbackResponder, warmStartCachePolicy, (contact, loaded) -> loaded);
+    }
+
+    public PhysicsPreferredCollisionResponder(
+            List<PhysicsContactResolutionStrategy<T>> preferredStrategies,
+            CollisionResponder3D<T> fallbackResponder,
+            PhysicsWarmStartCachePolicy<T> warmStartCachePolicy,
+            PhysicsWarmStartPersistenceStrategy<T> warmStartPersistenceStrategy) {
         if (preferredStrategies == null) {
             throw new IllegalArgumentException("preferredStrategies must not be null");
+        }
+        if (warmStartCachePolicy != null && warmStartPersistenceStrategy == null) {
+            throw new IllegalArgumentException("warmStartPersistenceStrategy must not be null when warmStartCachePolicy is set");
         }
         this.resolver = new PhysicsContactResolver<>();
         this.preferredStrategies = List.copyOf(preferredStrategies);
         this.fallbackResponder = fallbackResponder;
         this.warmStartCachePolicy = warmStartCachePolicy;
+        this.warmStartPersistenceStrategy = warmStartPersistenceStrategy;
     }
 
     @Override
@@ -51,6 +64,9 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
                     event.pair().first(),
                     event.pair().second(),
                     event.manifold());
+            PhysicsWarmStartImpulse loadedBefore = warmStartCachePolicy == null
+                    ? PhysicsWarmStartImpulse.ZERO
+                    : warmStartCachePolicy.load(contact);
             resolver.resolve(
                     List.of(contact),
                     1f / 60f,
@@ -59,6 +75,10 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
                             strategy.resolve(c, dt);
                         }
                     });
+            if (warmStartCachePolicy != null) {
+                PhysicsWarmStartImpulse updated = warmStartPersistenceStrategy.afterResolution(contact, loadedBefore);
+                warmStartCachePolicy.store(contact, updated == null ? PhysicsWarmStartImpulse.ZERO : updated);
+            }
             return;
         }
         if (fallbackResponder != null) {

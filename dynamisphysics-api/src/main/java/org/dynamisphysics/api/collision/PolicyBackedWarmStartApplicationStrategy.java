@@ -6,7 +6,6 @@ package org.dynamisphysics.api.collision;
 public final class PolicyBackedWarmStartApplicationStrategy<T> implements PhysicsContactResolutionStrategy<T> {
 
     private final WarmStartApplicationContactResolutionStrategy<T> delegate;
-    private final PhysicsWarmStartCachePolicy<T> cachePolicy;
 
     public PolicyBackedWarmStartApplicationStrategy(
             PhysicsContactBodyAdapter<T> bodyAdapter,
@@ -17,14 +16,11 @@ public final class PolicyBackedWarmStartApplicationStrategy<T> implements Physic
         if (cachePolicy == null) {
             throw new IllegalArgumentException("cachePolicy must not be null");
         }
-        this.cachePolicy = cachePolicy;
         this.delegate = new WarmStartApplicationContactResolutionStrategy<>(bodyAdapter, cachePolicy::load);
     }
 
     @Override
     public void resolve(DetectedCollisionContact<T> contact, float deltaSeconds) {
         delegate.resolve(contact, deltaSeconds);
-        PhysicsWarmStartImpulse loaded = cachePolicy.load(contact);
-        cachePolicy.store(contact, loaded);
     }
 }
