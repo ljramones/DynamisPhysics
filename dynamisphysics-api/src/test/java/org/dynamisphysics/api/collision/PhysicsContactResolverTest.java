@@ -122,6 +122,36 @@ class PhysicsContactResolverTest {
         assertEquals(legacyB.position().z(), physicsB.position().z(), 1e-9);
     }
 
+    @Test
+    void warmStartApplicationStrategyMatchesLegacyWarmStartEffect() {
+        TestBody physicsA = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        TestBody physicsB = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        TestBody legacyA = physicsA.copy();
+        TestBody legacyB = physicsB.copy();
+
+        var manifold = sampleManifold();
+        var warmStart = new PhysicsWarmStartImpulse(0.7, 0.2);
+
+        PhysicsContactResolver<TestBody> physicsResolver = new PhysicsContactResolver<>();
+        physicsResolver.resolve(
+                List.of(new DetectedCollisionContact<>(physicsA, physicsB, manifold)),
+                1f / 60f,
+                new WarmStartApplicationContactResolutionStrategy<>(new TestPhysicsAdapter(), c -> warmStart));
+
+        ContactSolver3D<TestBody> legacySolver = new ContactSolver3D<>(new TestLegacyAdapter());
+        legacySolver.solveVelocity(
+                new CollisionPair<>(legacyA, legacyB),
+                manifold,
+                new WarmStartImpulse(warmStart.normalImpulse(), warmStart.tangentImpulse()));
+
+        assertEquals(legacyA.velocity().x(), physicsA.velocity().x(), 1e-9);
+        assertEquals(legacyA.velocity().y(), physicsA.velocity().y(), 1e-9);
+        assertEquals(legacyA.velocity().z(), physicsA.velocity().z(), 1e-9);
+        assertEquals(legacyB.velocity().x(), physicsB.velocity().x(), 1e-9);
+        assertEquals(legacyB.velocity().y(), physicsB.velocity().y(), 1e-9);
+        assertEquals(legacyB.velocity().z(), physicsB.velocity().z(), 1e-9);
+    }
+
     private static ContactManifold3D sampleManifold() {
         return new ContactManifold3D(
                 new CollisionManifold3D(1.0, 0.0, 0.0, 0.05),
