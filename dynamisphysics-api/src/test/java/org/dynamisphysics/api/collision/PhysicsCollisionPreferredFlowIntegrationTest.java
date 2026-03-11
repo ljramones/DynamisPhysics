@@ -28,6 +28,7 @@ class PhysicsCollisionPreferredFlowIntegrationTest {
                 Body::aabb,
                 body -> CollisionFilter.DEFAULT,
                 (left, right) -> ContactGenerator3D.generate(left.aabb(), right.aabb()));
+        world.setResponsePathPolicy((candidateResponder, events) -> false);
         CountingWarmStartPolicy<Body> warmStartPolicy = new CountingWarmStartPolicy<>(new PhysicsWarmStartImpulse(0.3, 0.0));
         AtomicInteger fallbackCalls = new AtomicInteger(0);
         CollisionResponder3D<Body> fallback = event -> fallbackCalls.incrementAndGet();
@@ -73,6 +74,7 @@ class PhysicsCollisionPreferredFlowIntegrationTest {
                 Body::aabb,
                 body -> CollisionFilter.DEFAULT,
                 (left, right) -> ContactGenerator3D.generate(left.aabb(), right.aabb()));
+        world.setResponsePathPolicy((candidateResponder, events) -> false);
         AtomicInteger strategyCalls = new AtomicInteger(0);
         AtomicInteger fallbackCalls = new AtomicInteger(0);
         CollisionResponder3D<Body> fallback = event -> fallbackCalls.incrementAndGet();
