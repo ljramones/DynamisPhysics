@@ -198,6 +198,50 @@ class PhysicsContactResolverTest {
         assertEquals(1, fallbackCalls.get(), "Fallback should run when seam does not apply");
     }
 
+    @Test
+    void preferredResponderUsesPhysicsWarmStartPolicyAndInvalidatesOnExit() {
+        TestBody bodyA = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        TestBody bodyB = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        AtomicInteger fallbackCalls = new AtomicInteger(0);
+        CollisionResponder3D<TestBody> fallback = event -> fallbackCalls.incrementAndGet();
+
+        var manifold = sampleManifold();
+        var detected = new DetectedCollisionContact<>(bodyA, bodyB, manifold);
+        var warmStartPolicy = new MapBackedWarmStartCachePolicy<TestBody>();
+        warmStartPolicy.store(detected, new PhysicsWarmStartImpulse(0.8, 0.0));
+
+        var preferred = new PhysicsPreferredCollisionResponder<>(
+                List.of(new PolicyBackedWarmStartApplicationStrategy<>(new TestPhysicsAdapter(), warmStartPolicy)),
+                fallback,
+                warmStartPolicy);
+
+        var enterEvent = new CollisionEvent<>(
+                new CollisionPair<>(bodyA, bodyB),
+                CollisionEventType.ENTER,
+                true,
+                manifold);
+        preferred.resolve(enterEvent);
+        assertEquals(0, fallbackCalls.get());
+        assertTrue(bodyA.velocity().x() < 0.0);
+        assertTrue(bodyB.velocity().x() > 0.0);
+
+        bodyA.velocity = new Vector3d(0.0, 0.0, 0.0);
+        bodyB.velocity = new Vector3d(0.0, 0.0, 0.0);
+
+        var exitEvent = new CollisionEvent<>(
+                new CollisionPair<>(bodyA, bodyB),
+                CollisionEventType.EXIT,
+                true,
+                manifold);
+        preferred.resolve(exitEvent);
+        assertEquals(1, fallbackCalls.get(), "Exit should use fallback and invalidate warm-start cache");
+
+        preferred.resolve(enterEvent);
+        assertEquals(1, fallbackCalls.get(), "Resolvable ENTER should still use seam");
+        assertEquals(0.0, bodyA.velocity().x(), 1e-9, "Warm-start should be evicted after EXIT");
+        assertEquals(0.0, bodyB.velocity().x(), 1e-9, "Warm-start should be evicted after EXIT");
+    }
+
     private static ContactManifold3D sampleManifold() {
         return new ContactManifold3D(
                 new CollisionManifold3D(1.0, 0.0, 0.0, 0.05),

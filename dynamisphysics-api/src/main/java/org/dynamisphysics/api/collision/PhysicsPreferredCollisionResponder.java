@@ -17,22 +17,34 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
     private final PhysicsContactResolver<T> resolver;
     private final List<PhysicsContactResolutionStrategy<T>> preferredStrategies;
     private final CollisionResponder3D<T> fallbackResponder;
+    private final PhysicsWarmStartCachePolicy<T> warmStartCachePolicy;
 
     public PhysicsPreferredCollisionResponder(
             List<PhysicsContactResolutionStrategy<T>> preferredStrategies,
             CollisionResponder3D<T> fallbackResponder) {
+        this(preferredStrategies, fallbackResponder, null);
+    }
+
+    public PhysicsPreferredCollisionResponder(
+            List<PhysicsContactResolutionStrategy<T>> preferredStrategies,
+            CollisionResponder3D<T> fallbackResponder,
+            PhysicsWarmStartCachePolicy<T> warmStartCachePolicy) {
         if (preferredStrategies == null) {
             throw new IllegalArgumentException("preferredStrategies must not be null");
         }
         this.resolver = new PhysicsContactResolver<>();
         this.preferredStrategies = List.copyOf(preferredStrategies);
         this.fallbackResponder = fallbackResponder;
+        this.warmStartCachePolicy = warmStartCachePolicy;
     }
 
     @Override
     public void resolve(CollisionEvent<T> event) {
         if (event == null) {
             return;
+        }
+        if (warmStartCachePolicy != null) {
+            warmStartCachePolicy.onCollisionEvent(event);
         }
         if (canResolveViaPhysicsSeam(event) && !preferredStrategies.isEmpty()) {
             DetectedCollisionContact<T> contact = new DetectedCollisionContact<>(
