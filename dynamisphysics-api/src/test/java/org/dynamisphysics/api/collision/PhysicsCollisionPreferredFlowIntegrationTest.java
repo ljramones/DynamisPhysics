@@ -108,7 +108,7 @@ class PhysicsCollisionPreferredFlowIntegrationTest {
         AtomicInteger fallbackCalls = new AtomicInteger(0);
         CollisionResponder3D<Body> fallback = event -> fallbackCalls.incrementAndGet();
 
-        PhysicsCollisionPreferredFlowPresets.configureDefault(world, new BodyContactAdapter(), fallback);
+        PhysicsCollisionPreferredFlowConfigurator.configureDefault(world, new BodyContactAdapter(), fallback);
         var events = world.update(List.of(bodyA, bodyB));
 
         assertEquals(1, events.size());
@@ -129,7 +129,7 @@ class PhysicsCollisionPreferredFlowIntegrationTest {
         AtomicInteger fallbackCalls = new AtomicInteger(0);
         CollisionResponder3D<Body> fallback = event -> fallbackCalls.incrementAndGet();
 
-        PhysicsCollisionPreferredFlowPresets.configureDefault(
+        PhysicsCollisionPreferredFlowConfigurator.configureDefault(
                 world,
                 new BodyContactAdapter(),
                 fallback,

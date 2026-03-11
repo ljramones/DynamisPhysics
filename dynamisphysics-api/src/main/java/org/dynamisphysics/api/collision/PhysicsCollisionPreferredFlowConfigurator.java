@@ -1,5 +1,6 @@
 package org.dynamisphysics.api.collision;
 
+import org.dynamiscollision.world.CollisionResponder3D;
 import org.dynamiscollision.world.CollisionWorld3D;
 
 /**
@@ -25,5 +26,32 @@ public final class PhysicsCollisionPreferredFlowConfigurator {
         // Representative preferred-path wiring: force explicit responder handling path in CollisionWorld.
         world.setResponsePathPolicy((candidateResponder, responseEvents) -> false);
         world.setResponder(preferredResponder);
+    }
+
+    /**
+     * Representative production-facing convenience wiring for the default Physics-preferred policy
+     * bundle.
+     */
+    public static <T> void configureDefault(
+            CollisionWorld3D<T> world,
+            PhysicsContactBodyAdapter<T> bodyAdapter,
+            CollisionResponder3D<T> fallbackResponder) {
+        PhysicsCollisionPreferredFlowPresets.configureDefault(world, bodyAdapter, fallbackResponder);
+    }
+
+    /**
+     * Representative production-facing convenience wiring for the default Physics-preferred policy
+     * bundle with explicit seam-selection override.
+     */
+    public static <T> void configureDefault(
+            CollisionWorld3D<T> world,
+            PhysicsContactBodyAdapter<T> bodyAdapter,
+            CollisionResponder3D<T> fallbackResponder,
+            PhysicsSeamSelectionPolicy<T> seamSelectionPolicy) {
+        PhysicsCollisionPreferredFlowPresets.configureDefault(
+                world,
+                bodyAdapter,
+                fallbackResponder,
+                seamSelectionPolicy);
     }
 }
