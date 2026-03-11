@@ -294,6 +294,34 @@ class PhysicsContactResolverTest {
         assertEquals(List.of("B", "A"), execution);
     }
 
+    @Test
+    void preferredResponderUsesPhysicsOwnedSeamSelectionPolicy() {
+        TestBody bodyA = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        TestBody bodyB = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        AtomicInteger strategyCalls = new AtomicInteger(0);
+        AtomicInteger fallbackCalls = new AtomicInteger(0);
+        PhysicsContactResolutionStrategy<TestBody> strategy = (contact, dt) -> strategyCalls.incrementAndGet();
+        CollisionResponder3D<TestBody> fallback = event -> fallbackCalls.incrementAndGet();
+
+        var preferred = new PhysicsPreferredCollisionResponder<>(
+                List.of(strategy),
+                fallback,
+                null,
+                (contact, loaded) -> loaded,
+                (event, base) -> base,
+                event -> false);
+
+        var resolvableEvent = new CollisionEvent<>(
+                new CollisionPair<>(bodyA, bodyB),
+                CollisionEventType.ENTER,
+                true,
+                sampleManifold());
+        preferred.resolve(resolvableEvent);
+
+        assertEquals(0, strategyCalls.get(), "Seam should be bypassed when selection policy rejects seam path");
+        assertEquals(1, fallbackCalls.get(), "Fallback should run when selection policy routes away from seam path");
+    }
+
     private static ContactManifold3D sampleManifold() {
         return new ContactManifold3D(
                 new CollisionManifold3D(1.0, 0.0, 0.0, 0.05),

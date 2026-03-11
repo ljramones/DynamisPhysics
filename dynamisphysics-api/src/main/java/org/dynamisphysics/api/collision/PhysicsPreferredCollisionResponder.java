@@ -20,18 +20,31 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
     private final PhysicsWarmStartCachePolicy<T> warmStartCachePolicy;
     private final PhysicsWarmStartPersistenceStrategy<T> warmStartPersistenceStrategy;
     private final PhysicsFixedStepResponderOrderingPolicy<T> orderingPolicy;
+    private final PhysicsSeamSelectionPolicy<T> seamSelectionPolicy;
 
     public PhysicsPreferredCollisionResponder(
             List<PhysicsContactResolutionStrategy<T>> preferredStrategies,
             CollisionResponder3D<T> fallbackResponder) {
-        this(preferredStrategies, fallbackResponder, null, (contact, loaded) -> loaded, (event, base) -> base);
+        this(
+                preferredStrategies,
+                fallbackResponder,
+                null,
+                (contact, loaded) -> loaded,
+                (event, base) -> base,
+                PhysicsPreferredCollisionResponder::defaultSeamSelection);
     }
 
     public PhysicsPreferredCollisionResponder(
             List<PhysicsContactResolutionStrategy<T>> preferredStrategies,
             CollisionResponder3D<T> fallbackResponder,
             PhysicsWarmStartCachePolicy<T> warmStartCachePolicy) {
-        this(preferredStrategies, fallbackResponder, warmStartCachePolicy, (contact, loaded) -> loaded, (event, base) -> base);
+        this(
+                preferredStrategies,
+                fallbackResponder,
+                warmStartCachePolicy,
+                (contact, loaded) -> loaded,
+                (event, base) -> base,
+                PhysicsPreferredCollisionResponder::defaultSeamSelection);
     }
 
     public PhysicsPreferredCollisionResponder(
@@ -39,7 +52,13 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
             CollisionResponder3D<T> fallbackResponder,
             PhysicsWarmStartCachePolicy<T> warmStartCachePolicy,
             PhysicsWarmStartPersistenceStrategy<T> warmStartPersistenceStrategy) {
-        this(preferredStrategies, fallbackResponder, warmStartCachePolicy, warmStartPersistenceStrategy, (event, base) -> base);
+        this(
+                preferredStrategies,
+                fallbackResponder,
+                warmStartCachePolicy,
+                warmStartPersistenceStrategy,
+                (event, base) -> base,
+                PhysicsPreferredCollisionResponder::defaultSeamSelection);
     }
 
     public PhysicsPreferredCollisionResponder(
@@ -48,6 +67,22 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
             PhysicsWarmStartCachePolicy<T> warmStartCachePolicy,
             PhysicsWarmStartPersistenceStrategy<T> warmStartPersistenceStrategy,
             PhysicsFixedStepResponderOrderingPolicy<T> orderingPolicy) {
+        this(
+                preferredStrategies,
+                fallbackResponder,
+                warmStartCachePolicy,
+                warmStartPersistenceStrategy,
+                orderingPolicy,
+                PhysicsPreferredCollisionResponder::defaultSeamSelection);
+    }
+
+    public PhysicsPreferredCollisionResponder(
+            List<PhysicsContactResolutionStrategy<T>> preferredStrategies,
+            CollisionResponder3D<T> fallbackResponder,
+            PhysicsWarmStartCachePolicy<T> warmStartCachePolicy,
+            PhysicsWarmStartPersistenceStrategy<T> warmStartPersistenceStrategy,
+            PhysicsFixedStepResponderOrderingPolicy<T> orderingPolicy,
+            PhysicsSeamSelectionPolicy<T> seamSelectionPolicy) {
         if (preferredStrategies == null) {
             throw new IllegalArgumentException("preferredStrategies must not be null");
         }
@@ -57,12 +92,16 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
         if (orderingPolicy == null) {
             throw new IllegalArgumentException("orderingPolicy must not be null");
         }
+        if (seamSelectionPolicy == null) {
+            throw new IllegalArgumentException("seamSelectionPolicy must not be null");
+        }
         this.resolver = new PhysicsContactResolver<>();
         this.preferredStrategies = List.copyOf(preferredStrategies);
         this.fallbackResponder = fallbackResponder;
         this.warmStartCachePolicy = warmStartCachePolicy;
         this.warmStartPersistenceStrategy = warmStartPersistenceStrategy;
         this.orderingPolicy = orderingPolicy;
+        this.seamSelectionPolicy = seamSelectionPolicy;
     }
 
     @Override
@@ -73,7 +112,7 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
         if (warmStartCachePolicy != null) {
             warmStartCachePolicy.onCollisionEvent(event);
         }
-        if (canResolveViaPhysicsSeam(event) && !preferredStrategies.isEmpty()) {
+        if (seamSelectionPolicy.usePhysicsSeam(event) && !preferredStrategies.isEmpty()) {
             DetectedCollisionContact<T> contact = new DetectedCollisionContact<>(
                     event.pair().first(),
                     event.pair().second(),
@@ -104,7 +143,7 @@ public final class PhysicsPreferredCollisionResponder<T> implements CollisionRes
         }
     }
 
-    private static <T> boolean canResolveViaPhysicsSeam(CollisionEvent<T> event) {
+    private static <T> boolean defaultSeamSelection(CollisionEvent<T> event) {
         return event.responseEnabled()
                 && event.type() != CollisionEventType.EXIT
                 && event.manifold() != null;
