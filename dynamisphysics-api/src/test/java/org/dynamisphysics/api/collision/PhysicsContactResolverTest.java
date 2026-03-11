@@ -8,6 +8,7 @@ import org.dynamiscollision.events.CollisionEventType;
 import org.dynamiscollision.narrowphase.CollisionManifold3D;
 import org.dynamiscollision.pipeline.CollisionPair;
 import org.dynamiscollision.contact.WarmStartImpulse;
+import org.dynamiscollision.world.CollisionResponder3D;
 import org.dynamiscollision.world.RigidBodyAdapter3D;
 import org.junit.jupiter.api.Test;
 import org.vectrix.core.Vector3d;
@@ -17,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PhysicsContactResolverTest {
 
@@ -150,6 +152,50 @@ class PhysicsContactResolverTest {
         assertEquals(legacyB.velocity().x(), physicsB.velocity().x(), 1e-9);
         assertEquals(legacyB.velocity().y(), physicsB.velocity().y(), 1e-9);
         assertEquals(legacyB.velocity().z(), physicsB.velocity().z(), 1e-9);
+    }
+
+    @Test
+    void preferredResponderUsesPhysicsSeamBeforeLegacyFallback() {
+        TestBody bodyA = new TestBody(new Vector3d(5.0, 0.0, 0.0), 1.0, 0.3);
+        TestBody bodyB = new TestBody(new Vector3d(-1.0, 0.0, 0.0), 1.0, 0.3);
+        AtomicInteger fallbackCalls = new AtomicInteger(0);
+        CollisionResponder3D<TestBody> fallback = event -> fallbackCalls.incrementAndGet();
+        var preferred = new PhysicsPreferredCollisionResponder<>(
+                List.of(new NormalImpulseContactResolutionStrategy<>(new TestPhysicsAdapter())),
+                fallback);
+
+        var resolvableEvent = new CollisionEvent<>(
+                new CollisionPair<>(bodyA, bodyB),
+                CollisionEventType.ENTER,
+                true,
+                sampleManifold());
+
+        preferred.resolve(resolvableEvent);
+
+        assertEquals(0, fallbackCalls.get(), "Fallback should not run when Physics seam resolves");
+        assertTrue(bodyA.velocity().x() < 5.0);
+        assertTrue(bodyB.velocity().x() > -1.0);
+    }
+
+    @Test
+    void preferredResponderFallsBackWhenPhysicsSeamDoesNotApply() {
+        TestBody bodyA = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        TestBody bodyB = new TestBody(new Vector3d(0.0, 0.0, 0.0), 1.0, 0.0);
+        AtomicInteger fallbackCalls = new AtomicInteger(0);
+        CollisionResponder3D<TestBody> fallback = event -> fallbackCalls.incrementAndGet();
+        var preferred = new PhysicsPreferredCollisionResponder<>(
+                List.of(new PositionCorrectionContactResolutionStrategy<>(new TestPhysicsAdapter())),
+                fallback);
+
+        var nonResolvableEvent = new CollisionEvent<>(
+                new CollisionPair<>(bodyA, bodyB),
+                CollisionEventType.EXIT,
+                true,
+                sampleManifold());
+
+        preferred.resolve(nonResolvableEvent);
+
+        assertEquals(1, fallbackCalls.get(), "Fallback should run when seam does not apply");
     }
 
     private static ContactManifold3D sampleManifold() {
