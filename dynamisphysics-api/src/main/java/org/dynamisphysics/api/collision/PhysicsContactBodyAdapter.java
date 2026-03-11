@@ -1,0 +1,17 @@
+package org.dynamisphysics.api.collision;
+
+import org.vectrix.core.Vector3d;
+
+/**
+ * Physics-owned adapter for body state needed by contact-resolution strategies.
+ */
+public interface PhysicsContactBodyAdapter<T> {
+
+    Vector3d getVelocity(T body);
+
+    void setVelocity(T body, Vector3d velocity);
+
+    double getInverseMass(T body);
+
+    double getRestitution(T body);
+}

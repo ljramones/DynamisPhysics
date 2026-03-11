@@ -2,11 +2,15 @@ package org.dynamisphysics.api.collision;
 
 import org.dynamiscollision.contact.ContactManifold3D;
 import org.dynamiscollision.contact.ContactPoint3D;
+import org.dynamiscollision.contact.ContactSolver3D;
 import org.dynamiscollision.events.CollisionEvent;
 import org.dynamiscollision.events.CollisionEventType;
 import org.dynamiscollision.narrowphase.CollisionManifold3D;
 import org.dynamiscollision.pipeline.CollisionPair;
+import org.dynamiscollision.contact.WarmStartImpulse;
+import org.dynamiscollision.world.RigidBodyAdapter3D;
 import org.junit.jupiter.api.Test;
+import org.vectrix.core.Vector3d;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -64,9 +68,127 @@ class PhysicsContactResolverTest {
         assertEquals(1, invocations.get());
     }
 
+    @Test
+    void normalImpulseStrategyMatchesLegacySolverForSimpleHeadOnContact() {
+        TestBody physicsA = new TestBody(new Vector3d(5.0, 0.0, 0.0), 1.0, 0.3);
+        TestBody physicsB = new TestBody(new Vector3d(-1.0, 0.0, 0.0), 1.0, 0.3);
+        TestBody legacyA = physicsA.copy();
+        TestBody legacyB = physicsB.copy();
+
+        var manifold = sampleManifold();
+
+        PhysicsContactResolver<TestBody> physicsResolver = new PhysicsContactResolver<>();
+        physicsResolver.resolve(
+                List.of(new DetectedCollisionContact<>(physicsA, physicsB, manifold)),
+                1f / 60f,
+                new NormalImpulseContactResolutionStrategy<>(new TestPhysicsAdapter()));
+
+        ContactSolver3D<TestBody> legacySolver = new ContactSolver3D<>(new TestLegacyAdapter());
+        legacySolver.solveVelocity(new CollisionPair<>(legacyA, legacyB), manifold, WarmStartImpulse.ZERO);
+
+        assertEquals(legacyA.velocity().x(), physicsA.velocity().x(), 1e-9);
+        assertEquals(legacyA.velocity().y(), physicsA.velocity().y(), 1e-9);
+        assertEquals(legacyA.velocity().z(), physicsA.velocity().z(), 1e-9);
+        assertEquals(legacyB.velocity().x(), physicsB.velocity().x(), 1e-9);
+        assertEquals(legacyB.velocity().y(), physicsB.velocity().y(), 1e-9);
+        assertEquals(legacyB.velocity().z(), physicsB.velocity().z(), 1e-9);
+    }
+
     private static ContactManifold3D sampleManifold() {
         return new ContactManifold3D(
                 new CollisionManifold3D(1.0, 0.0, 0.0, 0.05),
                 List.of(new ContactPoint3D(0.0, 0.0, 0.0)));
+    }
+
+    private static final class TestBody {
+        private Vector3d velocity;
+        private final double inverseMass;
+        private final double restitution;
+        private final double friction;
+        private final Vector3d position;
+
+        private TestBody(Vector3d velocity, double inverseMass, double restitution) {
+            this(velocity, inverseMass, restitution, 0.0, new Vector3d(0.0, 0.0, 0.0));
+        }
+
+        private TestBody(Vector3d velocity, double inverseMass, double restitution, double friction, Vector3d position) {
+            this.velocity = velocity;
+            this.inverseMass = inverseMass;
+            this.restitution = restitution;
+            this.friction = friction;
+            this.position = position;
+        }
+
+        private TestBody copy() {
+            return new TestBody(
+                    new Vector3d(velocity.x(), velocity.y(), velocity.z()),
+                    inverseMass,
+                    restitution,
+                    friction,
+                    new Vector3d(position.x(), position.y(), position.z()));
+        }
+
+        private Vector3d velocity() {
+            return velocity;
+        }
+    }
+
+    private static final class TestPhysicsAdapter implements PhysicsContactBodyAdapter<TestBody> {
+        @Override
+        public Vector3d getVelocity(TestBody body) {
+            return body.velocity;
+        }
+
+        @Override
+        public void setVelocity(TestBody body, Vector3d velocity) {
+            body.velocity = velocity;
+        }
+
+        @Override
+        public double getInverseMass(TestBody body) {
+            return body.inverseMass;
+        }
+
+        @Override
+        public double getRestitution(TestBody body) {
+            return body.restitution;
+        }
+    }
+
+    private static final class TestLegacyAdapter implements RigidBodyAdapter3D<TestBody> {
+        @Override
+        public Vector3d getPosition(TestBody body) {
+            return body.position;
+        }
+
+        @Override
+        public void setPosition(TestBody body, Vector3d position) {
+            // Not used by solveVelocity path.
+        }
+
+        @Override
+        public Vector3d getVelocity(TestBody body) {
+            return body.velocity;
+        }
+
+        @Override
+        public void setVelocity(TestBody body, Vector3d velocity) {
+            body.velocity = velocity;
+        }
+
+        @Override
+        public double getInverseMass(TestBody body) {
+            return body.inverseMass;
+        }
+
+        @Override
+        public double getRestitution(TestBody body) {
+            return body.restitution;
+        }
+
+        @Override
+        public double getFriction(TestBody body) {
+            return body.friction;
+        }
     }
 }
