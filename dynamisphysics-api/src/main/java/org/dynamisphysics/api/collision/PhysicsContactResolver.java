@@ -1,5 +1,7 @@
 package org.dynamisphysics.api.collision;
 
+import org.dynamiscollision.events.CollisionEvent;
+
 /**
  * Physics-owned consumption path for collision contact manifolds.
  *
@@ -27,5 +29,16 @@ public final class PhysicsContactResolver<T> {
             }
             strategy.resolve(contact, deltaSeconds);
         }
+    }
+
+    /**
+     * Transitional compatibility path: consumes legacy collision events and routes resolution
+     * through the Physics-owned seam.
+     */
+    public void resolveFromCollisionEvents(
+            Iterable<CollisionEvent<T>> events,
+            float deltaSeconds,
+            PhysicsContactResolutionStrategy<T> strategy) {
+        resolve(CollisionEventContactAdapter.toDetectedContacts(events), deltaSeconds, strategy);
     }
 }
