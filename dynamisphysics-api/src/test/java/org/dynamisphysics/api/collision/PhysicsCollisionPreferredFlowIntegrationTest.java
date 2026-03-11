@@ -43,7 +43,7 @@ class PhysicsCollisionPreferredFlowIntegrationTest {
                 (contact, loadedBefore) -> new PhysicsWarmStartImpulse(loadedBefore.normalImpulse() + 1.0, loadedBefore.tangentImpulse()),
                 (event, base) -> base,
                 event -> event.responseEnabled() && event.type() != CollisionEventType.EXIT && event.manifold() != null);
-        world.setResponder(preferred);
+        PhysicsCollisionPreferredFlowConfigurator.configure(world, preferred);
 
         Vector3d startPosA = bodyA.position;
         Vector3d startPosB = bodyB.position;
@@ -85,7 +85,7 @@ class PhysicsCollisionPreferredFlowIntegrationTest {
                 (contact, loaded) -> loaded,
                 (event, base) -> base,
                 event -> false);
-        world.setResponder(preferred);
+        PhysicsCollisionPreferredFlowConfigurator.configure(world, preferred);
 
         var events = world.update(List.of(bodyA, bodyB));
 
