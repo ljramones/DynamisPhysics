@@ -23,8 +23,8 @@ import org.dynamisphysics.test.replay.ReplayOp;
 import org.dynamisphysics.test.replay.ReproPacket;
 import org.dynamisphysics.test.replay.ReproPacketJson;
 import org.dynamisphysics.test.replay.ReplayValidationMode;
-import org.vectrix.core.Matrix4f;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Comparator;

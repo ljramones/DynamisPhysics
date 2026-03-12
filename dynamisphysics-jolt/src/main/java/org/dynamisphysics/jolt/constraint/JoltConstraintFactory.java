@@ -17,7 +17,7 @@ import com.github.stephengold.joltjni.enumerate.ESpringMode;
 import org.dynamisphysics.api.constraint.ConstraintDesc;
 import org.dynamisphysics.api.constraint.ConstraintType;
 import org.dynamisphysics.jolt.body.JoltBodyHandle;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 final class JoltConstraintFactory {
     private static final float DEFAULT_STIFFNESS = 40f;

@@ -9,7 +9,7 @@ import org.dynamisphysics.api.event.ContactPoint;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.jolt.body.JoltBodyHandle;
 import org.dynamisphysics.jolt.body.JoltBodyRegistry;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.List;
 

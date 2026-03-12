@@ -11,7 +11,7 @@ import org.dynamiscollision.contact.WarmStartImpulse;
 import org.dynamiscollision.world.CollisionResponder3D;
 import org.dynamiscollision.world.RigidBodyAdapter3D;
 import org.junit.jupiter.api.Test;
-import org.vectrix.core.Vector3d;
+import org.dynamisengine.vectrix.core.Vector3d;
 
 import java.util.List;
 import java.util.ArrayList;

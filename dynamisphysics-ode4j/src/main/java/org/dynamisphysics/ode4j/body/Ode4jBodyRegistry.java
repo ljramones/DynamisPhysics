@@ -13,9 +13,9 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
-import org.vectrix.core.Matrix4f;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.Collection;
 import java.util.Collections;

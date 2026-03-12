@@ -6,7 +6,7 @@ import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.constraint.ConstraintDesc;
 import org.dynamisphysics.jolt.body.JoltBodyHandle;
 import org.dynamisphysics.jolt.body.JoltBodyRegistry;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.List;
 

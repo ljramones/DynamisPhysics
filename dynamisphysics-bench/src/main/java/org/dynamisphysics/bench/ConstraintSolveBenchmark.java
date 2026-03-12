@@ -48,7 +48,7 @@ public class ConstraintSolveBenchmark {
         public void setup() {
             PhysicsBackend selected = PhysicsBackend.valueOf(backend);
             world = BenchSupport.createWorld(selected, false);
-            world.setGravity(new org.vectrix.core.Vector3f(0f, 0f, 0f));
+            world.setGravity(new org.dynamisengine.vectrix.core.Vector3f(0f, 0f, 0f));
             bodies = BenchSupport.spawnConstraintBodies(world, constraintCount + 1);
 
             for (int i = 0; i < constraintCount; i++) {

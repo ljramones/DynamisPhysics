@@ -11,7 +11,7 @@ import org.dynamisphysics.ode4j.Ode4jPhysicsWorld;
 import org.dynamisphysics.ode4j.body.Ode4jBodyHandle;
 import org.dynamisphysics.ode4j.constraint.Ode4jConstraintHandle;
 import org.dynamisphysics.ode4j.event.Ode4jContactDispatcher;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.List;
 

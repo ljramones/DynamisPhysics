@@ -1,7 +1,7 @@
 package org.dynamisphysics.api.event;
 
 import org.dynamisphysics.api.body.RigidBodyHandle;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.List;
 

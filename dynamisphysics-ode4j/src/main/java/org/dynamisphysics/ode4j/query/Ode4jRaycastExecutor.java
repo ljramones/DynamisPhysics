@@ -10,7 +10,7 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DRay;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.OdeHelper;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,8 +15,8 @@ import org.dynamisphysics.test.replay.ReplayValidationMode;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.Base64;
 import java.util.Arrays;

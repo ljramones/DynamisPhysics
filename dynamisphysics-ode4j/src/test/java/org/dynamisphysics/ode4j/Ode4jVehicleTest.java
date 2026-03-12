@@ -17,9 +17,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.vectrix.core.Matrix4f;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

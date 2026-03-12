@@ -1,6 +1,6 @@
 module org.dynamisphysics.ode4j {
     requires org.dynamisphysics.api;
-    requires org.vectrix;
+    requires org.dynamisengine.vectrix;
     requires org.animis;
     requires org.dynamiscollision;
     requires dynamis.gpu.api;

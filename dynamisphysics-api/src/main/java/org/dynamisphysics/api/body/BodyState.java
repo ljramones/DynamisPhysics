@@ -1,7 +1,7 @@
 package org.dynamisphysics.api.body;
 
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public record BodyState(
     Vector3f position,

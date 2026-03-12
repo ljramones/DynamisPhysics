@@ -1,7 +1,7 @@
 package org.dynamisphysics.api.constraint;
 
 import org.dynamisphysics.api.body.RigidBodyHandle;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 /**
  * Builder helpers for mechanical constraints using the 0.2.0 encoding:

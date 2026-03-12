@@ -1,6 +1,6 @@
 package org.dynamisphysics.api.world;
 
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public record FootContactHint(
     String boneName,

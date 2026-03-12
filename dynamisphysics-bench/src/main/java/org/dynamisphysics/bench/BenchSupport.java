@@ -27,10 +27,10 @@ import org.meshforge.core.attr.VertexFormat;
 import org.meshforge.core.attr.VertexSchema;
 import org.meshforge.pack.packer.MeshPacker;
 import org.meshforge.pack.spec.PackSpec;
-import org.vectrix.affine.Transformf;
-import org.vectrix.core.Matrix4f;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.affine.Transformf;
+import org.dynamisengine.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

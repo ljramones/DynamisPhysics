@@ -24,8 +24,8 @@ import org.dynamisphysics.api.world.CharacterState;
 import org.dynamisphysics.api.world.PhysicsStats;
 import org.dynamisphysics.api.world.PhysicsWorld;
 import org.dynamisphysics.api.world.VehicleState;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Base64;

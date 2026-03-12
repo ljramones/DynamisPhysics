@@ -8,7 +8,7 @@ import org.dynamisphysics.api.config.PhysicsTuningProfile;
 import org.dynamisphysics.api.config.PhysicsWorldConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

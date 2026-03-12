@@ -29,10 +29,10 @@ import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.api.query.RaycastResult;
 import org.dynamisphysics.api.world.PhysicsWorld;
 import org.dynamisphysics.api.world.VehicleState;
-import org.vectrix.affine.Transformf;
-import org.vectrix.core.Matrix4f;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.affine.Transformf;
+import org.dynamisengine.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

@@ -1,6 +1,6 @@
 package org.dynamisphysics.api;
 
-import org.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Matrix4f;
 
 import java.util.Map;
 

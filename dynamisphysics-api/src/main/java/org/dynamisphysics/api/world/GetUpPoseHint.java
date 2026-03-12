@@ -1,6 +1,6 @@
 package org.dynamisphysics.api.world;
 
-import org.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Quaternionf;
 
 public record GetUpPoseHint(
     String ragdollId,

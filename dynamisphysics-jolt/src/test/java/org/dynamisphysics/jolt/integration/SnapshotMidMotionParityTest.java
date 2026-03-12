@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +69,7 @@ class SnapshotMidMotionParityTest {
             for (int i = 0; i < PRE_STEPS; i++) {
                 if (i % 60 == 0) {
                     for (int b = 0; b < tracked.size(); b += 3) {
-                        world.applyImpulse(tracked.get(b), new org.vectrix.core.Vector3f(1f, 0f, 0f), new org.vectrix.core.Vector3f());
+                        world.applyImpulse(tracked.get(b), new org.dynamisengine.vectrix.core.Vector3f(1f, 0f, 0f), new org.dynamisengine.vectrix.core.Vector3f());
                     }
                 }
                 world.step(IntegrationParityScenes.DT, 1);

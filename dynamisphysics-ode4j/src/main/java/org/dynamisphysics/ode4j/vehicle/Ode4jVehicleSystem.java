@@ -17,8 +17,8 @@ import org.dynamisphysics.ode4j.body.Ode4jBodyRegistry;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
 import org.dynamisphysics.ode4j.query.Ode4jRaycastExecutor;
 import org.ode4j.math.DVector3;
-import org.vectrix.core.Vector3f;
-import org.vectrix.physics.SpringDamperf;
+import org.dynamisengine.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.physics.SpringDamperf;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -73,8 +73,8 @@ public final class Ode4jVehicleSystem {
         oh.kill();
     }
 
-    public void applyThrottle(VehicleHandle h, float v) { vh(h).throttle = org.vectrix.core.Math.clamp(v, 0f, 1f); }
-    public void applyBrake(VehicleHandle h, float v) { vh(h).brake = org.vectrix.core.Math.clamp(v, 0f, 1f); }
+    public void applyThrottle(VehicleHandle h, float v) { vh(h).throttle = org.dynamisengine.vectrix.core.Math.clamp(v, 0f, 1f); }
+    public void applyBrake(VehicleHandle h, float v) { vh(h).brake = org.dynamisengine.vectrix.core.Math.clamp(v, 0f, 1f); }
     public void applySteering(VehicleHandle h, float v) { vh(h).steeringAngle = v; }
     public void applyHandbrake(VehicleHandle h, boolean e) { vh(h).handbrakeEngaged = e; }
 
@@ -156,7 +156,7 @@ public final class Ode4jVehicleSystem {
             RaycastResult hr = hit.get();
             float rayDist = hr.fraction() * rayLength;
             float compression = (wheel.suspensionTravel() + wheel.radius()) - rayDist;
-            compression = org.vectrix.core.Math.clamp(compression, 0f, wheel.suspensionTravel());
+            compression = org.dynamisengine.vectrix.core.Math.clamp(compression, 0f, wheel.suspensionTravel());
             float compressionRate = (compression - vehicle.prevCompression()[i]) / dt;
             vehicle.prevCompression()[i] = compression;
 
@@ -180,8 +180,8 @@ public final class Ode4jVehicleSystem {
                 wheelAngVel = 0f;
             }
             float slipRatio = Ode4jPacejkaTire.computeSlipRatio(wheelAngVel, wheel.radius(), chassisSpeed);
-            float effectiveSlip = slipRatio / org.vectrix.core.Math.max(surface.friction(), 0.1f);
-            effectiveSlip = org.vectrix.core.Math.clamp(effectiveSlip, -3f, 3f);
+            float effectiveSlip = slipRatio / org.dynamisengine.vectrix.core.Math.max(surface.friction(), 0.1f);
+            effectiveSlip = org.dynamisengine.vectrix.core.Math.clamp(effectiveSlip, -3f, 3f);
 
             PacejkaCoeffs scaledLong = wheel.longitudinalCoeffs()
                 .withPeak(wheel.longitudinalCoeffs().peak() * surface.friction());
@@ -196,7 +196,7 @@ public final class Ode4jVehicleSystem {
                 boolean rearWheel = i >= 2;
                 float brakeForce = (vehicle.handbrakeEngaged && rearWheel)
                     ? normalLoad * 0.8f
-                    : normalLoad * org.vectrix.core.Math.clamp(vehicle.brake, 0f, 1f) * 0.6f;
+                    : normalLoad * org.dynamisengine.vectrix.core.Math.clamp(vehicle.brake, 0f, 1f) * 0.6f;
                 Vector3f chassisVel = chassisState.linearVelocity();
                 Vector3f brakeDir = normalizeOrZero(chassisVel).negate(new Vector3f());
                 chassisBody.body().addForceAtPos(
@@ -209,7 +209,7 @@ public final class Ode4jVehicleSystem {
                 totalDriveWheelLoad += normalLoad;
             }
 
-            if (org.vectrix.core.Math.abs(effectiveSlip) > SLIP_EVENT_THRESHOLD) {
+            if (org.dynamisengine.vectrix.core.Math.abs(effectiveSlip) > SLIP_EVENT_THRESHOLD) {
                 eventBuffer.add(new WheelSlipEvent(vehicle, i, effectiveSlip, hr.position(), surface));
             }
 
@@ -238,12 +238,12 @@ public final class Ode4jVehicleSystem {
                 .findFirst()
                 .map(WheelConfig::radius)
                 .orElse(0.35f);
-            float driveForce = wheelTorque / org.vectrix.core.Math.max(drivenRadius, 0.01f);
+            float driveForce = wheelTorque / org.dynamisengine.vectrix.core.Math.max(drivenRadius, 0.01f);
             Vector3f fwd = chassisForwardDir(chassisState);
             chassisBody.body().addForce(new DVector3(fwd.x() * driveForce, fwd.y() * driveForce, fwd.z() * driveForce));
         }
 
-        if (org.vectrix.core.Math.abs(vehicle.steeringAngle) > 0.001f && !allAirborne) {
+        if (org.dynamisengine.vectrix.core.Math.abs(vehicle.steeringAngle) > 0.001f && !allAirborne) {
             float yawTorque = vehicle.steeringAngle * chassisSpeed * 800f;
             chassisBody.body().addTorque(new DVector3(0.0, yawTorque, 0.0));
         }
@@ -277,7 +277,7 @@ public final class Ode4jVehicleSystem {
         float radius
     ) {
         WheelConfig wheel = vehicle.descriptor().wheels().get(wheelIndex);
-        float base = chassisSpeed / org.vectrix.core.Math.max(radius, 0.01f);
+        float base = chassisSpeed / org.dynamisengine.vectrix.core.Math.max(radius, 0.01f);
         if (wheel.driven() && vehicle.throttle > 0f) {
             base += vehicle.throttle * 5f;
         }

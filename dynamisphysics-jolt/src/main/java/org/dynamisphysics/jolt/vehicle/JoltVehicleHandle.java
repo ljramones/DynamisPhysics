@@ -8,7 +8,7 @@ import org.dynamisphysics.api.VehicleDescriptor;
 import org.dynamisphysics.api.VehicleHandle;
 import org.dynamisphysics.api.body.RigidBodyHandle;
 import org.dynamisphysics.api.world.WheelState;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

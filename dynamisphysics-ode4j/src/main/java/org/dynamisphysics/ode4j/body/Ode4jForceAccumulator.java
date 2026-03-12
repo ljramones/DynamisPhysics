@@ -2,7 +2,7 @@ package org.dynamisphysics.ode4j.body;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DBody;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

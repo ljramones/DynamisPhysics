@@ -17,8 +17,8 @@ import org.dynamisphysics.api.event.ContactListener;
 import org.dynamisphysics.api.event.PhysicsEvent;
 import org.dynamisphysics.api.query.RaycastResult;
 import org.dynamisphysics.api.query.ShapecastResult;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.List;
 import java.util.Optional;

@@ -11,7 +11,7 @@ import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Comparator;

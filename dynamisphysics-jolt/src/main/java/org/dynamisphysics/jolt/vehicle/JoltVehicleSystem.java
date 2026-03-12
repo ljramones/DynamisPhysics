@@ -24,7 +24,7 @@ import org.dynamisphysics.api.world.WheelState;
 import org.dynamisphysics.jolt.body.JoltBodyHandle;
 import org.dynamisphysics.jolt.body.JoltBodyRegistry;
 import org.dynamisphysics.jolt.event.JoltEventBuffer;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -99,15 +99,15 @@ public final class JoltVehicleSystem {
     }
 
     public void applyThrottle(VehicleHandle handle, float value) {
-        vh(handle).throttle = org.vectrix.core.Math.clamp(value, 0f, 1f);
+        vh(handle).throttle = org.dynamisengine.vectrix.core.Math.clamp(value, 0f, 1f);
     }
 
     public void applyBrake(VehicleHandle handle, float value) {
-        vh(handle).brake = org.vectrix.core.Math.clamp(value, 0f, 1f);
+        vh(handle).brake = org.dynamisengine.vectrix.core.Math.clamp(value, 0f, 1f);
     }
 
     public void applySteering(VehicleHandle handle, float value) {
-        vh(handle).steering = org.vectrix.core.Math.clamp(value, -1f, 1f);
+        vh(handle).steering = org.dynamisengine.vectrix.core.Math.clamp(value, -1f, 1f);
     }
 
     public void applyHandbrake(VehicleHandle handle, boolean engaged) {
@@ -145,7 +145,7 @@ public final class JoltVehicleSystem {
         if (chassisHandle == null || !chassisHandle.isAlive()) {
             return;
         }
-        if (vehicle.throttle > 0f || vehicle.brake > 0f || vehicle.handbrake || org.vectrix.core.Math.abs(vehicle.steering) > 0f) {
+        if (vehicle.throttle > 0f || vehicle.brake > 0f || vehicle.handbrake || org.dynamisengine.vectrix.core.Math.abs(vehicle.steering) > 0f) {
             physicsSystem.getBodyInterface().activateBody(chassisHandle.joltBodyId());
         }
         vehicle.controller().setDriverInput(
@@ -188,10 +188,10 @@ public final class JoltVehicleSystem {
 
                 WheelConfig wheelConfig = vehicle.descriptor().wheels().get(i);
                 float baseSlip = PacejkaTireModel.computeSlipRatio(angularVelocity, wheelConfig.radius(), speed);
-                float tractionPenalty = vehicle.throttle * (1f - org.vectrix.core.Math.clamp(surface.friction(), 0f, 1f));
-                slipRatio = org.vectrix.core.Math.clamp(baseSlip + tractionPenalty, -3f, 3f);
+                float tractionPenalty = vehicle.throttle * (1f - org.dynamisengine.vectrix.core.Math.clamp(surface.friction(), 0f, 1f));
+                slipRatio = org.dynamisengine.vectrix.core.Math.clamp(baseSlip + tractionPenalty, -3f, 3f);
 
-                if (org.vectrix.core.Math.abs(slipRatio) > SLIP_EVENT_THRESHOLD) {
+                if (org.dynamisengine.vectrix.core.Math.abs(slipRatio) > SLIP_EVENT_THRESHOLD) {
                     eventBuffer.add(new WheelSlipEvent(vehicle, i, slipRatio, contactPosition, surface));
                 }
             }
@@ -251,7 +251,7 @@ public final class JoltVehicleSystem {
     }
 
     private void applyDriveAssist(JoltVehicleHandle vehicle, BodyState chassisState, float dt, float surfaceFriction) {
-        float traction = org.vectrix.core.Math.clamp(surfaceFriction, 0.05f, 1f);
+        float traction = org.dynamisengine.vectrix.core.Math.clamp(surfaceFriction, 0.05f, 1f);
         Vector3f forward = chassisForward(chassisState);
         Vector3f position = chassisState.position();
         Vector3f velocity = chassisState.linearVelocity();
@@ -270,7 +270,7 @@ public final class JoltVehicleSystem {
             bodyRegistry.applyForce(vehicle.chassisBody(), toVec3(force), toRVec3(position));
         }
 
-        if (org.vectrix.core.Math.abs(vehicle.steering) > 0f && horizontalSpeed > 0.001f) {
+        if (org.dynamisengine.vectrix.core.Math.abs(vehicle.steering) > 0f && horizontalSpeed > 0.001f) {
             float yawTorque = vehicle.steering * horizontalSpeed * STEER_TORQUE_SCALE * traction * dt;
             bodyRegistry.applyTorque(vehicle.chassisBody(), toVec3(new Vector3f(0f, yawTorque, 0f)));
         }

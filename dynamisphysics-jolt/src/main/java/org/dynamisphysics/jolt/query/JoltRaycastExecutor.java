@@ -9,7 +9,7 @@ import com.github.stephengold.joltjni.Vec3;
 import org.dynamisphysics.api.query.RaycastResult;
 import org.dynamisphysics.jolt.body.JoltBodyHandle;
 import org.dynamisphysics.jolt.body.JoltBodyRegistry;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.List;
 import java.util.Optional;

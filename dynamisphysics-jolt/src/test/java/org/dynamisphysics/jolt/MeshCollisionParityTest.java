@@ -19,7 +19,7 @@ import org.meshforge.core.attr.VertexSchema;
 import org.meshforge.pack.buffer.PackedMesh;
 import org.meshforge.pack.packer.MeshPacker;
 import org.meshforge.pack.spec.PackSpec;
-import org.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Matrix4f;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

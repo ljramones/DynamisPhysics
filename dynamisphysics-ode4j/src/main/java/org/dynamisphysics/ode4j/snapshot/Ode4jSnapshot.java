@@ -20,9 +20,9 @@ import org.dynamisphysics.api.constraint.ConstraintType;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.ode4j.body.Ode4jBodyHandle;
 import org.dynamisphysics.ode4j.constraint.Ode4jConstraintHandle;
-import org.vectrix.affine.Transformf;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.affine.Transformf;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

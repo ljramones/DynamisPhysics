@@ -2,7 +2,7 @@ package org.dynamisphysics.ode4j.vehicle;
 
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.api.world.WheelState;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 final class Ode4jWheelState {
     Vector3f contactPosition = new Vector3f();

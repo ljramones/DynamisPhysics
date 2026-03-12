@@ -1,7 +1,7 @@
 package org.dynamisphysics.api.world;
 
 import org.dynamisphysics.api.material.PhysicsMaterial;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public record WheelState(
     Vector3f contactPosition,

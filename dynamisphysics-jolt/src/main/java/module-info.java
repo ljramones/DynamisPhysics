@@ -1,7 +1,7 @@
 module org.dynamisphysics.jolt {
     requires org.dynamisphysics.api;
     requires org.animis;
-    requires org.vectrix;
+    requires org.dynamisengine.vectrix;
     requires org.dynamiscollision;
     requires com.github.stephengold.joltjni;
     requires meshforge;

@@ -48,9 +48,9 @@ import org.dynamisphysics.jolt.query.JoltRaycastExecutor;
 import org.dynamisphysics.jolt.ragdoll.JoltRagdollSystem;
 import org.dynamisphysics.jolt.snapshot.JoltSnapshot;
 import org.dynamisphysics.jolt.vehicle.JoltVehicleSystem;
-import org.vectrix.core.Matrix4f;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

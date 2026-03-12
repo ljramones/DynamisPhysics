@@ -16,10 +16,10 @@ import org.dynamisphysics.api.world.GetUpPoseHint;
 import org.dynamisphysics.ode4j.body.Ode4jBodyHandle;
 import org.dynamisphysics.ode4j.body.Ode4jBodyRegistry;
 import org.dynamisphysics.ode4j.constraint.Ode4jConstraintRegistry;
-import org.vectrix.core.Matrix4f;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
-import org.vectrix.physics.PdControllersf;
+import org.dynamisengine.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.physics.PdControllersf;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -140,7 +140,7 @@ public final class Ode4jRagdollSystem {
     public void setBlendTarget(RagdollHandle handle, AnimisPose pose, float alpha) {
         Instance i = lookup(handle);
         i.targetPose = pose != null ? pose : AnimisPose.EMPTY;
-        i.blendAlpha = org.vectrix.core.Math.clamp(alpha, 0f, 1f);
+        i.blendAlpha = org.dynamisengine.vectrix.core.Math.clamp(alpha, 0f, 1f);
         i.hintEmitted = false;
     }
 

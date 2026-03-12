@@ -6,7 +6,7 @@ import org.dynamisphysics.api.event.ContactEvent;
 import org.dynamisphysics.api.event.PhysicsEvent;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.api.world.PhysicsStats;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.List;
 

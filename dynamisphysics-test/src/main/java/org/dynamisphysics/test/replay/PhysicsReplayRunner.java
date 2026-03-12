@@ -6,7 +6,7 @@ import org.dynamisphysics.api.VehicleHandle;
 import org.dynamisphysics.api.body.BodyState;
 import org.dynamisphysics.api.body.RigidBodyHandle;
 import org.dynamisphysics.api.world.PhysicsWorld;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Base64;

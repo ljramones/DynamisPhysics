@@ -5,7 +5,7 @@ import org.dynamisphysics.api.CharacterDescriptor;
 import org.dynamisphysics.api.CharacterHandle;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.api.world.CharacterState;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public final class JoltCharacterHandle implements CharacterHandle {
     private final CharacterDescriptor descriptor;

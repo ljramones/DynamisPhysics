@@ -7,8 +7,8 @@ import org.dynamisphysics.api.event.SleepEvent;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.test.mock.MockRigidBodyHandle;
 import org.dynamiscollision.shapes.CollisionShape;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

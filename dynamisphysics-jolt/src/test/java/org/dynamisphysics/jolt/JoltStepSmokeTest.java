@@ -7,7 +7,7 @@ import org.dynamisphysics.api.config.PhysicsBackend;
 import org.dynamisphysics.api.config.PhysicsWorldConfig;
 import org.dynamisphysics.api.world.PhysicsWorld;
 import org.junit.jupiter.api.Test;
-import org.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Matrix4f;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 

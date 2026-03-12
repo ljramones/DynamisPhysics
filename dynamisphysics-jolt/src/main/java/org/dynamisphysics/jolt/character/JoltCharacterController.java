@@ -24,7 +24,7 @@ import org.dynamisphysics.jolt.body.JoltBodyHandle;
 import org.dynamisphysics.jolt.body.JoltBodyRegistry;
 import org.dynamisphysics.jolt.event.JoltEventBuffer;
 import org.dynamisphysics.jolt.query.JoltRaycastExecutor;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -66,17 +66,17 @@ public final class JoltCharacterController {
     }
 
     public CharacterHandle spawn(CharacterDescriptor descriptor) {
-        float radius = org.vectrix.core.Math.max(0.02f, descriptor.radius());
-        float height = org.vectrix.core.Math.max(radius * 2f, descriptor.height());
-        float halfHeightOfCylinder = org.vectrix.core.Math.max(0f, (height - radius * 2f) * 0.5f);
+        float radius = org.dynamisengine.vectrix.core.Math.max(0.02f, descriptor.radius());
+        float height = org.dynamisengine.vectrix.core.Math.max(radius * 2f, descriptor.height());
+        float halfHeightOfCylinder = org.dynamisengine.vectrix.core.Math.max(0f, (height - radius * 2f) * 0.5f);
 
         CharacterVirtualSettings settings = new CharacterVirtualSettings();
         settings.setShape(new CapsuleShape(halfHeightOfCylinder, radius));
         settings.setUp(new Vec3(0f, 1f, 0f));
         settings.setMaxSlopeAngle((float) java.lang.Math.toRadians(descriptor.maxSlopeAngleDeg()));
-        settings.setCharacterPadding(org.vectrix.core.Math.max(0.01f, descriptor.skinWidth()));
-        settings.setMass(org.vectrix.core.Math.max(1f, descriptor.mass()));
-        settings.setMaxStrength(org.vectrix.core.Math.max(1f, descriptor.pushForce()));
+        settings.setCharacterPadding(org.dynamisengine.vectrix.core.Math.max(0.01f, descriptor.skinWidth()));
+        settings.setMass(org.dynamisengine.vectrix.core.Math.max(1f, descriptor.mass()));
+        settings.setMaxStrength(org.dynamisengine.vectrix.core.Math.max(1f, descriptor.pushForce()));
         settings.setInnerBodyLayer(normalizeLayer(descriptor.layer()));
 
         float startY = descriptor.height() * 0.5f + descriptor.stepHeight() + 0.2f;
@@ -107,7 +107,7 @@ public final class JoltCharacterController {
 
     public void jump(CharacterHandle handle, float impulse) {
         JoltCharacterHandle ch = ch(handle);
-        ch.pendingJumpImpulse = org.vectrix.core.Math.max(0f, impulse);
+        ch.pendingJumpImpulse = org.dynamisengine.vectrix.core.Math.max(0f, impulse);
     }
 
     public CharacterState getState(CharacterHandle handle) {
@@ -154,7 +154,7 @@ public final class JoltCharacterController {
         ));
         updateSettings.setWalkStairsStepUp(new Vec3(0f, desc.stepHeight(), 0f));
         updateSettings.setStickToFloorStepDown(
-            new Vec3(0f, desc.stepHeight() + org.vectrix.core.Math.max(0.01f, desc.skinWidth()), 0f)
+            new Vec3(0f, desc.stepHeight() + org.dynamisengine.vectrix.core.Math.max(0.01f, desc.skinWidth()), 0f)
         );
         character.extendedUpdate(
             dt,
@@ -209,7 +209,7 @@ public final class JoltCharacterController {
                 new Vector3f(position),
                 new Vector3f(groundNormal),
                 groundMaterial,
-                org.vectrix.core.Math.abs(previous.velocity().y())
+                org.dynamisengine.vectrix.core.Math.abs(previous.velocity().y())
             ));
         }
 

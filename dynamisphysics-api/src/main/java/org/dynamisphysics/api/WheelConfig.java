@@ -1,6 +1,6 @@
 package org.dynamisphysics.api;
 
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public record WheelConfig(
     Vector3f attachmentPoint,

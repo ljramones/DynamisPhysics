@@ -1,7 +1,7 @@
 module org.dynamisphysics.api {
     requires org.dynamiscollision;
     requires org.animis;
-    requires org.vectrix;
+    requires org.dynamisengine.vectrix;
 
     exports org.dynamisphysics.api;
     exports org.dynamisphysics.api.world;

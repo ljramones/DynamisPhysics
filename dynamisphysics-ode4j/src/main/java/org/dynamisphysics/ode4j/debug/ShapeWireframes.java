@@ -8,9 +8,9 @@ import org.dynamiscollision.shapes.CylinderCollisionShape;
 import org.dynamiscollision.shapes.PlaneCollisionShape;
 import org.dynamiscollision.shapes.ShapeType;
 import org.dynamiscollision.shapes.SphereCollisionShape;
-import org.vectrix.affine.Transformf;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.affine.Transformf;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public final class ShapeWireframes {
     private static final int RING_SEGMENTS = 16;

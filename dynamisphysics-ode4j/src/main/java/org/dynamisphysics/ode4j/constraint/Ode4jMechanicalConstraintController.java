@@ -7,7 +7,7 @@ import org.dynamisphysics.ode4j.body.Ode4jBodyHandle;
 import org.dynamisphysics.ode4j.body.Ode4jBodyRegistry;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public final class Ode4jMechanicalConstraintController {
     private static final float EPS = 1e-5f;

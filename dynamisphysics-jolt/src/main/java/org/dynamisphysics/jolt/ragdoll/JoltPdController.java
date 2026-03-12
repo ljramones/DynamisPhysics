@@ -1,7 +1,7 @@
 package org.dynamisphysics.jolt.ragdoll;
 
-import org.vectrix.core.Vector3f;
-import org.vectrix.physics.PdControllersf;
+import org.dynamisengine.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.physics.PdControllersf;
 
 final class JoltPdController {
     private JoltPdController() {

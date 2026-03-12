@@ -39,7 +39,7 @@ final class Ode4jTransmissionModel {
         if (currentGear == 0) {
             return config.reverseRatio();
         }
-        int idx = org.vectrix.core.Math.clamp(currentGear - 1, 0, config.gearRatios().length - 1);
+        int idx = org.dynamisengine.vectrix.core.Math.clamp(currentGear - 1, 0, config.gearRatios().length - 1);
         return config.gearRatios()[idx];
     }
 }

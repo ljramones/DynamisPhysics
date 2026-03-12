@@ -10,7 +10,7 @@ import org.dynamisphysics.api.world.FootContactHint;
 import org.dynamisphysics.ode4j.body.Ode4jBodyRegistry;
 import org.dynamisphysics.ode4j.event.Ode4jEventBuffer;
 import org.dynamisphysics.ode4j.query.Ode4jRaycastExecutor;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -56,7 +56,7 @@ public final class Ode4jCharacterController {
 
     public void jump(CharacterHandle handle, float impulse) {
         Ode4jCharacterHandle c = ch(handle);
-        c.jumpImpulse = org.vectrix.core.Math.max(impulse, 0f);
+        c.jumpImpulse = org.dynamisengine.vectrix.core.Math.max(impulse, 0f);
     }
 
     public CharacterState getState(CharacterHandle handle) {
@@ -108,7 +108,7 @@ public final class Ode4jCharacterController {
 
         target = tryStepUp(pos, target, desc, dt);
 
-        character.jumpGroundSnapCooldown = org.vectrix.core.Math.max(0f, character.jumpGroundSnapCooldown - dt);
+        character.jumpGroundSnapCooldown = org.dynamisengine.vectrix.core.Math.max(0f, character.jumpGroundSnapCooldown - dt);
         boolean disableGroundSnap = jumpedThisStep || character.jumpGroundSnapCooldown > 0f;
         GroundHit groundHit = disableGroundSnap ? GroundHit.none() : sampleGround(target, desc);
         boolean grounded = false;
@@ -145,7 +145,7 @@ public final class Ode4jCharacterController {
                 new Vector3f(groundHit.position),
                 new Vector3f(groundNormal),
                 groundMaterial,
-                org.vectrix.core.Math.abs(prev.velocity().y())
+                org.dynamisengine.vectrix.core.Math.abs(prev.velocity().y())
             ));
 
             if (desc.footIkListener() != null) {

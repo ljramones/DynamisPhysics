@@ -76,7 +76,7 @@
 
       <!-- Ecosystem -->
       <dependency>
-        <groupId>org.vectrix</groupId>
+        <groupId>org.dynamisengine</groupId>
         <artifactId>vectrix</artifactId>
         <version>${vectrix.version}</version>
       </dependency>

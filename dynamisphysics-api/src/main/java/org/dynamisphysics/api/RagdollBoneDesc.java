@@ -1,7 +1,7 @@
 package org.dynamisphysics.api;
 
 import org.dynamiscollision.shapes.CollisionShape;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public record RagdollBoneDesc(
     String animisBoneName,

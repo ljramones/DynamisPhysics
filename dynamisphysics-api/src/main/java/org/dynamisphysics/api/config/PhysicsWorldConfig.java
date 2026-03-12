@@ -1,6 +1,6 @@
 package org.dynamisphysics.api.config;
 
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public record PhysicsWorldConfig(
     PhysicsBackend backend,

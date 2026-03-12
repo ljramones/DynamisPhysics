@@ -11,8 +11,8 @@ import org.ode4j.math.DVector3;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DRotation;
 import org.ode4j.ode.OdeHelper;
-import org.vectrix.affine.Transformf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.affine.Transformf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

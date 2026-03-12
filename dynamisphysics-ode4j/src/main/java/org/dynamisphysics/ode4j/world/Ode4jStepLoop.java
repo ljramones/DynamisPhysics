@@ -111,7 +111,7 @@ public final class Ode4jStepLoop {
             stepOrderObserver.onPhase("characterController.stepAll");
             characterController.stepAll(
                 dt,
-                new org.vectrix.core.Vector3f(
+                new org.dynamisengine.vectrix.core.Vector3f(
                     (float) gravity.get0(),
                     (float) gravity.get1(),
                     (float) gravity.get2()
@@ -146,5 +146,5 @@ public final class Ode4jStepLoop {
     public float lastStepMs() { return lastStepMs; }
     public DWorld world() { return world; }
     public DHashSpace space() { return space; }
-    public void setStepCount(int stepCount) { this.stepCount = org.vectrix.core.Math.max(stepCount, 0); }
+    public void setStepCount(int stepCount) { this.stepCount = org.dynamisengine.vectrix.core.Math.max(stepCount, 0); }
 }

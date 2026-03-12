@@ -12,8 +12,8 @@ import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.OdeHelper;
-import org.vectrix.affine.Transformf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.affine.Transformf;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import static org.dynamisphysics.ode4j.world.Ode4jConversions.toOde;
 

@@ -1,6 +1,6 @@
 package org.dynamisphysics.ode4j.debug;
 
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 public final class WireframeBuilder {
     private static final int FLOATS_PER_VERTEX = 7;

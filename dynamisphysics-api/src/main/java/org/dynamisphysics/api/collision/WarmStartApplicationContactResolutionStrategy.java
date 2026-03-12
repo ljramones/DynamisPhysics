@@ -1,6 +1,6 @@
 package org.dynamisphysics.api.collision;
 
-import org.vectrix.core.Vector3d;
+import org.dynamisengine.vectrix.core.Vector3d;
 
 import java.util.function.Function;
 

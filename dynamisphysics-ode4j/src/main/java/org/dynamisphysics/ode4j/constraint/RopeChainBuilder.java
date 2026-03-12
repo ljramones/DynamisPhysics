@@ -7,7 +7,7 @@ import org.dynamisphysics.api.constraint.ConstraintLimits;
 import org.dynamisphysics.api.constraint.ConstraintMotor;
 import org.dynamisphysics.api.constraint.ConstraintType;
 import org.dynamisphysics.api.world.PhysicsWorld;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Collections;

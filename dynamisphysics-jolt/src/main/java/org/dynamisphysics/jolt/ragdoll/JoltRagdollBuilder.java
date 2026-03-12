@@ -13,7 +13,7 @@ import com.github.stephengold.joltjni.enumerate.EConstraintSpace;
 import org.dynamisphysics.api.RagdollJointDesc;
 import org.dynamisphysics.api.constraint.ConstraintType;
 import org.dynamisphysics.jolt.body.JoltBodyHandle;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

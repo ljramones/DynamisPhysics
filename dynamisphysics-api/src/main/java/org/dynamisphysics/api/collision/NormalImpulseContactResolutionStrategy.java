@@ -1,6 +1,6 @@
 package org.dynamisphysics.api.collision;
 
-import org.vectrix.core.Vector3d;
+import org.dynamisengine.vectrix.core.Vector3d;
 
 /**
  * Physics-owned normal-impulse velocity resolution strategy.

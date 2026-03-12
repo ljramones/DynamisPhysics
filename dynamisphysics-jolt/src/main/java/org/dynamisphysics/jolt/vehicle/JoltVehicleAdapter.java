@@ -62,13 +62,13 @@ final class JoltVehicleAdapter {
         engine.setMaxTorque(descriptor.engine().maxTorqueNm());
         engine.setMinRpm(descriptor.engine().idleRpm());
         engine.setMaxRpm(descriptor.engine().maxRpm());
-        engine.setAngularDamping(org.vectrix.core.Math.max(0f, descriptor.engine().engineBrakeTorque()) * 0.1f);
+        engine.setAngularDamping(org.dynamisengine.vectrix.core.Math.max(0f, descriptor.engine().engineBrakeTorque()) * 0.1f);
     }
 
     private static void configureTransmission(VehicleTransmissionSettings transmission, VehicleDescriptor descriptor) {
         transmission.setMode(descriptor.transmission().automatic() ? ETransmissionMode.Auto : ETransmissionMode.Manual);
         transmission.setGearRatios(descriptor.transmission().gearRatios());
-        transmission.setReverseGearRatios(org.vectrix.core.Math.abs(descriptor.transmission().reverseRatio()));
+        transmission.setReverseGearRatios(org.dynamisengine.vectrix.core.Math.abs(descriptor.transmission().reverseRatio()));
         transmission.setClutchStrength(descriptor.transmission().clutchStrength());
         transmission.setShiftUpRpm(descriptor.transmission().shiftUpRpm());
         transmission.setShiftDownRpm(descriptor.transmission().shiftDownRpm());
@@ -90,7 +90,7 @@ final class JoltVehicleAdapter {
         diff.setLeftWheel(driven.get(0));
         diff.setRightWheel(driven.get(1));
         diff.setDifferentialRatio(descriptor.transmission().finalDriveRatio());
-        diff.setLimitedSlipRatio(org.vectrix.core.Math.max(0f, descriptor.differential().limitedSlipBias()));
+        diff.setLimitedSlipRatio(org.dynamisengine.vectrix.core.Math.max(0f, descriptor.differential().limitedSlipBias()));
         diff.setEngineTorqueRatio(1f);
     }
 }

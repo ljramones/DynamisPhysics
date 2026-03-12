@@ -12,14 +12,14 @@ final class Ode4jEngineModel {
     }
 
     float update(float throttle, float drivetrainLoadTorque, float dt) {
-        float clampedThrottle = org.vectrix.core.Math.clamp(throttle, 0f, 1f);
+        float clampedThrottle = org.dynamisengine.vectrix.core.Math.clamp(throttle, 0f, 1f);
         float maxTorque = sampleTorqueCurve(currentRpm);
         float driverTorque = maxTorque * clampedThrottle;
         float netTorque = driverTorque - drivetrainLoadTorque - config.engineBrakeTorque() * (1f - clampedThrottle);
         float inertia = 0.15f;
         float alpha = netTorque / inertia;
-        currentRpm += alpha * dt * (60f / (2f * org.vectrix.core.Math.PI_f));
-        currentRpm = org.vectrix.core.Math.clamp(currentRpm, config.idleRpm(), config.maxRpm());
+        currentRpm += alpha * dt * (60f / (2f * org.dynamisengine.vectrix.core.Math.PI_f));
+        currentRpm = org.dynamisengine.vectrix.core.Math.clamp(currentRpm, config.idleRpm(), config.maxRpm());
         return driverTorque;
     }
 

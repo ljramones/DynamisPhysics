@@ -6,13 +6,13 @@ import org.dynamiscollision.shapes.CapsuleCollisionShape;
 import org.dynamiscollision.shapes.CompoundCollisionShape;
 import org.dynamiscollision.shapes.CylinderCollisionShape;
 import org.dynamiscollision.shapes.SphereCollisionShape;
-import org.vectrix.affine.Transformf;
+import org.dynamisengine.vectrix.affine.Transformf;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.OdeHelper;
-import org.vectrix.core.Vector3f;
-import org.vectrix.physics.InertiaTensorf;
+import org.dynamisengine.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.physics.InertiaTensorf;
 
 public final class Ode4jInertiaComputer {
     private Ode4jInertiaComputer() {}

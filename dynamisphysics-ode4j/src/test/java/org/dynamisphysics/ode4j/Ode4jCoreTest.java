@@ -10,9 +10,9 @@ import org.dynamisphysics.api.event.ContactEvent;
 import org.dynamisphysics.api.event.PhysicsEvent;
 import org.dynamisphysics.api.world.PhysicsWorld;
 import org.dynamiscollision.shapes.CollisionShape;
-import org.vectrix.core.Matrix4f;
-import org.vectrix.core.Quaternionf;
-import org.vectrix.core.Vector3f;
+import org.dynamisengine.vectrix.core.Matrix4f;
+import org.dynamisengine.vectrix.core.Quaternionf;
+import org.dynamisengine.vectrix.core.Vector3f;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -130,12 +130,12 @@ class Ode4jCoreTest {
         CollisionShape compound = CollisionShape.compound(
             List.of(CollisionShape.sphere(0.4f), CollisionShape.sphere(0.4f)),
             List.of(
-                new org.vectrix.affine.Transformf(
+                new org.dynamisengine.vectrix.affine.Transformf(
                     new Vector3f(-0.8f, 0f, 0f),
                     new Quaternionf(0f, 0f, 0f, 1f),
                     new Vector3f(1f, 1f, 1f)
                 ),
-                new org.vectrix.affine.Transformf(
+                new org.dynamisengine.vectrix.affine.Transformf(
                     new Vector3f(0.8f, 0f, 0f),
                     new Quaternionf(0f, 0f, 0f, 1f),
                     new Vector3f(1f, 1f, 1f)
