@@ -1,16 +1,16 @@
-module org.dynamisphysics.api {
+module org.dynamisengine.physics.api {
     requires org.dynamisengine.collision;
     requires org.animis;
     requires org.dynamisengine.vectrix;
 
-    exports org.dynamisphysics.api;
-    exports org.dynamisphysics.api.world;
-    exports org.dynamisphysics.api.body;
-    exports org.dynamisphysics.api.shape;
-    exports org.dynamisphysics.api.material;
-    exports org.dynamisphysics.api.constraint;
-    exports org.dynamisphysics.api.event;
-    exports org.dynamisphysics.api.query;
-    exports org.dynamisphysics.api.config;
-    exports org.dynamisphysics.api.collision;
+    exports org.dynamisengine.physics.api;
+    exports org.dynamisengine.physics.api.world;
+    exports org.dynamisengine.physics.api.body;
+    exports org.dynamisengine.physics.api.shape;
+    exports org.dynamisengine.physics.api.material;
+    exports org.dynamisengine.physics.api.constraint;
+    exports org.dynamisengine.physics.api.event;
+    exports org.dynamisengine.physics.api.query;
+    exports org.dynamisengine.physics.api.config;
+    exports org.dynamisengine.physics.api.collision;
 }

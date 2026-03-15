@@ -1,5 +1,5 @@
-module org.dynamisphysics.ode4j {
-    requires org.dynamisphysics.api;
+module org.dynamisengine.physics.ode4j {
+    requires org.dynamisengine.physics.api;
     requires org.dynamisengine.vectrix;
     requires org.animis;
     requires org.dynamisengine.collision;
@@ -7,7 +7,7 @@ module org.dynamisphysics.ode4j {
     requires org.ode4j;
     requires meshforge;
 
-    exports org.dynamisphysics.ode4j;
-    exports org.dynamisphysics.ode4j.debug;
-    exports org.dynamisphysics.ode4j.world;
+    exports org.dynamisengine.physics.ode4j;
+    exports org.dynamisengine.physics.ode4j.debug;
+    exports org.dynamisengine.physics.ode4j.world;
 }

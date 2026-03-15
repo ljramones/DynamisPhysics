@@ -1,0 +1,10 @@
+package org.dynamisengine.physics.api.event;
+
+import org.dynamisengine.vectrix.core.Vector3f;
+
+public record ContactPoint(
+    Vector3f position,
+    Vector3f normal,
+    float depth,
+    float impulse
+) {}
