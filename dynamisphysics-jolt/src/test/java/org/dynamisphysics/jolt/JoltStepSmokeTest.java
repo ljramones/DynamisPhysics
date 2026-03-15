@@ -1,6 +1,6 @@
 package org.dynamisphysics.jolt;
 
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.config.PhysicsBackend;

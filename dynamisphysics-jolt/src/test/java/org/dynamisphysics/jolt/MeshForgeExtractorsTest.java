@@ -2,13 +2,13 @@ package org.dynamisphysics.jolt;
 
 import org.dynamisphysics.jolt.meshforge.MeshForgeExtractors;
 import org.junit.jupiter.api.Test;
-import org.meshforge.api.Meshes;
-import org.meshforge.core.attr.AttributeSemantic;
-import org.meshforge.core.attr.VertexFormat;
-import org.meshforge.core.attr.VertexSchema;
-import org.meshforge.pack.buffer.PackedMesh;
-import org.meshforge.pack.packer.MeshPacker;
-import org.meshforge.pack.spec.PackSpec;
+import org.dynamisengine.meshforge.api.Meshes;
+import org.dynamisengine.meshforge.core.attr.AttributeSemantic;
+import org.dynamisengine.meshforge.core.attr.VertexFormat;
+import org.dynamisengine.meshforge.core.attr.VertexSchema;
+import org.dynamisengine.meshforge.pack.buffer.PackedMesh;
+import org.dynamisengine.meshforge.pack.packer.MeshPacker;
+import org.dynamisengine.meshforge.pack.spec.PackSpec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,7 +48,7 @@ class MeshForgeExtractorsTest {
         }
     }
 
-    private static org.meshforge.core.mesh.MeshData quadMeshData() {
+    private static org.dynamisengine.meshforge.core.mesh.MeshData quadMeshData() {
         VertexSchema schema = VertexSchema.builder()
             .add(AttributeSemantic.POSITION, VertexFormat.F32x3)
             .build();

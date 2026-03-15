@@ -3,7 +3,7 @@ package org.dynamisphysics.test;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.event.WakeEvent;
 import org.dynamisphysics.test.harness.PhysicsSimHarness;
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisphysics.test.scene.SceneFactory;
 import org.junit.jupiter.api.Test;
 

@@ -1,8 +1,8 @@
 package org.dynamisphysics.api.collision;
 
-import org.dynamiscollision.events.CollisionEventType;
-import org.dynamiscollision.world.CollisionResponder3D;
-import org.dynamiscollision.world.CollisionWorld3D;
+import org.dynamisengine.collision.events.CollisionEventType;
+import org.dynamisengine.collision.world.CollisionResponder3D;
+import org.dynamisengine.collision.world.CollisionWorld3D;
 
 import java.util.List;
 

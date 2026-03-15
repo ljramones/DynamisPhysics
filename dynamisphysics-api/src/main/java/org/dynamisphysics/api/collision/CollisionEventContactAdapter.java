@@ -1,7 +1,7 @@
 package org.dynamisphysics.api.collision;
 
-import org.dynamiscollision.events.CollisionEvent;
-import org.dynamiscollision.events.CollisionEventType;
+import org.dynamisengine.collision.events.CollisionEvent;
+import org.dynamisengine.collision.events.CollisionEventType;
 
 import java.util.ArrayList;
 import java.util.List;

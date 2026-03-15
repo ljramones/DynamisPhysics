@@ -9,7 +9,7 @@ import org.dynamisphysics.api.config.PhysicsWorldConfig;
 import org.dynamisphysics.api.event.ContactEvent;
 import org.dynamisphysics.api.event.PhysicsEvent;
 import org.dynamisphysics.api.world.PhysicsWorld;
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisengine.vectrix.core.Matrix4f;
 import org.dynamisengine.vectrix.core.Quaternionf;
 import org.dynamisengine.vectrix.core.Vector3f;

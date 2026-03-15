@@ -1,6 +1,6 @@
 package org.dynamisphysics.api.shape;
 
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 
 /**
  * Lightweight wrapper type for API signatures that need explicit shape intent.

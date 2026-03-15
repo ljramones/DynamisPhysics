@@ -1,6 +1,6 @@
 package org.dynamisphysics.api.collision;
 
-import org.dynamiscollision.contact.ContactManifold3D;
+import org.dynamisengine.collision.contact.ContactManifold3D;
 
 /**
  * Physics-owned typed view of collision-detection output.

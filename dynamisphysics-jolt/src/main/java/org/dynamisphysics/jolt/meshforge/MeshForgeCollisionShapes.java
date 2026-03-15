@@ -1,7 +1,7 @@
 package org.dynamisphysics.jolt.meshforge;
 
-import org.dynamiscollision.shapes.CollisionShape;
-import org.meshforge.pack.buffer.PackedMesh;
+import org.dynamisengine.collision.shapes.CollisionShape;
+import org.dynamisengine.meshforge.pack.buffer.PackedMesh;
 
 public final class MeshForgeCollisionShapes {
     private MeshForgeCollisionShapes() {

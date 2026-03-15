@@ -17,7 +17,7 @@ import org.dynamisphysics.api.event.PhysicsEvent;
 import org.dynamisphysics.api.world.PhysicsWorld;
 import org.dynamisphysics.ode4j.constraint.DoorHingeBuilder;
 import org.dynamisphysics.ode4j.constraint.RopeChainBuilder;
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

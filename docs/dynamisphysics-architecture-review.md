@@ -22,7 +22,7 @@ Observed implementation shape:
 
 Dependency signals from poms/code:
 
-- API depends on `vectrix`, `animis`, and `org.dynamiscollision:collision_detection` contracts.
+- API depends on `vectrix`, `animis`, and `org.dynamisengine.collision:collision_detection` contracts.
 - Backends depend on collision + meshforge (shape extraction support), and `dynamisphysics-ode4j` also depends on `dynamis-gpu-api` for debug rendering path.
 - No direct dependencies on `DynamisWorldEngine`, `DynamisECS`, `DynamisSceneGraph`, `DynamisSession`, `DynamisLightEngine`, or `DynamisScripting`.
 

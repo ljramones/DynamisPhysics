@@ -7,7 +7,7 @@ import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.config.PhysicsBackend;
 import org.dynamisphysics.api.config.PhysicsWorldConfig;
 import org.dynamisphysics.api.world.PhysicsWorld;
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

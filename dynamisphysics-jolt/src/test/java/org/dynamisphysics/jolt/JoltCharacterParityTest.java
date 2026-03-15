@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.dynamiscollision.shapes.CollisionShape.box;
+import static org.dynamisengine.collision.shapes.CollisionShape.box;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JoltCharacterParityTest {

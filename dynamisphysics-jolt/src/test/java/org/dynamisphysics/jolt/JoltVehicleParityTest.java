@@ -1,6 +1,6 @@
 package org.dynamisphysics.jolt;
 
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisphysics.api.PhysicsWorldFactory;
 import org.dynamisphysics.api.VehicleDescriptor;
 import org.dynamisphysics.api.VehicleHandle;

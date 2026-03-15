@@ -1,7 +1,7 @@
 package org.dynamisphysics.ode4j;
 
-import org.dynamiscollision.shapes.CollisionShape;
-import org.dynamiscollision.shapes.CompoundCollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CompoundCollisionShape;
 import org.dynamisphysics.ode4j.body.Ode4jCompoundMassProperties;
 import org.dynamisphysics.ode4j.body.Ode4jInertiaComputer;
 import org.junit.jupiter.api.Test;

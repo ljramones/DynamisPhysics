@@ -5,7 +5,7 @@ import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.test.mock.MockPhysicsWorld;
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisengine.vectrix.core.Matrix4f;
 
 public final class SceneFactory {

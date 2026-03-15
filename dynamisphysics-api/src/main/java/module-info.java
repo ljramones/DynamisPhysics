@@ -1,5 +1,5 @@
 module org.dynamisphysics.api {
-    requires org.dynamiscollision;
+    requires org.dynamisengine.collision;
     requires org.animis;
     requires org.dynamisengine.vectrix;
 

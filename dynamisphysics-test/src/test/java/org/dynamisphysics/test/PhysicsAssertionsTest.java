@@ -6,7 +6,7 @@ import org.dynamisphysics.api.event.PhysicsEvent;
 import org.dynamisphysics.api.event.SleepEvent;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.test.mock.MockRigidBodyHandle;
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisengine.vectrix.core.Quaternionf;
 import org.dynamisengine.vectrix.core.Vector3f;
 import org.junit.jupiter.api.Test;

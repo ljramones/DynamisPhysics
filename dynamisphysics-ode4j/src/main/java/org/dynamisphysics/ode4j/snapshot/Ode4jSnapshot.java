@@ -1,16 +1,16 @@
 package org.dynamisphysics.ode4j.snapshot;
 
-import org.dynamiscollision.shapes.BoxCollisionShape;
-import org.dynamiscollision.shapes.CapsuleCollisionShape;
-import org.dynamiscollision.shapes.CollisionShape;
-import org.dynamiscollision.shapes.CompoundCollisionShape;
-import org.dynamiscollision.shapes.ConvexHullCollisionShape;
-import org.dynamiscollision.shapes.CylinderCollisionShape;
-import org.dynamiscollision.shapes.HeightfieldCollisionShape;
-import org.dynamiscollision.shapes.PlaneCollisionShape;
-import org.dynamiscollision.shapes.ShapeType;
-import org.dynamiscollision.shapes.SphereCollisionShape;
-import org.dynamiscollision.shapes.TriangleMeshCollisionShape;
+import org.dynamisengine.collision.shapes.BoxCollisionShape;
+import org.dynamisengine.collision.shapes.CapsuleCollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CompoundCollisionShape;
+import org.dynamisengine.collision.shapes.ConvexHullCollisionShape;
+import org.dynamisengine.collision.shapes.CylinderCollisionShape;
+import org.dynamisengine.collision.shapes.HeightfieldCollisionShape;
+import org.dynamisengine.collision.shapes.PlaneCollisionShape;
+import org.dynamisengine.collision.shapes.ShapeType;
+import org.dynamisengine.collision.shapes.SphereCollisionShape;
+import org.dynamisengine.collision.shapes.TriangleMeshCollisionShape;
 import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.BodyState;
 import org.dynamisphysics.api.constraint.ConstraintDesc;

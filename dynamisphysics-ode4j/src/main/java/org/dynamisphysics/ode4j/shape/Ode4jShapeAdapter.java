@@ -1,10 +1,10 @@
 package org.dynamisphysics.ode4j.shape;
 
-import org.dynamiscollision.shapes.CollisionShape;
-import org.dynamiscollision.shapes.CompoundCollisionShape;
-import org.dynamiscollision.shapes.ConvexHullCollisionShape;
-import org.dynamiscollision.shapes.HeightfieldCollisionShape;
-import org.dynamiscollision.shapes.TriangleMeshCollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CompoundCollisionShape;
+import org.dynamisengine.collision.shapes.ConvexHullCollisionShape;
+import org.dynamisengine.collision.shapes.HeightfieldCollisionShape;
+import org.dynamisengine.collision.shapes.TriangleMeshCollisionShape;
 import org.dynamisphysics.ode4j.body.Ode4jCompoundMassProperties;
 import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.DGeom;
@@ -23,23 +23,23 @@ public final class Ode4jShapeAdapter {
     public static DGeom toGeom(CollisionShape shape, DSpace space) {
         return switch (shape.shapeType()) {
             case SPHERE -> {
-                var s = (org.dynamiscollision.shapes.SphereCollisionShape) shape;
+                var s = (org.dynamisengine.collision.shapes.SphereCollisionShape) shape;
                 yield OdeHelper.createSphere(space, s.radius());
             }
             case BOX -> {
-                var b = (org.dynamiscollision.shapes.BoxCollisionShape) shape;
+                var b = (org.dynamisengine.collision.shapes.BoxCollisionShape) shape;
                 yield OdeHelper.createBox(space, b.halfExtentX() * 2.0, b.halfExtentY() * 2.0, b.halfExtentZ() * 2.0);
             }
             case CAPSULE -> {
-                var c = (org.dynamiscollision.shapes.CapsuleCollisionShape) shape;
+                var c = (org.dynamisengine.collision.shapes.CapsuleCollisionShape) shape;
                 yield OdeHelper.createCapsule(space, c.radius(), c.height());
             }
             case CYLINDER -> {
-                var c = (org.dynamiscollision.shapes.CylinderCollisionShape) shape;
+                var c = (org.dynamisengine.collision.shapes.CylinderCollisionShape) shape;
                 yield OdeHelper.createCylinder(space, c.radius(), c.height());
             }
             case PLANE -> {
-                var p = (org.dynamiscollision.shapes.PlaneCollisionShape) shape;
+                var p = (org.dynamisengine.collision.shapes.PlaneCollisionShape) shape;
                 yield OdeHelper.createPlane(space, p.normalX(), p.normalY(), p.normalZ(), p.distance());
             }
             case CONVEX_HULL -> {

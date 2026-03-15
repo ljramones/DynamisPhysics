@@ -86,7 +86,7 @@
         <version>${animis.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.dynamiscollision</groupId>
+        <groupId>org.dynamisengine.collision</groupId>
         <artifactId>collision_detection</artifactId>
         <version>${collision.version}</version>
       </dependency>

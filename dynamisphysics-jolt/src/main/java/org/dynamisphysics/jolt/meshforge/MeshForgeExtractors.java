@@ -1,10 +1,10 @@
 package org.dynamisphysics.jolt.meshforge;
 
-import org.meshforge.core.attr.AttributeKey;
-import org.meshforge.core.attr.AttributeSemantic;
-import org.meshforge.core.attr.VertexFormat;
-import org.meshforge.pack.buffer.PackedMesh;
-import org.meshforge.pack.layout.VertexLayout;
+import org.dynamisengine.meshforge.core.attr.AttributeKey;
+import org.dynamisengine.meshforge.core.attr.AttributeSemantic;
+import org.dynamisengine.meshforge.core.attr.VertexFormat;
+import org.dynamisengine.meshforge.pack.buffer.PackedMesh;
+import org.dynamisengine.meshforge.pack.layout.VertexLayout;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

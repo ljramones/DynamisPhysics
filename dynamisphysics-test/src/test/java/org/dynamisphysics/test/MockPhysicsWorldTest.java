@@ -9,7 +9,7 @@ import org.dynamisphysics.api.constraint.ConstraintMotor;
 import org.dynamisphysics.api.constraint.ConstraintType;
 import org.dynamisphysics.api.event.SleepEvent;
 import org.dynamisphysics.test.mock.MockPhysicsWorld;
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisengine.vectrix.core.Matrix4f;
 import org.dynamisengine.vectrix.core.Vector3f;
 import org.junit.jupiter.api.BeforeEach;

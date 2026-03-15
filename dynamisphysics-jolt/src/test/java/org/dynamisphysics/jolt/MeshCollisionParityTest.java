@@ -12,13 +12,13 @@ import org.dynamisphysics.ode4j.Ode4jBackendRegistrar;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.meshforge.api.Meshes;
-import org.meshforge.core.attr.AttributeSemantic;
-import org.meshforge.core.attr.VertexFormat;
-import org.meshforge.core.attr.VertexSchema;
-import org.meshforge.pack.buffer.PackedMesh;
-import org.meshforge.pack.packer.MeshPacker;
-import org.meshforge.pack.spec.PackSpec;
+import org.dynamisengine.meshforge.api.Meshes;
+import org.dynamisengine.meshforge.core.attr.AttributeSemantic;
+import org.dynamisengine.meshforge.core.attr.VertexFormat;
+import org.dynamisengine.meshforge.core.attr.VertexSchema;
+import org.dynamisengine.meshforge.pack.buffer.PackedMesh;
+import org.dynamisengine.meshforge.pack.packer.MeshPacker;
+import org.dynamisengine.meshforge.pack.spec.PackSpec;
 import org.dynamisengine.vectrix.core.Matrix4f;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,7 +43,7 @@ class MeshCollisionParityTest {
                 .worldTransform(new Matrix4f().identity().translation(0f, 0f, 0f))
                 .build());
 
-            RigidBodyHandle sphere = world.spawnRigidBody(RigidBodyConfig.builder(org.dynamiscollision.shapes.CollisionShape.sphere(0.5f), 1f)
+            RigidBodyHandle sphere = world.spawnRigidBody(RigidBodyConfig.builder(org.dynamisengine.collision.shapes.CollisionShape.sphere(0.5f), 1f)
                 .worldTransform(new Matrix4f().identity().translation(0f, 4f, 0f))
                 .build());
             float startY = world.getBodyState(sphere).position().y();
@@ -63,7 +63,7 @@ class MeshCollisionParityTest {
     void convexHullDynamicInteractsWithGround(PhysicsBackend backend) {
         PhysicsWorld world = PhysicsWorldFactory.create(PhysicsWorldConfig.defaults(backend));
         try {
-            world.spawnRigidBody(RigidBodyConfig.builder(org.dynamiscollision.shapes.CollisionShape.box(20f, 0.5f, 20f), 0f)
+            world.spawnRigidBody(RigidBodyConfig.builder(org.dynamisengine.collision.shapes.CollisionShape.box(20f, 0.5f, 20f), 0f)
                 .mode(BodyMode.STATIC)
                 .worldTransform(new Matrix4f().identity().translation(0f, -0.5f, 0f))
                 .build());
@@ -84,7 +84,7 @@ class MeshCollisionParityTest {
         }
     }
 
-    private static org.meshforge.core.mesh.MeshData quadMeshData(float halfExtent) {
+    private static org.dynamisengine.meshforge.core.mesh.MeshData quadMeshData(float halfExtent) {
         VertexSchema schema = VertexSchema.builder()
             .add(AttributeSemantic.POSITION, VertexFormat.F32x3)
             .build();

@@ -118,17 +118,17 @@ public final class JoltSnapshot {
     public record ShapeSnapshot(byte type, float[] f, int[] i) {
     }
 
-    private static void writeShape(org.dynamiscollision.shapes.CollisionShape shape, ByteBuffer out) {
+    private static void writeShape(org.dynamisengine.collision.shapes.CollisionShape shape, ByteBuffer out) {
         out.put((byte) shape.shapeType().ordinal());
         switch (shape.shapeType()) {
             case SPHERE -> {
-                float r = ((org.dynamiscollision.shapes.SphereCollisionShape) shape).radius();
+                float r = ((org.dynamisengine.collision.shapes.SphereCollisionShape) shape).radius();
                 out.putInt(1);
                 out.putFloat(r);
                 out.putInt(0);
             }
             case BOX -> {
-                var b = (org.dynamiscollision.shapes.BoxCollisionShape) shape;
+                var b = (org.dynamisengine.collision.shapes.BoxCollisionShape) shape;
                 out.putInt(3);
                 out.putFloat(b.halfExtentX());
                 out.putFloat(b.halfExtentY());
@@ -136,21 +136,21 @@ public final class JoltSnapshot {
                 out.putInt(0);
             }
             case CAPSULE -> {
-                var c = (org.dynamiscollision.shapes.CapsuleCollisionShape) shape;
+                var c = (org.dynamisengine.collision.shapes.CapsuleCollisionShape) shape;
                 out.putInt(2);
                 out.putFloat(c.radius());
                 out.putFloat(c.height());
                 out.putInt(0);
             }
             case CYLINDER -> {
-                var c = (org.dynamiscollision.shapes.CylinderCollisionShape) shape;
+                var c = (org.dynamisengine.collision.shapes.CylinderCollisionShape) shape;
                 out.putInt(2);
                 out.putFloat(c.radius());
                 out.putFloat(c.height());
                 out.putInt(0);
             }
             case PLANE -> {
-                var p = (org.dynamiscollision.shapes.PlaneCollisionShape) shape;
+                var p = (org.dynamisengine.collision.shapes.PlaneCollisionShape) shape;
                 out.putInt(4);
                 out.putFloat(p.normalX());
                 out.putFloat(p.normalY());

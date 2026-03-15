@@ -1,6 +1,6 @@
 package org.dynamisphysics.jolt.integration;
 
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisphysics.api.AnimisPose;
 import org.dynamisphysics.api.CharacterDescriptor;
 import org.dynamisphysics.api.CharacterHandle;

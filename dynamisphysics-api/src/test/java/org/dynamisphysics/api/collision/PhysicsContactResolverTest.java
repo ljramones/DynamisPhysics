@@ -1,15 +1,15 @@
 package org.dynamisphysics.api.collision;
 
-import org.dynamiscollision.contact.ContactManifold3D;
-import org.dynamiscollision.contact.ContactPoint3D;
-import org.dynamiscollision.contact.ContactSolver3D;
-import org.dynamiscollision.events.CollisionEvent;
-import org.dynamiscollision.events.CollisionEventType;
-import org.dynamiscollision.narrowphase.CollisionManifold3D;
-import org.dynamiscollision.pipeline.CollisionPair;
-import org.dynamiscollision.contact.WarmStartImpulse;
-import org.dynamiscollision.world.CollisionResponder3D;
-import org.dynamiscollision.world.RigidBodyAdapter3D;
+import org.dynamisengine.collision.contact.ContactManifold3D;
+import org.dynamisengine.collision.contact.ContactPoint3D;
+import org.dynamisengine.collision.contact.ContactSolver3D;
+import org.dynamisengine.collision.events.CollisionEvent;
+import org.dynamisengine.collision.events.CollisionEventType;
+import org.dynamisengine.collision.narrowphase.CollisionManifold3D;
+import org.dynamisengine.collision.pipeline.CollisionPair;
+import org.dynamisengine.collision.contact.WarmStartImpulse;
+import org.dynamisengine.collision.world.CollisionResponder3D;
+import org.dynamisengine.collision.world.RigidBodyAdapter3D;
 import org.junit.jupiter.api.Test;
 import org.dynamisengine.vectrix.core.Vector3d;
 

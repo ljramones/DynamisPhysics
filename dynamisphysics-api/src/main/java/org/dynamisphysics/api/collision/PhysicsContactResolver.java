@@ -1,6 +1,6 @@
 package org.dynamisphysics.api.collision;
 
-import org.dynamiscollision.events.CollisionEvent;
+import org.dynamisengine.collision.events.CollisionEvent;
 
 /**
  * Physics-owned consumption path for collision contact manifolds.

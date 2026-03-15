@@ -1,6 +1,6 @@
 package org.dynamisphysics.api;
 
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisengine.vectrix.core.Vector3f;
 
 public record RagdollBoneDesc(

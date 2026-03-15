@@ -1,6 +1,6 @@
 package org.dynamisphysics.bench;
 
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisphysics.api.AnimisPose;
 import org.dynamisphysics.api.PhysicsWorldFactory;
 import org.dynamisphysics.api.RagdollBoneDesc;
@@ -21,12 +21,12 @@ import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisphysics.api.world.PhysicsWorld;
 import org.dynamisphysics.jolt.JoltBackendRegistrar;
 import org.dynamisphysics.ode4j.Ode4jBackendRegistrar;
-import org.meshforge.api.Meshes;
-import org.meshforge.core.attr.AttributeSemantic;
-import org.meshforge.core.attr.VertexFormat;
-import org.meshforge.core.attr.VertexSchema;
-import org.meshforge.pack.packer.MeshPacker;
-import org.meshforge.pack.spec.PackSpec;
+import org.dynamisengine.meshforge.api.Meshes;
+import org.dynamisengine.meshforge.core.attr.AttributeSemantic;
+import org.dynamisengine.meshforge.core.attr.VertexFormat;
+import org.dynamisengine.meshforge.core.attr.VertexSchema;
+import org.dynamisengine.meshforge.pack.packer.MeshPacker;
+import org.dynamisengine.meshforge.pack.spec.PackSpec;
 import org.dynamisengine.vectrix.affine.Transformf;
 import org.dynamisengine.vectrix.core.Matrix4f;
 import org.dynamisengine.vectrix.core.Quaternionf;

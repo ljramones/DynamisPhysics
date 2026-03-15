@@ -1,11 +1,11 @@
 package org.dynamisphysics.api.collision;
 
-import org.dynamiscollision.bounds.Aabb;
-import org.dynamiscollision.broadphase.BroadPhase3D;
-import org.dynamiscollision.contact.ContactManifold3D;
-import org.dynamiscollision.filtering.CollisionFilter;
-import org.dynamiscollision.world.CollisionResponder3D;
-import org.dynamiscollision.world.CollisionWorld3D;
+import org.dynamisengine.collision.bounds.Aabb;
+import org.dynamisengine.collision.broadphase.BroadPhase3D;
+import org.dynamisengine.collision.contact.ContactManifold3D;
+import org.dynamisengine.collision.filtering.CollisionFilter;
+import org.dynamisengine.collision.world.CollisionResponder3D;
+import org.dynamisengine.collision.world.CollisionWorld3D;
 
 import java.util.Optional;
 import java.util.function.BiFunction;

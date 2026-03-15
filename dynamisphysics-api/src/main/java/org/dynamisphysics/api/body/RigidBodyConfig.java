@@ -1,6 +1,6 @@
 package org.dynamisphysics.api.body;
 
-import org.dynamiscollision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
 import org.dynamisphysics.api.material.PhysicsMaterial;
 import org.dynamisengine.vectrix.core.Matrix4f;
 import org.dynamisengine.vectrix.core.Vector3f;

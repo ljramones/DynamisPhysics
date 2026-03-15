@@ -4,7 +4,7 @@ import org.dynamisphysics.api.body.BodyMode;
 import org.dynamisphysics.api.body.BodyState;
 import org.dynamisphysics.api.body.RigidBodyConfig;
 import org.dynamisphysics.api.body.RigidBodyHandle;
-import org.dynamiscollision.shapes.CompoundCollisionShape;
+import org.dynamisengine.collision.shapes.CompoundCollisionShape;
 import org.dynamisphysics.ode4j.shape.Ode4jShapeAdapter;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3C;
@@ -56,7 +56,7 @@ public final class Ode4jBodyRegistry {
         DGeom geom;
         List<DGeom> ownedGeoms;
         DBody body = null;
-        boolean compoundDynamic = config.shape().shapeType() == org.dynamiscollision.shapes.ShapeType.COMPOUND
+        boolean compoundDynamic = config.shape().shapeType() == org.dynamisengine.collision.shapes.ShapeType.COMPOUND
             && (config.mode() == BodyMode.DYNAMIC || config.mode() == BodyMode.KINEMATIC);
 
         if (config.mode() == BodyMode.DYNAMIC || config.mode() == BodyMode.KINEMATIC) {
@@ -176,7 +176,7 @@ public final class Ode4jBodyRegistry {
     }
 
     private static int geomCountFor(RigidBodyConfig config) {
-        if (config.shape().shapeType() == org.dynamiscollision.shapes.ShapeType.COMPOUND) {
+        if (config.shape().shapeType() == org.dynamisengine.collision.shapes.ShapeType.COMPOUND) {
             return Math.max(((CompoundCollisionShape) config.shape()).childCount(), 1);
         }
         return 1;

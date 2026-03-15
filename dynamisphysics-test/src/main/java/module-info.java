@@ -1,7 +1,7 @@
 module org.dynamisphysics.test {
     requires org.dynamisphysics.api;
     requires org.dynamisengine.vectrix;
-    requires org.dynamiscollision;
+    requires org.dynamisengine.collision;
     requires org.animis;
     requires org.junit.jupiter.api;
     requires com.fasterxml.jackson.databind;

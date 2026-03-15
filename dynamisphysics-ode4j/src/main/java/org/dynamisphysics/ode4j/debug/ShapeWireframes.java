@@ -1,13 +1,13 @@
 package org.dynamisphysics.ode4j.debug;
 
-import org.dynamiscollision.bounds.Aabb;
-import org.dynamiscollision.shapes.BoxCollisionShape;
-import org.dynamiscollision.shapes.CapsuleCollisionShape;
-import org.dynamiscollision.shapes.CollisionShape;
-import org.dynamiscollision.shapes.CylinderCollisionShape;
-import org.dynamiscollision.shapes.PlaneCollisionShape;
-import org.dynamiscollision.shapes.ShapeType;
-import org.dynamiscollision.shapes.SphereCollisionShape;
+import org.dynamisengine.collision.bounds.Aabb;
+import org.dynamisengine.collision.shapes.BoxCollisionShape;
+import org.dynamisengine.collision.shapes.CapsuleCollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CylinderCollisionShape;
+import org.dynamisengine.collision.shapes.PlaneCollisionShape;
+import org.dynamisengine.collision.shapes.ShapeType;
+import org.dynamisengine.collision.shapes.SphereCollisionShape;
 import org.dynamisengine.vectrix.affine.Transformf;
 import org.dynamisengine.vectrix.core.Quaternionf;
 import org.dynamisengine.vectrix.core.Vector3f;

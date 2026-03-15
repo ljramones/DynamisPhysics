@@ -1,7 +1,7 @@
 package org.dynamisphysics.api.collision;
 
-import org.dynamiscollision.world.CollisionResponder3D;
-import org.dynamiscollision.world.CollisionWorld3D;
+import org.dynamisengine.collision.world.CollisionResponder3D;
+import org.dynamisengine.collision.world.CollisionWorld3D;
 
 /**
  * Production-facing representative entrypoint for configuring Physics-preferred collision response flow.

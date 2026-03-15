@@ -1,11 +1,11 @@
 package org.dynamisphysics.jolt.shape;
 
-import org.dynamiscollision.shapes.BoxCollisionShape;
-import org.dynamiscollision.shapes.CapsuleCollisionShape;
-import org.dynamiscollision.shapes.CollisionShape;
-import org.dynamiscollision.shapes.CompoundCollisionShape;
-import org.dynamiscollision.shapes.CylinderCollisionShape;
-import org.dynamiscollision.shapes.SphereCollisionShape;
+import org.dynamisengine.collision.shapes.BoxCollisionShape;
+import org.dynamisengine.collision.shapes.CapsuleCollisionShape;
+import org.dynamisengine.collision.shapes.CollisionShape;
+import org.dynamisengine.collision.shapes.CompoundCollisionShape;
+import org.dynamisengine.collision.shapes.CylinderCollisionShape;
+import org.dynamisengine.collision.shapes.SphereCollisionShape;
 import org.dynamisengine.vectrix.affine.Transformf;
 import org.dynamisengine.vectrix.core.Vector3f;
 

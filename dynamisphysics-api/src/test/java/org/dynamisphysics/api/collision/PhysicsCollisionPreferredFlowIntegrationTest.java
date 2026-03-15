@@ -1,12 +1,12 @@
 package org.dynamisphysics.api.collision;
 
-import org.dynamiscollision.bounds.Aabb;
-import org.dynamiscollision.broadphase.SweepAndPrune3D;
-import org.dynamiscollision.contact.ContactGenerator3D;
-import org.dynamiscollision.events.CollisionEventType;
-import org.dynamiscollision.filtering.CollisionFilter;
-import org.dynamiscollision.world.CollisionResponder3D;
-import org.dynamiscollision.world.CollisionWorld3D;
+import org.dynamisengine.collision.bounds.Aabb;
+import org.dynamisengine.collision.broadphase.SweepAndPrune3D;
+import org.dynamisengine.collision.contact.ContactGenerator3D;
+import org.dynamisengine.collision.events.CollisionEventType;
+import org.dynamisengine.collision.filtering.CollisionFilter;
+import org.dynamisengine.collision.world.CollisionResponder3D;
+import org.dynamisengine.collision.world.CollisionWorld3D;
 import org.junit.jupiter.api.Test;
 import org.dynamisengine.vectrix.core.Vector3d;
 
@@ -268,7 +268,7 @@ class PhysicsCollisionPreferredFlowIntegrationTest {
         }
 
         @Override
-        public void onCollisionEvent(org.dynamiscollision.events.CollisionEvent<T> event) {
+        public void onCollisionEvent(org.dynamisengine.collision.events.CollisionEvent<T> event) {
             // no-op for focused representative flow test
         }
     }
