@@ -23,7 +23,7 @@
       <artifactId>vectrix</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.animis</groupId>
+      <groupId>org.dynamisengine.animis</groupId>
       <artifactId>animis</artifactId>
     </dependency>
     <dependency>

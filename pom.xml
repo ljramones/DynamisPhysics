@@ -81,7 +81,7 @@
         <version>${vectrix.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.animis</groupId>
+        <groupId>org.dynamisengine.animis</groupId>
         <artifactId>animis</artifactId>
         <version>${animis.version}</version>
       </dependency>

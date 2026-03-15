@@ -2,7 +2,7 @@ module org.dynamisengine.physics.test {
     requires org.dynamisengine.physics.api;
     requires org.dynamisengine.vectrix;
     requires org.dynamisengine.collision;
-    requires org.animis;
+    requires org.dynamisengine.animis;
     requires org.junit.jupiter.api;
     requires com.fasterxml.jackson.databind;
 

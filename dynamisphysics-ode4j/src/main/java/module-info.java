@@ -1,7 +1,7 @@
 module org.dynamisengine.physics.ode4j {
     requires org.dynamisengine.physics.api;
     requires org.dynamisengine.vectrix;
-    requires org.animis;
+    requires org.dynamisengine.animis;
     requires org.dynamisengine.collision;
     requires dynamis.gpu.api;
     requires org.ode4j;
