@@ -31,7 +31,7 @@
       <artifactId>collision_detection</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.meshforge</groupId>
+      <groupId>org.dynamisengine</groupId>
       <artifactId>meshforge</artifactId>
     </dependency>
     <dependency>
