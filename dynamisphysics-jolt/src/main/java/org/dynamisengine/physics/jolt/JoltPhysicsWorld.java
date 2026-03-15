@@ -55,10 +55,6 @@ import org.dynamisengine.vectrix.core.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.dynamisengine.physics.jolt.world.JoltConversions.toRVec3;
 import static org.dynamisengine.physics.jolt.world.JoltConversions.toVec3;
@@ -66,8 +62,6 @@ import static org.dynamisengine.physics.jolt.world.JoltConversions.toVec3;
 public final class JoltPhysicsWorld implements PhysicsWorld {
     private static final int NUM_OBJECT_LAYERS = 256;
     private static final int NUM_BROAD_PHASE_LAYERS = 1;
-    private static volatile boolean nativeLoaded;
-    private static volatile boolean runtimeInitialized;
     private static final boolean TRACE_STEP = Boolean.getBoolean("jolt.trace");
 
     private final PhysicsWorldConfig config;
@@ -125,7 +119,7 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
 
     public static JoltPhysicsWorld create(PhysicsWorldConfig config) {
         ResolvedTuning resolved = PhysicsTuningResolver.resolve(config);
-        ensureRuntimeInitialized();
+        JoltNativeLoader.ensureRuntimeInitialized();
 
         PhysicsSystem physics = new PhysicsSystem();
         BroadPhaseLayerInterfaceTable broad = new BroadPhaseLayerInterfaceTable(NUM_OBJECT_LAYERS, NUM_BROAD_PHASE_LAYERS);
@@ -559,35 +553,6 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         };
     }
 
-    private static void ensureNativeLoaded() {
-        if (nativeLoaded) {
-            return;
-        }
-        synchronized (JoltPhysicsWorld.class) {
-            if (nativeLoaded) {
-                return;
-            }
-            String[] resourceCandidates = {
-                "osx/aarch64/com/github/stephengold/libjoltjni.dylib",
-                "linux/x86_64/com/github/stephengold/libjoltjni.so",
-                "windows/x86_64/com/github/stephengold/joltjni.dll"
-            };
-            List<String> loadErrors = new ArrayList<>();
-            for (String candidate : resourceCandidates) {
-                String error = tryLoadFromResource(candidate);
-                if (error == null) {
-                    nativeLoaded = true;
-                    return;
-                }
-                loadErrors.add(candidate + " -> " + error);
-            }
-            throw new IllegalStateException(
-                "Unable to load jolt-jni native library from bundled resources. "
-                    + "Checked: " + String.join("; ", loadErrors)
-            );
-        }
-    }
-
     private void validateInitialized() {
         if (physicsSystem == null || allocator == null || jobs == null || bodyRegistry == null) {
             throw new IllegalStateException("Jolt world not fully initialised");
@@ -606,39 +571,6 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         }
     }
 
-    private static void ensureRuntimeInitialized() {
-        if (runtimeInitialized) {
-            return;
-        }
-        synchronized (JoltPhysicsWorld.class) {
-            if (runtimeInitialized) {
-                return;
-            }
-            ensureNativeLoaded();
-            Jolt.registerDefaultAllocator();
-            Jolt.newFactory();
-            Jolt.registerTypes();
-            runtimeInitialized = true;
-        }
-    }
-
-    private static String tryLoadFromResource(String resourcePath) {
-        ClassLoader loader = JoltPhysicsWorld.class.getClassLoader();
-        try (InputStream in = loader.getResourceAsStream(resourcePath)) {
-            if (in == null) {
-                return "resource-not-found";
-            }
-            String suffix = resourcePath.endsWith(".dll") ? ".dll"
-                : resourcePath.endsWith(".so") ? ".so" : ".dylib";
-            Path temp = Files.createTempFile("joltjni-", suffix);
-            temp.toFile().deleteOnExit();
-            Files.copy(in, temp, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            System.load(temp.toAbsolutePath().toString());
-            return null;
-        } catch (IOException | UnsatisfiedLinkError ex) {
-            return ex.getClass().getSimpleName() + ": " + ex.getMessage();
-        }
-    }
 
     ResolvedTuning resolvedTuningForTesting() {
         return resolvedTuning;
