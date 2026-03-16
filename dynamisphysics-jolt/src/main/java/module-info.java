@@ -8,4 +8,5 @@ module org.dynamisengine.physics.jolt {
 
     exports org.dynamisengine.physics.jolt;
     exports org.dynamisengine.physics.jolt.world;
+    exports org.dynamisengine.physics.jolt.meshforge to org.dynamisengine.physics.bench;
 }
