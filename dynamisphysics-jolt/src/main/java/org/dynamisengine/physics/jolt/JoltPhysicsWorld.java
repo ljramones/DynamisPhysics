@@ -85,6 +85,8 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
     private boolean destroyed;
     private float timeScale = 1f;
     private float lastStepMs;
+    private float lastSolverMs;
+    private float lastIntegrationMs;
 
     private JoltPhysicsWorld(
         PhysicsWorldConfig config,
@@ -208,13 +210,26 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
         int clamped = subSteps;
         long start = System.nanoTime();
         trace("step.enter dt=" + deltaSeconds + " subSteps=" + subSteps + " timeScale=" + timeScale);
+
+        // Controllers (integration phase)
+        long integStart = System.nanoTime();
         vehicleSystem.stepAll(deltaSeconds * timeScale);
         characterController.stepAll(deltaSeconds * timeScale, gravity);
+        lastIntegrationMs = (System.nanoTime() - integStart) / 1_000_000f;
+
+        // Core physics update (broadphase + narrowphase + solver combined in Jolt)
         trace("step.before-update");
+        long solverStart = System.nanoTime();
         physicsSystem.update(deltaSeconds * timeScale, clamped, allocator, jobs);
+        lastSolverMs = (System.nanoTime() - solverStart) / 1_000_000f;
         trace("step.after-update");
+
+        // Post-solve
+        long postStart = System.nanoTime();
         mechanicalConstraintController.postSolve(deltaSeconds * timeScale);
         ragdollSystem.stepAll(deltaSeconds * timeScale);
+        lastIntegrationMs += (System.nanoTime() - postStart) / 1_000_000f;
+
         lastStepMs = (System.nanoTime() - start) / 1_000_000f;
         stepCount++;
         trace("step.exit stepCount=" + stepCount);
@@ -537,7 +552,11 @@ public final class JoltPhysicsWorld implements PhysicsWorld {
             .filter(h -> h.mode() == org.dynamisengine.physics.api.body.BodyMode.DYNAMIC)
             .filter(h -> physicsSystem.getBodyInterface().isActive(h.joltBodyId()))
             .count();
-        return new PhysicsStats(lastStepMs, total, active, Math.max(0, total - active), 0, 0, 0f, 0f, 0f, 0f);
+        return new PhysicsStats(lastStepMs, total, active, Math.max(0, total - active), 0, 0,
+            0f, // broadPhase (combined with solver in Jolt)
+            0f, // narrowPhase (combined with solver in Jolt)
+            lastSolverMs,
+            lastIntegrationMs);
     }
 
     private static CollisionShape fromShapeSnapshot(JoltSnapshot.ShapeSnapshot shape) {

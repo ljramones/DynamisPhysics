@@ -93,19 +93,26 @@ public final class Ode4jStepLoop {
         this.stepOrderObserver = stepOrderObserver;
     }
 
+    // Phase timing accumulators (reused across frames, summed across substeps)
+    private float lastBroadPhaseMs;
+    private float lastSolverMs;
+    private float lastIntegrationMs; // controllers + post-solve + ragdolls
+
     public void step(float deltaSeconds, int subSteps) {
         // See ARCHITECTURE_NOTES.md: ODE4J loop variant (collide-before-solve, no quickStep(0)).
         float dt = deltaSeconds / subSteps;
         long start = System.nanoTime();
+        long broadPhaseNs = 0, solverNs = 0, integrationNs = 0;
         DVector3 gravity = new DVector3();
         world.getGravity(gravity);
 
         for (int i = 0; i < subSteps; i++) {
-            // Apply queued external forces/impulses for this substep.
+            long phaseStart;
+
+            // --- Integration phase: controllers + forces ---
+            phaseStart = System.nanoTime();
             stepOrderObserver.onPhase("forceAccumulator.flush");
             forceAccumulator.flush();
-
-            // Vehicle and character controllers must contribute forces before integration.
             stepOrderObserver.onPhase("vehicleSystem.stepAll");
             vehicleSystem.stepAll(dt);
             stepOrderObserver.onPhase("characterController.stepAll");
@@ -119,16 +126,25 @@ public final class Ode4jStepLoop {
             );
             stepOrderObserver.onPhase("springController.step");
             springController.step(dt);
+            integrationNs += System.nanoTime() - phaseStart;
 
-            // Build contact joints and solve in the same integration step.
+            // --- Broadphase: collision detection + contact generation ---
+            phaseStart = System.nanoTime();
             stepOrderObserver.onPhase("spaceCollide");
             OdeHelper.spaceCollide(space, null, dispatcher.callback);
             dispatcher.resolveQueuedContacts();
+            broadPhaseNs += System.nanoTime() - phaseStart;
+
+            // --- Solver: constraint solving + integration step ---
+            phaseStart = System.nanoTime();
             stepOrderObserver.onPhase("quickStep");
             world.quickStep(dt);
+            solverNs += System.nanoTime() - phaseStart;
+
+            // --- Post-solve integration ---
+            phaseStart = System.nanoTime();
             stepOrderObserver.onPhase("mechanicalController.postSolve");
             mechanicalController.postSolve(dt);
-
             stepOrderObserver.onPhase("constraintRegistry.checkBreakForces");
             constraintRegistry.checkBreakForces();
             stepOrderObserver.onPhase("contactGroup.empty");
@@ -136,11 +152,19 @@ public final class Ode4jStepLoop {
             dispatcher.clearQueuedContacts();
             stepOrderObserver.onPhase("ragdollSystem.stepAll");
             ragdollSystem.stepAll(dt);
+            integrationNs += System.nanoTime() - phaseStart;
         }
 
         lastStepMs = (System.nanoTime() - start) / 1_000_000f;
+        lastBroadPhaseMs = broadPhaseNs / 1_000_000f;
+        lastSolverMs = solverNs / 1_000_000f;
+        lastIntegrationMs = integrationNs / 1_000_000f;
         stepCount++;
     }
+
+    public float lastBroadPhaseMs() { return lastBroadPhaseMs; }
+    public float lastSolverMs() { return lastSolverMs; }
+    public float lastIntegrationMs() { return lastIntegrationMs; }
 
     public int stepCount() { return stepCount; }
     public float lastStepMs() { return lastStepMs; }

@@ -341,11 +341,11 @@ public final class Ode4jPhysicsWorld implements PhysicsWorld {
             active,
             sleeping,
             constraintRegistry.constraintCount(),
-            0,
-            0f,
-            0f,
-            0f,
-            0f
+            0, // islandCount not tracked by ODE4J
+            stepLoop.lastBroadPhaseMs(),
+            0f, // narrowPhase included in broadPhase for ODE4J
+            stepLoop.lastSolverMs(),
+            stepLoop.lastIntegrationMs()
         );
     }
 
