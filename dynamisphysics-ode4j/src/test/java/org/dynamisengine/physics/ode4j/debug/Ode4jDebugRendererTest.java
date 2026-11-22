@@ -1,8 +1,8 @@
 package org.dynamisengine.physics.ode4j.debug;
 
-import org.dynamisgpu.api.gpu.BoundsBuffer;
-import org.dynamisgpu.api.gpu.StagingScheduler;
-import org.dynamisgpu.api.gpu.VkCommandBuffer;
+import org.dynamisengine.gpu.api.gpu.BoundsBuffer;
+import org.dynamisengine.gpu.api.gpu.StagingScheduler;
+import org.dynamisengine.gpu.api.gpu.VkCommandBuffer;
 import org.dynamisengine.physics.api.PhysicsWorldFactory;
 import org.dynamisengine.physics.api.body.BodyMode;
 import org.dynamisengine.physics.api.body.RigidBodyConfig;

@@ -5,6 +5,7 @@ module org.dynamisengine.physics.bench {
     requires org.dynamisengine.physics.test;
     requires org.dynamisengine.vectrix;
     requires org.dynamisengine.collision;
+    requires org.dynamisengine.meshforge;
     requires jmh.core;
 
     exports org.dynamisengine.physics.bench;
